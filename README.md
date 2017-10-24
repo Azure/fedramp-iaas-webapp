@@ -9,7 +9,9 @@ This Azure Blueprint solution is comprised of JSON configuration files and Power
 
 #### Quickstart
 1. Clone this repository to your local workstation.
+
 2. Run the pre-deployment PowerShell script: azure-blueprint/predeploy/Orchestration_InitialSetup.ps1. [Read more about pre-deployment.](#pre-deployment)
+
 3. Click the button below, sign into the Azure portal, enter the required ARM template parameters, and click **Purchase**. [Read more about deployment.](#deployment)
 
 	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAppliedIS%2Fazure-blueprint%2Fmaster%2Fazuredeploy.json)
@@ -43,9 +45,9 @@ The pre-deployment PowerShell script will verify that the necessary Azure PowerS
 * **adminPassword**: Administrator password you want to use for the administrator accounts on deployed virtual machines (must meet the complexity requirements; see below)
 * **sqlServerServiceAccountPassword**: SQL service account password you want to use (must meet the complexity requirements; see below)
 * **subscriptionId**: To find your Azure Government subscription ID, navigate to https://portal.azure.us and sign in. Expand the service menu on the left side of the portal, select "more services," and begin typing "subscription" in the filter box. Click **Subscriptions** to open the subscriptions blade. Note the subscription ID, which has the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.
-* **resourceGroupName**: Resource group name you want to use for this deployment; must be a string of 1-90 alphanumeric characters (such as 0-9, a-z, A-Z), periods, underscores, hyphens, and parenthesis and it cannot end in a period (e.g., such as `blueprint-rg`).
-* **keyVaultName**: Key Vault name you want to use for this deployment; must be a string 3-24 alphanumeric characters (such as 0-9, a-z, A-Z) and hyphens and must be unique across Azure Government.
-* **domain**: Domain name for the self-signed SSL certificate
+* **resourceGroupName**: Resource group name you want to use for this deployment; must be a string of 1-90 alphanumeric characters (such as 0-9, a-z, A-Z), periods, underscores, hyphens, and parenthesis and it cannot end in a period (e.g., `blueprint-rg`).
+* **keyVaultName**: Key Vault name you want to use for this deployment; must be a string 3-24 alphanumeric characters (such as 0-9, a-z, A-Z) and hyphens and must be unique across Azure Government. This must be a name for a new Key Vault; the deployment cannot use an existing Key Vault.
+* **domain**: Domain name for the self-signed SSL certificate (e.g., `contoso.local`).
 
 Passwords must be at least 14 characters and contain one each of the following: lower case character, upper case character, number, and special character.
 
@@ -87,7 +89,7 @@ All other settings contain default values that may be optionally adjusted by the
 4. Click **Purchase**.
 
 #### Monitoring deployment status
-This solution uses multiple nested templates to deploy and configure the resources shown in the architecture diagram. The full deployment will take approximately **[120]** minutes. You can monitor the deployment from Azure Portal.
+This solution uses multiple nested templates to deploy and configure the resources shown in the architecture diagram. The full deployment will take approximately 120 minutes. You can monitor the deployment from Azure Portal. When complete, there will be 49 items deployed to the resource group. If you encounter deployment errors, check the [troubleshooting](#troubleshooting) section below.
 
 See [TIMELINE.md](/docs/TIMELINE.md) for a resource dependency outline.
 
@@ -124,11 +126,7 @@ Please feel free to open and submit a GitHub issue pertaining to the error you a
 
 #### How to delete deployed resources
 
-To help with deleting protected resources, use postdeploy/deleteProtectedItems.ps1 -- this will specifically help you with removing the delete lock on the resources inside your vault.
-
-## Known Issues
-
-1. Deployment only works successfully with a new Key Vault (it does not work with an existing Key Vault).
+To help with deleting protected resources, use postdeploy/deleteProtectedItems.ps1 -- this PowerShell script will removing the delete lock on the resources inside your Recovery Services vault. Note, you will first need to edit the script to include your subscription ID and Recovery Service vault name.
 
 ## Disclaimer
 
