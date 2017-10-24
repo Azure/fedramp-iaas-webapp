@@ -32,6 +32,8 @@ PowerShell is used to initiate some pre-deployment tasks. PowerShell version 5.0
 
 In order to run the pre-deployment script, you must have the current Azure PowerShell AzureRM modules installed (see [Installing AzureRM modules](https://docs.microsoft.com/powershell/azure/install-azurerm-ps)).
 
+You may need to change your workstation's PowerShell execution policy (e.g., to `RemoteSigned` or `Unrestricted`). Click [here](https://docs.microsoft.com/powershell/module/microsoft.powershell.core/about/about_execution_policies) for information about PowerShell execution policies and detailed instructions.
+
 #### SSL certificate
 This solution deploys an Application Gateway and requires an SSL certificate. The pre-deployment script will generate a self-signed SSL certificate after prompting for a domain (e.g., `contoso.local`). Note that self-signed certificates are not recommended for use in production environments.
 
