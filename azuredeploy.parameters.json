@@ -1,0 +1,75 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environmentName": {
+            "value": "AzureUSGovernment"
+        },
+        "keyVaultName": {
+            "value": ""
+        },
+        "keyVaultResourceGroupName": {
+            "value": ""
+        },
+        "domainName": {
+            "value": "contoso.local"
+        },
+        "configureSQLAO": {
+            "value": "yes"
+        },
+        "environmentPrefix": {
+            "value": ""
+        },
+        "numberOfWebInstances": {
+            "value": 2
+        },
+        "useExistingKek": {
+            "value": "kek"
+        },
+        "encryptionEnabled": {
+            "value": true
+        },
+        "adVMSize": {
+            "value": "Standard_D1_v2"
+        },
+        "sqlVMSize": {
+            "value": "Standard_D2_v2"
+        },
+        "webVMSize": {
+            "value": "Standard_D2_v2"
+        },
+        "mgtVMSize": {
+            "value": "Standard_D1_v2"
+        },
+        "witnessVMSize": {
+            "value": "Standard_D1_v2"
+        },
+        "sqlStorageAccountType": {
+            "value": "Standard_GRS"
+        },
+        "dcStorageAccountType": {
+            "value": "Standard_GRS"
+        },
+        "webStorageAccountType": {
+            "value": "Standard_GRS"
+        },
+        "mgtStorageAccountType": {
+            "value": "Standard_GRS"
+        },
+        "templatesBaseUrl": {
+            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/nestedtemplates"
+        },
+        "dscBaseUrl": {
+            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/DSC"
+        },
+        "scriptsBaseUrl": {
+            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/custom-scripts"
+        },
+        "sqlServerVersion": {
+            "value": "SQL2016-WS2012R2"
+        },
+        "gatewaySkuName": {
+            "value": "WAF_Medium"
+        }
+    }
+}
