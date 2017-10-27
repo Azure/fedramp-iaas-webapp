@@ -8,7 +8,7 @@ IaaS web application Blueprint Automation for FedRAMP-compliant environments](ht
 This Azure Blueprint solution is comprised of JSON configuration files and PowerShell scripts that are handled by Azure Resource Manager's API service to deploy resources within Azure. 
 
 #### Quickstart
-1. Clone this repository to your local workstation.
+1. Clone or download this repository to your local workstation.
 
 2. Run the pre-deployment PowerShell script: azure-blueprint/predeploy/Orchestration_InitialSetup.ps1. [Read more about pre-deployment.](#pre-deployment)
 
@@ -34,6 +34,8 @@ In order to run the pre-deployment script, you must have the current Azure Power
 
 You may need to change your workstation's PowerShell execution policy (e.g., to `RemoteSigned` or `Unrestricted`). Click [here](https://docs.microsoft.com/powershell/module/microsoft.powershell.core/about/about_execution_policies) for information about PowerShell execution policies and detailed instructions.
 
+To clone this repository using the command line, you must install a [Git client](https://git-scm.com/downloads) on your workstation. Alternatively, you can download the repository directly from GitHub.
+
 #### SSL certificate
 This solution deploys an Application Gateway and requires an SSL certificate. The pre-deployment script will generate a self-signed SSL certificate after prompting for a domain (e.g., `contoso.local`). Note that self-signed certificates are not recommended for use in production environments.
 
@@ -55,8 +57,8 @@ Passwords must be at least 14 characters and contain one each of the following: 
 
 #### Pre-deployment instructions
 
-1. Clone this GitHub repository to your local workstation
-`git clone https://github.com/AppliedIS/azure-blueprint.git`
+1. Clone or download this GitHub repository to your local workstation
+`git clone https://github.com/Azure/fedramp-iaas-webapp.git`
 2. Start PowerShell as an administrator
 3. Run Orchestration_InitialSetup.ps1
 4. Enter the parameters above when prompted
