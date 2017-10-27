@@ -1,0 +1,67 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "omsAutomationAccountName": {
+            "type": "string"
+        },
+        "scheduleName": {
+            "type": "string"
+        },
+        "scheduleJobGuid": {
+            "type": "securestring"
+        },
+        "computerIdList": {
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [{
+            "comments": "",
+            "type": "Microsoft.Automation/automationAccounts/schedules",
+            "name": "[concat(parameters('omsAutomationAccountName'),'/',parameters('scheduleName'))]",
+            "apiVersion": "2015-10-31",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [],
+            "properties": {
+                "description": "VM Patch Automation Schedule",
+                "startTime": "",
+                "expiryTime": "",
+                "isEnabled": true,
+                "interval": 1,
+                "frequency": "Day",
+                "timeZone": "America/New_York"
+            }
+        },
+        {
+            "comments": "",
+            "type": "Microsoft.Automation/automationAccounts/jobSchedules",
+            "name": "[concat(parameters('omsAutomationAccountName'),'/', parameters('scheduleJobGuid'))]",
+            "apiVersion": "2015-10-31",
+            "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Automation/automationAccounts/',parameters('omsAutomationAccountName'), '/jobSchedules/', parameters('scheduleJobGuid'))]",
+            "dependsOn": [
+
+                "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/schedules/', parameters('scheduleName'))]"
+            ],
+            "properties": {
+                "jobScheduleId": "[parameters('scheduleJobGuid')]",
+                "runbook": {
+                    "name": "Patch-MicrosoftOMSComputers"
+                },
+                "schedule": {
+                    "name": "[parameters('scheduleName')]"
+                },
+                "runOn": null,
+                "parameters": {
+                    "Duration": "01:30:00",
+                    "ScheduleName": "[parameters('scheduleName')]",
+                    "WorkspaceId": "[parameters('omsAutomationAccountName')]",
+                    "ComputerIdList": "[reference(Concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/variables/', 'ComputerIdList'), '2015-10-31').value]"
+                }
+            }
+        }
+    ],
+    "outputs": {
+
+    }
+}

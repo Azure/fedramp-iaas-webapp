@@ -1,0 +1,95 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adBDCVMName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "adminPassword": {
+            "type": "securestring"
+        },
+        "domainName": {
+            "type": "string"
+        },
+        "bdcConfigurationFunction": {
+            "type": "string"
+        },
+        "bdcModulesURL": {
+            "type": "string"
+        },
+        "adPDCNICIPAddress": {
+            "type": "string"
+        },
+        "antimalwareInfo": {
+            "type": "object"
+        },
+        "workspaceName": {
+            "type": "string"
+        },
+        "ResourceGroupName": {
+            "type": "string"
+        },
+        "AutomationAccountName": {
+            "type": "string"
+        },
+        "AzureUserName": {
+            "type": "string"
+        },
+        "AzurePassword": {
+            "type": "securestring"
+        },
+        "SubscriptionId": {
+            "type": "string"
+        },
+        "EnvironmentName": {
+            "type": "string"
+        }
+    },
+    "resources": [{
+        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "name": "[concat(parameters('adBDCVMName'),'/BDCBaselineDSC')]",
+        "apiVersion": "2016-03-30",
+        "tags": {
+            "Project": "BluePrint"
+        },
+        "location": "[parameters('location')]",
+        "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.19",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+                "modulesURL": "[parameters('bdcModulesURL')]",
+                "configurationFunction": "[parameters('bdcConfigurationFunction')]",
+                "Properties": {
+                    "DNSServer": "[parameters('adPDCNICIPAddress')]",
+                    "ExclusionPath": "[parameters('antimalwareInfo').exclusionPath.ad]",
+                    "ExclusionExtension": "[parameters('antimalwareInfo').exclusionExtension.ad]",
+                    "ExclusionProcess": "[parameters('antimalwareInfo').exclusionProcess.ad]",
+                    "RealTimeScanDirection": "[parameters('antimalwareInfo').realTimeScanDirection]",
+                    "RemediationScheduleDay": "[parameters('antimalwareInfo').remediationScheduleDay]",
+                    "ScanScheduleDay": "[parameters('antimalwareInfo').scanScheduleDay]",
+                    "DisableRealtimeMonitoring": "[parameters('antimalwareInfo').disableRealtimeMonitoring]"
+                        /*"MachineName": "[parameters('adBDCVMName')]",
+                        "ResourceGroupName": "[parameters('ResourceGroupName')]",
+                        "AutomationAccountName": "[parameters('AutomationAccountName')]",
+                        "AzureAuthCreds": {
+                            "UserName": "[parameters('AzureUserName')]",
+                            "Password": "PrivateSettingsRef:AzurePassword"
+                        },
+                        "SubscriptionId": "[parameters('SubscriptionId')]",
+                        "EnvironmentName": "[parameters('EnvironmentName')]"*/
+                },
+                "protectedSettings": {
+                    "items": {
+                        "AzurePassword": "[parameters('AzurePassword')]"
+                    }
+                }
+            }
+        }
+    }],
+    "outputs": {}
+}

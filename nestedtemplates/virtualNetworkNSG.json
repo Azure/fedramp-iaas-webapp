@@ -1,0 +1,546 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string"
+    },
+    "virtualNetworkName": {
+      "type": "string"
+    },
+    "virtualNetworkAddressRange": {
+      "type": "string"
+    },
+    "subnets": {
+      "type": "array"
+    },
+    "dcNSGName": {
+      "type": "string"
+    },
+    "sqlNSGName": {
+      "type": "string"
+    },
+    "webNSGName": {
+      "type": "string"
+    },
+    "mgtNSGName": {
+      "type": "string"
+    },
+    "lbNSGName": {
+      "type": "string"
+    },
+    "appGatewayAddressRange": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "comments": "Load Balancer NSG",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('lbNSGName')]",
+      "apiVersion": "2016-03-30",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+
+          {
+            "name": "HTTPS",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "443",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 101,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      },
+      "resources": [],
+      "dependsOn": []
+    },
+    {
+      "comments": "MGT NSG",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('mgtNSGName')]",
+      "apiVersion": "2016-03-30",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+
+          {
+            "name": "RDP",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 102,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      },
+      "resources": [],
+      "dependsOn": []
+    },
+    {
+      "comments": "DC NSG",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('dcNSGName')]",
+      "apiVersion": "2016-03-30",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+
+          {
+            "name": "SMB-tcp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "445",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 103,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "SMB-udp",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "445",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 104,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "SMTP-tcp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "25",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 105,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "RDP-tcp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 106,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "DNS-tcp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "53",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 107,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "DNS-udp",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "53",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 108,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "LDAP-tcp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "389",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 109,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "LDAP-udp",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "389",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 110,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "LDAPS-tcp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "636",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 111,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "LDAPGC-tcp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3286",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 112,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "LDAPGCS-tcp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3269",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 113,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Keberos-tcp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "88",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 114,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Keberos-udp",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "88",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 115,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "RCP-tcp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "135",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 116,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "RCP-DCOM-DSUAPI-NetlogonR-SamR-FRS-tcpdynamic",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "49152-65535",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 117,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "RCP-DFSRSYSVOL-tcp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5722",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 118,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "WindowsTime-udp",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "123",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 119,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "KeberosPWD-tcp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "464",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 120,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "KeberosPWD-udp",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "464",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 121,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "DCOM-RPC-EPM-udpdynamic",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "464",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 122,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "DFSN-NetLogin-NetBIOSDatagramService-tcp",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "138",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 123,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "SOAP-tcp",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "9389",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 124,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "DHCP-MADCAP-udp1",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "67",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 125,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "DHCP-MADCAP-udp2",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "2535",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 126,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "NetLogon-NetBIOSNameRes-udp",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "137",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 127,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "DFSN-NetBIOSNameRes-tcp",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "139",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 128,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      },
+      "resources": [],
+      "dependsOn": []
+    },
+    {
+      "comments": "SQL NSG",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('sqlNSGName')]",
+      "apiVersion": "2016-03-30",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+
+          {
+            "name": "SQL",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "1433",
+              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      },
+      "resources": [],
+      "dependsOn": []
+    },
+    {
+      "comments": "WEB NSG",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('webNSGName')]",
+      "apiVersion": "2016-03-30",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "HTTP",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "[parameters('appGatewayAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 106,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "HTTPS",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "443",
+              "sourceAddressPrefix": "[parameters('appGatewayAddressRange')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 105,
+              "direction": "Inbound"
+            }
+          },
+        ]
+      },
+      "resources": [],
+      "dependsOn": []
+    },
+    {
+      "name": "[parameters('virtualNetworkName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('lbNSGName'))]"
+      ],
+      "location": "[parameters('location')]",
+      "apiVersion": "2015-06-15",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('virtualNetworkAddressRange')]"
+          ]
+        },
+        "subnets": "[parameters('subnets')]"
+      }
+    }
+  ],
+  "outputs": {}
+}

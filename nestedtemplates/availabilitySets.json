@@ -1,0 +1,56 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string"
+    },
+    "webAvailabilitySetName": {
+        "type": "string"
+    },
+    "adAvailabilitySetName": {
+        "type": "string"
+    },
+    "sqlAvailabilitySetName": {
+        "type": "string"
+    }
+  },
+  "resources": [
+    {
+        "type": "Microsoft.Compute/availabilitySets",
+        "name": "[parameters('adAvailabilitySetName')]",
+        "apiVersion": "2015-06-15",
+        "tags": {
+            "Project": "BluePrint"
+        },
+        "location": "[parameters('location')]"
+    },
+    {
+        "type": "Microsoft.Compute/availabilitySets",
+        "name": "[parameters('sqlAvailabilitySetName')]",
+        "apiVersion": "2015-06-15",
+        "tags": {
+            "Project": "BluePrint"
+        },
+        "location": "[parameters('location')]",
+        "properties": {
+            "platformFaultDomainCount": "3",
+            "platformUpdateDomainCount": "3"
+        }
+    },
+    {
+        "type": "Microsoft.Compute/availabilitySets",
+        "name": "[parameters('webAvailabilitySetName')]",
+        "apiVersion": "2015-06-15",
+        "tags": {
+            "Project": "BluePrint"
+        },
+        "location": "[parameters('location')]",
+        "properties": {
+            "platformFaultDomainCount": "2",
+            "platformUpdateDomainCount": "2"
+        }
+    }
+  ],
+  "outputs": {}
+}

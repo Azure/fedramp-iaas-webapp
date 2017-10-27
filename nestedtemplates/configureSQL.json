@@ -1,0 +1,595 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adPDCVMName": {
+            "type": "string"
+        },
+        "adminUsername": {
+            "type": "securestring"
+        },
+        "adminPassword": {
+            "type": "securestring"
+        },
+        "adBDCVMName": {
+            "type": "string"
+        },
+        "sql0VMName": {
+            "type": "string"
+        },
+        "sql1VMName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "domainName": {
+            "type": "string"
+        },
+        "sqlwVMName": {
+            "type": "string"
+        },
+        "sqlwNicName": {
+            "type": "string"
+        },
+        "sql0NicName": {
+            "type": "string"
+        },
+        "sql1NicName": {
+            "type": "string"
+        },
+        "adPDCNICIPAddress": {
+            "type": "string"
+        },
+        "adBDCNICIPAddress": {
+            "type": "string"
+        },
+        "updateNicTemplateURL": {
+            "type": "string"
+        },
+        "sqlSubnetRef": {
+            "type": "string"
+        },
+        "sqlBEAddressPoolID": {
+            "type": "string"
+        },
+        "prepareAlwaysOnSQLInfo": {
+            "type": "object"
+        },
+        "configuringAlwaysOnInfo": {
+            "type": "object"
+        },
+        "backupInfo": {
+            "type": "object"
+        },
+        "keyVaultName": {
+            "type": "string"
+        },
+        "vmEncryptionSettings": {
+            "type": "object"
+        },
+        "antimalwareInfo": {
+            "type": "object"
+        },
+        "workspaceName": {
+            "type": "string"
+        },
+        "AutomationAccountName": {
+            "type": "string"
+        },
+        "EnvironmentName": {
+            "type": "string"
+        },
+        "ResourceGroupName": {
+            "type": "string"
+        },
+        "AzureUserName": {
+            "type": "string"
+        },
+        "AzurePassword": {
+            "type": "securestring"
+        },
+        "SubscriptionId": {
+            "type": "string"
+        },
+        "provisioningHybridworkersUrl": {
+            "type": "string"
+        },
+        "configureSQLAO": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "domainJoinUserName": "[concat(split(parameters('domainName'), '.')[0], '\\', parameters('adminUsername'))]",
+        "vmNames": {
+            "VMs": [
+                {
+                    "Name": "[parameters('sqlwVMName')]"
+                },
+                {
+                    "Name": "[parameters('sql0VMName')]"
+                },
+                {
+                    "Name": "[parameters('sql1VMName')]"
+                }
+            ]
+        },
+        "configuringAlwaysOnURL": {
+          "yes": "[parameters('prepareAlwaysOnSQLInfo').artifacts.configuringAlwaysOnURL]",
+          "no": "[parameters('prepareAlwaysOnSQLInfo').artifacts.configuringAlwaysOnURLAObypass]"
+        },
+        "preparingAlwaysOnSqlServerURL": {
+          "yes": "[parameters('prepareAlwaysOnSQLInfo').artifacts.preparingSQLAOUrl]",
+          "no": "[parameters('prepareAlwaysOnSQLInfo').artifacts.preparingAlwaysOnSqlServerURLAObypass]"
+        }
+    },
+    "resources": [
+        {
+            "name": "UpdatingSQLWNic",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('updateNicTemplateURL')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "nicName": {
+                        "value": "[parameters('sqlwNicName')]"
+                    },
+                    "ipConfigurations": {
+                        "value": [{
+                            "name": "ipconfig1",
+                            "properties": {
+                                "privateIPAllocationMethod": "Dynamic",
+                                "subnet": {
+                                    "id": "[parameters('sqlSubnetRef')]"
+                                }
+                            }
+                        }]
+                    },
+                    "dnsServers": {
+                        "value": [
+                            "[parameters('adPDCNICIPAddress')]",
+                            "[parameters('adBDCNICIPAddress')]"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "UpdatingSQL0Nic",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "Microsoft.Resources/deployments/UpdatingSQLWNic"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('updateNicTemplateURL')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "nicName": {
+                        "value": "[parameters('sql0NicName')]"
+                    },
+                    "ipConfigurations": {
+                        "value": [{
+                            "name": "ipconfig1",
+                            "properties": {
+                                "privateIPAllocationMethod": "Dynamic",
+                                "subnet": {
+                                    "id": "[parameters('sqlSubnetRef')]"
+                                },
+                                "loadBalancerBackendAddressPools": [{
+                                    "id": "[parameters('sqlBEAddressPoolID')]"
+                                }]
+                            }
+                        }]
+                    },
+                    "dnsServers": {
+                        "value": [
+                            "[parameters('adPDCNICIPAddress')]",
+                            "[parameters('adBDCNICIPAddress')]"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "UpdatingSQL1Nic",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "Microsoft.Resources/deployments/UpdatingSQL0Nic"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('updateNicTemplateURL')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "nicName": {
+                        "value": "[parameters('sql1NicName')]"
+                    },
+                    "ipConfigurations": {
+                        "value": [{
+                            "name": "ipconfig1",
+                            "properties": {
+                                "privateIPAllocationMethod": "Dynamic",
+                                "subnet": {
+                                    "id": "[parameters('sqlSubnetRef')]"
+                                },
+                                "loadBalancerBackendAddressPools": [{
+                                    "id": "[parameters('sqlBEAddressPoolID')]"
+                                }]
+                            }
+                        }]
+                    },
+                    "dnsServers": {
+                        "value": [
+                            "[parameters('adPDCNICIPAddress')]",
+                            "[parameters('adBDCNICIPAddress')]"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "PreparingAlwaysOnSqlServer",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "Microsoft.Resources/deployments/UpdatingSQL1Nic"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('preparingAlwaysOnSqlServerURL')[parameters('configureSQLAO')]]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "sql0VMName": {
+                        "value": "[parameters('sql0VMName')]"
+                    },
+                    "sql1VMName": {
+                        "value": "[parameters('sql1VMName')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[parameters('prepareAlwaysOnSQLInfo').derivedIds.keyVaultId]"
+                            },
+                            "secretName": "adminPassword"
+                        }
+                    },
+                    "domainName": {
+                        "value": "[parameters('domainName')]"
+                    },
+                    "domainJoinUserName": {
+                        "value":"[variables('domainJoinUserName')]"
+                    },
+                    "sql0ModulesURL": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').artifacts.sql0ModulesURL]"
+                    },
+                    "sql0ConfigurationFunction": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').artifacts.sql0ConfigurationFunction]"
+                    },
+                    "sqlAOEPName": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.sqlAOEPName]"
+                    },
+                    "sqlServerServiceAccountUserName": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').sqlServerServiceAccountUserName]"
+                    },
+                    "sqlServerServiceAccountPassword": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[parameters('prepareAlwaysOnSQLInfo').derivedIds.keyVaultId]"
+                            },
+                            "secretName": "sqlServerServiceAccountPassword"
+                        }
+                    },
+                    "sharePath": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.sharePath]"
+                    },
+                    "adPDCVMName": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').resourceNames.vms.adpdc]"
+                    },
+                    "sqlwVMName": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').resourceNames.vms.sqlw]"
+                    },
+                    "sqlwModulesURL": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').artifacts.sqlwModulesURL]"
+                    },
+                    "sqlwConfigurationFunction": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').artifacts.sqlwConfigurationFunction]"
+                    },
+                    "autoPatchingDay": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.autoPatchingDay]"
+                    },
+                    "autoPatchingStartHour": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.autoPatchingStartHour]"
+                    },
+                    "autoPatchingEnable": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.autoPatchingEnable]"
+                    },
+                    "numberOfDisks": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').numberOfSqlVMDisks]"
+                    },
+                    "workloadType": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.workloadType]"
+                    },
+                    "antimalwareInfo": {
+                        "value": "[parameters('antimalwareInfo')]"
+                    },
+                    "AutomationAccountName": {
+                        "value": "[parameters('AutomationAccountName')]"
+                    },
+                    "EnvironmentName": {
+                        "value": "[parameters('EnvironmentName')]"
+                    },
+                    "ResourceGroupName": {
+                        "value": "[parameters('ResourceGroupName')]"
+                    },
+                    "AzureUserName": {
+                        "value": "[parameters('AzureUserName')]"
+                    },
+                    "AzurePassword": {
+                        "value": "[parameters('AzurePassword')]"
+                    },
+                    "SubscriptionId": {
+                        "value": "[parameters('SubscriptionId')]"
+                    }
+
+                }
+            }
+        },
+        {
+            "name": "ConfiguringAlwaysOn",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "Microsoft.Resources/deployments/PreparingAlwaysOnSqlServer"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('configuringAlwaysOnURL')[parameters('configureSQLAO')]]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "sql0VMName": {
+                        "value": "[parameters('sql0VMName')]"
+                    },
+                    "sql1VMName": {
+                        "value": "[parameters('sql1VMName')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[parameters('prepareAlwaysOnSQLInfo').derivedIds.keyVaultId]"
+                            },
+                            "secretName": "adminPassword"
+                        }
+                    },
+                    "domainName": {
+                        "value": "[parameters('domainName')]"
+                    },
+                    "domainJoinUserName": {
+                        "value":"[variables('domainJoinUserName')]"
+                    },
+                    "sqlAOEPName": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.sqlAOEPName]"
+                    },
+                    "sqlServerServiceAccountUserName": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').sqlServerServiceAccountUserName]"
+                    },
+                    "sqlServerServiceAccountPassword": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[parameters('prepareAlwaysOnSQLInfo').derivedIds.keyVaultId]"
+                            },
+                            "secretName": "sqlServerServiceAccountPassword"
+                        }
+                    },
+                    "sql1ModulesURL": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').artifacts.sql1ModulesURL]"
+                    },
+                    "sql1ConfigurationFunction": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').artifacts.sql1ConfigurationFunction]"
+                    },
+                    "clusterName": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.clusterName]"
+                    },
+                    "sharePath": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.sharePath]"
+                    },
+                    "sqlAOAGName": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.sqlAOAGName]"
+                    },
+                    "sqlAOListenerName": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.sqlAOListenerName]"
+                    },
+                    "sqlAOListenerPort": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.sqlAOListenerPort]"
+                    },
+                    "sqlLBName": {
+                        "value": "[parameters('configuringAlwaysOnInfo').lbSettings.sqlLBName]"
+                    },
+                    "sqlLBIPAddress": {
+                        "value": "[parameters('configuringAlwaysOnInfo').sqlLBIPAddress]"
+                    },
+                    "adPDCVMName": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').resourceNames.vms.adpdc]"
+                    },
+                    "sqlwVMName": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').resourceNames.vms.sqlw]"
+                    },
+                    "numberOfDisks": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').numberOfSqlVMDisks]"
+                    },
+                    "workloadType": {
+                        "value": "[parameters('prepareAlwaysOnSQLInfo').vmSettings.sql.workloadType]"
+                    },
+                    "antimalwareInfo": {
+                        "value": "[parameters('antimalwareInfo')]"
+                    },
+                    "AutomationAccountName": {
+                        "value": "[parameters('AutomationAccountName')]"
+                    },
+                    "EnvironmentName": {
+                        "value": "[parameters('EnvironmentName')]"
+                    },
+                    "ResourceGroupName": {
+                        "value": "[parameters('ResourceGroupName')]"
+                    },
+                    "AzureUserName": {
+                        "value": "[parameters('AzureUserName')]"
+                    },
+                    "AzurePassword": {
+                        "value": "[parameters('AzurePassword')]"
+                    },
+                    "SubscriptionId": {
+                        "value": "[parameters('SubscriptionId')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[concat('ConfigurationVMEncryption-', variables('vmNames').VMs[copyIndex()].Name)]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "ConfiguringAlwaysOn"
+            ],
+            "copy": {
+                "name": "encryptSQLLoop",
+                "count": "[length(variables('vmNames').VMs)]"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vmName": {
+                        "value": "[variables('vmNames').VMs[copyIndex()].Name]"
+                    },
+                    "keyVaultName": {
+                        "value": "[parameters('keyVaultName')]"
+                    },
+                    "vmEncryptionSettings": {
+                        "value": "[parameters('vmEncryptionSettings')]"
+                    },
+                    "aadClientID": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[parameters('vmEncryptionSettings').keyVaultId]"
+                            },
+                            "secretName": "aadClientID"
+                        }
+                    },
+                    "aadClientSecret": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[parameters('vmEncryptionSettings').keyVaultId]"
+                            },
+                            "secretName": "aadClientSecret"
+                        }
+                    },
+                    "keyEncryptionKeyURL": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[parameters('vmEncryptionSettings').keyVaultId]"
+                            },
+                            "secretName": "keyEncryptionKeyURL"
+                        }
+                    },
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "AutomationAccountName": {
+                        "value": "[parameters('AutomationAccountName')]"
+                    },
+                    "EnvironmentName": {
+                        "value": "[parameters('EnvironmentName')]"
+                    },
+                    "ResourceGroupName": {
+                        "value": "[parameters('ResourceGroupName')]"
+                    },
+                    "AzureUserName": {
+                        "value": "[parameters('AzureUserName')]"
+                    },
+                    "AzurePassword": {
+                        "value": "[parameters('AzurePassword')]"
+                    },
+                    "SubscriptionId": {
+                        "value": "[parameters('SubscriptionId')]"
+                    },
+                    "provisioningHybridworkersUrl": {
+                        "value": "[parameters('provisioningHybridworkersUrl')]"
+                    },
+                    "MachinesToSetPasswordPolicy": {
+                        "value": ""
+                    }
+                }
+            }
+        },
+        {
+            "name": "[concat('BackupVM-',variables('vmNames').VMs[copyIndex()].Name)]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "copy": {
+                "name": "backupSQLLoop",
+                "count": "[length(variables('vmNames').VMs)]"
+            },
+            "dependsOn": [
+                "encryptSQLLoop"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('backupInfo').backupTemplateUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "backupInfo": {
+                        "value": "[parameters('backupInfo')]"
+                    },
+                    "vmName": {
+                        "value": "[variables('vmNames').VMs[copyIndex()].Name]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

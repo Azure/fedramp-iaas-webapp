@@ -1,0 +1,194 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sql0VMName": {
+            "type": "string"
+        },
+        "sql1VMName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "adminUsername": {
+            "type": "securestring"
+        },
+        "adminPassword": {
+            "type": "securestring"
+        },
+        "domainName": {
+            "type": "string"
+        },
+        "domainJoinUserName": {
+            "type": "string"
+        },
+        "sqlAOEPName": {
+            "type": "string"
+        },
+        "sqlServerServiceAccountUserName": {
+            "type": "string"
+        },
+        "sqlServerServiceAccountPassword": {
+            "type": "securestring"
+        },
+        "sql1ModulesURL": {
+            "type": "string"
+        },
+        "sql1ConfigurationFunction": {
+            "type": "string"
+        },
+        "clusterName": {
+            "type": "string"
+        },
+        "sharePath": {
+            "type": "string"
+        },
+        "sqlAOAGName": {
+            "type": "string"
+        },
+        "sqlAOListenerName": {
+            "type": "string"
+        },
+        "sqlAOListenerPort": {
+            "type": "string"
+        },
+        "sqlLBName": {
+            "type": "string"
+        },
+        "sqlLBIPAddress": {
+            "type": "string"
+        },
+        "adPDCVMName": {
+            "type": "string"
+        },
+        "sqlwVMName": {
+            "type": "string"
+        },
+        "numberOfDisks": {
+            "type": "string"
+        },
+        "workloadType": {
+            "type": "string"
+        },
+        "antimalwareInfo": {
+            "type": "object"
+        },
+        "AutomationAccountName": {
+            "type": "string"
+        },
+        "EnvironmentName": {
+            "type": "string"
+        },
+        "ResourceGroupName": {
+            "type": "string"
+        },
+        "AzureUserName": {
+            "type": "string"
+        },
+        "AzurePassword": {
+            "type": "securestring"
+        },
+        "SubscriptionId": {
+            "type": "string"
+        }
+    },
+    "resources": [
+      {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('sql1VMName'),'/SQL1BaselineDSC')]",
+            "apiVersion": "2015-06-15",
+            "tags": {
+                "Project": "BluePrint"
+            },
+            "location": "[parameters('location')]",
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
+                "autoUpgradeMinorVersion": false,
+                "settings": {
+                    "modulesURL": "[parameters('sql1ModulesURL')]",
+                    "configurationFunction": "[parameters('sql1ConfigurationFunction')]",
+                    "properties": {
+                        "domainName": "[parameters('domainName')]",
+                        "clusterName": "[parameters('clusterName')]",
+                        "sharePath": "[concat('\\\\',parameters('sqlwVMName'),'\\',parameters('sharePath'))]",
+                        "nodes": [
+                            "[parameters('sql0VMName')]",
+                            "[parameters('sql1VMName')]"
+                        ],
+                        "sqlAlwaysOnEndpointName": "[parameters('sqlAOEPName')]",
+                        "sqlAlwaysOnAvailabilityGroupName": "[parameters('sqlAOAGName')]",
+                        "sqlAlwaysOnAvailabilityGroupListenerName": "[parameters('sqlAOListenerName')]",
+                        "SqlAlwaysOnAvailabilityGroupListenerPort": "[parameters('sqlAOListenerPort')]",
+                        "databaseNames": "AutoHa-sample",
+                        "lbName": "[parameters('sqlLBName')]",
+                        "lbAddress": "[parameters('sqlLBIPAddress')]",
+                        "primaryReplica": "[parameters('sql1VMName')]",
+                        "secondaryReplica": "[parameters('sql0VMName')]",
+                        "dnsServerName": "[parameters('adPDCVMName')]",
+                        "adminCreds": {
+                            "userName": "[parameters('adminUsername')]",
+                            "password": "privateSettingsRef:adminPassword"
+                        },
+                        "sqlServiceCreds": {
+                            "userName": "[parameters('sqlServerServiceAccountUserName')]",
+                            "password": "privateSettingsRef:sqlServerServiceAccountPassword"
+                        },
+                        "SQLAuthCreds": {
+                            "userName": "sqlsa",
+                            "password": "privateSettingsRef:sqlAuthPassword"
+                        },
+                        "NumberOfDisks": "[parameters('numberOfDisks')]",
+                        "WorkloadType": "GENERAL"
+                    }
+                },
+                "protectedSettings": {
+                    "items": {
+                        "adminPassword": "[parameters('adminPassword')]",
+                        "sqlServerServiceAccountPassword": "[parameters('sqlServerServiceAccountPassword')]",
+                        "sqlAuthPassword": "[parameters('sqlServerServiceAccountPassword')]",
+                        "AzurePassword": "[parameters('AzurePassword')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('sql1VMName'),'/Antimalware')]",
+            "apiVersion": "2016-04-30-preview",
+            "location": "[parameters('location')]",
+            "tags": {
+                "Project": "BluePrint"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('sql1VMName'),'/extensions/SQL1BaselineDSC')]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Azure.Security",
+                "type": "IaaSAntimalware",
+                "typeHandlerVersion": "1.3",
+                "settings": {
+                    "AntimalwareEnabled": "true",
+                    "Exclusions": {
+                        "Paths": "[parameters('antimalwareInfo').exclusionPath.sqlWS2012]",
+                        "Extensions": "[parameters('antimalwareInfo').exclusionExtension.sqlWS2012]",
+                        "Processes": "[parameters('antimalwareInfo').exclusionProcess.sqlWS2012]"
+                    },
+                    "RealtimeProtectionEnabled": "true",
+                    "ScheduledScanSettings": {
+                        "isEnabled": "true",
+                        "scanType": "Full",
+                        "day": "0",
+                        "time": "60"
+                    }
+                },
+                "protectedSettings": null
+            }
+        }
+    ],
+    "outputs": {
+
+    }
+}

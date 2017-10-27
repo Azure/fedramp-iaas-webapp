@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "backupInfo": {
+      "type": "object"
+    },
+    "vmName": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "backupFabric": "Azure",
+    "v2VmType": "Microsoft.Compute/virtualMachines",
+    "v2VmContainer": "iaasvmcontainer;iaasvmcontainerv2;",
+    "v2VmContainerNamePrefix": "iaasvmcontainerv2;",
+    "v2Vm": "vm;iaasvmcontainerv2;"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
+      "apiVersion": "2016-06-01",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "location": "[resourceGroup().location]",
+      "name": "[concat(parameters('backupInfo').rcVaultName,'/',variables('backupFabric'),'/',variables('v2VmContainer'),concat(resourceGroup().name,';',parameters('vmName')),'/',variables('v2Vm'),concat(resourceGroup().name,';',parameters('vmName')))]",
+      "properties": {
+        "protectedItemType": "[variables('v2VmType')]",
+        "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies',parameters('backupInfo').rcVaultName,parameters('backupInfo').backupPolicy)]",
+        "sourceResourceId": "[resourceId('Microsoft.Compute/virtualMachines',parameters('vmName'))]"
+      }
+    }
+  ],
+  "outputs": {}
+}

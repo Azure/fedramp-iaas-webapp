@@ -1,0 +1,486 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string"
+    },
+    "numberOfWebInstances": {
+        "type": "int",
+        "defaultValue": 2,
+        "minValue": 2,
+        "maxValue": 5
+    },
+    "WebVMName": {
+        "type": "string"
+    },
+    "WebStorageAccountName": {
+        "type": "string"
+    },
+    "WebVMSize": {
+        "type": "string"
+    },
+    "webNICName": {
+        "type": "string"
+    },
+    "appImagePublisher": {
+        "type": "string"
+    },
+    "appImageOffer": {
+        "type": "string"
+    },
+    "appImageSKU": {
+        "type": "string"
+    },
+    "webAvailabilitySetName": {
+        "type": "string"
+    },
+    "adAvailabilitySetName": {
+        "type": "string"
+    },
+    "sqlAvailabilitySetName": {
+        "type": "string"
+    },
+    "adPDCVMName": {
+        "type": "string"
+    },
+    "adVMSize": {
+        "type": "string"
+    },
+    "adminUsername": {
+        "type": "securestring"
+    },
+    "environmentPrefix": {
+        "type": "string"
+    },
+    "adminPassword": {
+        "type": "securestring"
+    },
+    "adImagePublisher": {
+        "type": "string"
+    },
+    "adImageOffer": {
+        "type": "string"
+    },
+    "adImageSKU": {
+        "type": "string"
+    },
+    "adPDCNicName": {
+        "type": "string"
+    },
+    "adBDCVMName": {
+        "type": "string"
+    },
+    "adBDCNicName": {
+        "type": "string"
+    },
+    "sql0VMName": {
+        "type": "string"
+    },
+    "sql1VMName": {
+        "type": "string"
+    },
+    "sqlStorageAccountName": {
+        "type": "string"
+    },
+    "dcStorageAccountName": {
+        "type": "string"
+    },
+    "mgtStorageAccountName": {
+        "type": "string"
+    },
+    "sqlVMSize": {
+        "type": "string"
+    },
+    "fswImagePublisher": {
+        "type": "string"
+    },
+    "fswImageOffer": {
+        "type": "string"
+    },
+    "fswImageSKU": {
+        "type": "string"
+    },
+    "vmContainerName": {
+        "type": "string"
+    },
+    "sqlImagePublisher": {
+        "type": "string"
+    },
+    "sqlImageOffer": {
+        "type": "string"
+    },
+    "sqlImageSKU": {
+        "type": "string"
+    },
+    "mgtImagePublisher": {
+        "type": "string"
+    },
+    "mgtImageOffer": {
+        "type": "string"
+    },
+    "mgtImageSKU": {
+        "type": "string"
+    },
+    "domainName": {
+        "type": "string"
+    },
+    "witnessVMSize": {
+        "type": "string"
+    },
+    "sqlwVMName": {
+        "type": "string"
+    },
+    "sqlwNicName": {
+        "type": "string"
+    },
+    "sql0NicName": {
+        "type": "string"
+    },
+    "sql1NicName": {
+        "type": "string"
+    },
+    "mgtVMName": {
+        "type": "string"
+    },
+    "mgtVMSize": {
+        "type": "string"
+    },
+    "mgtNICName": {
+        "type": "string"
+    }
+  },
+  "variables": {
+    "sqlstorageName": "[parameters('sqlStorageAccountName')]",
+    "dcstorageName": "[parameters('dcStorageAccountName')]",
+    "fswstorageName": "[concat(parameters('sqlStorageAccountName'), 'fsw')]",
+    "diagstorageNameSQL": "[concat(parameters('sqlStorageAccountName'), 'diag')]",
+    "diagstorageNameDC": "[concat(parameters('dcStorageAccountName'), 'diag')]",
+    "domainJoinUserName": "[concat(split(parameters('domainName'), '.')[0], '\\', parameters('adminUsername'))]"
+  },
+  "resources": [
+
+    {
+        "apiVersion": "2016-03-30",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[parameters('sql0VMName')]",
+        "location": "[parameters('location')]",
+        "tags": {
+            "Project": "BluePrint"
+        },
+        "dependsOn": [
+
+        ],
+        "properties": {
+            "hardwareProfile": {
+                "vmSize": "[parameters('sqlVMSize')]"
+            },
+            "availabilitySet": {
+                "id": "[resourceId('Microsoft.Compute/availabilitySets',parameters('sqlAvailabilitySetName'))]"
+            },
+            "osProfile": {
+                "computername": "[parameters('sql0VMName')]",
+                "adminUsername": "[parameters('adminUsername')]",
+                "adminPassword": "[parameters('adminPassword')]"
+            },
+            "storageProfile": {
+                "imageReference": {
+                    "publisher": "[parameters('sqlImagePublisher')]",
+                    "offer": "[parameters('sqlImageOffer')]",
+                    "sku": "[parameters('sqlImageSKU')]",
+                    "version": "latest"
+                },
+                "osDisk": {
+                    "name": "osdisk",
+                    "vhd": {
+                        "uri": "[concat('http://',variables('sqlstorageName'),'.blob.core.usgovcloudapi.net/',parameters('vmContainerName'),'/',parameters('sql0VMName'),'-osdisk.vhd')]"
+                    },
+                    "caching": "ReadWrite",
+                    "createOption": "FromImage"
+                },
+                "dataDisks": [{
+                        "vhd": {
+                            "uri": "[concat('http://',variables('sqlstorageName'),'.blob.core.usgovcloudapi.net/',parameters('vmContainerName'),'/', parameters('sql0VMName'), '-Data-1.vhd')]"
+                        },
+                        "name": "[concat(parameters('sql0VMName'),'-data-disk1')]",
+                        "caching": "None",
+                        "createOption": "empty",
+                        "diskSizeGB": 1000,
+                        "lun": 0
+                    },
+                    {
+                        "vhd": {
+                            "uri": "[concat('http://',variables('sqlstorageName'),'.blob.core.usgovcloudapi.net/',parameters('vmContainerName'),'/', parameters('sql0VMName'), '-Data-2.vhd')]"
+                        },
+                        "name": "[concat(parameters('sql0VMName'), '-data-disk2')]",
+                        "caching": "None",
+                        "createOption": "empty",
+                        "diskSizeGB": 1000,
+                        "lun": 1
+                    }
+                ]
+            },
+            "networkProfile": {
+                "networkInterfaces": [{
+                    "id": "[resourceId(resourceGroup().name,'Microsoft.Network/networkInterfaces', parameters('sql0NicName'))]"
+                }]
+            },
+            "diagnosticsProfile": {
+                "bootDiagnostics": {
+                    "enabled": "true",
+                    "storageUri": "[concat('http://',variables('diagstorageNameSQL'),'.blob.core.usgovcloudapi.net')]"
+                }
+            }
+        },
+        "resources": []
+    },
+    {
+        "apiVersion": "2016-03-30",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[parameters('sql1VMName')]",
+        "location": "[parameters('location')]",
+        "tags": {
+            "Project": "BluePrint"
+        },
+        "dependsOn": [
+
+        ],
+        "properties": {
+            "hardwareProfile": {
+                "vmSize": "[parameters('sqlVMSize')]"
+            },
+            "availabilitySet": {
+                "id": "[resourceId('Microsoft.Compute/availabilitySets',parameters('sqlAvailabilitySetName'))]"
+            },
+            "osProfile": {
+                "computername": "[parameters('sql1VMName')]",
+                "adminUsername": "[parameters('adminUsername')]",
+                "adminPassword": "[parameters('adminPassword')]"
+            },
+            "storageProfile": {
+                "imageReference": {
+                    "publisher": "[parameters('sqlImagePublisher')]",
+                    "offer": "[parameters('sqlImageOffer')]",
+                    "sku": "[parameters('sqlImageSKU')]",
+                    "version": "latest"
+                },
+                "osDisk": {
+                    "name": "osdisk",
+                    "vhd": {
+                        "uri": "[concat('http://',variables('sqlstorageName'),'.blob.core.usgovcloudapi.net/',parameters('vmContainerName'),'/',parameters('sql1VMName'),'-osdisk.vhd')]"
+                    },
+                    "caching": "ReadWrite",
+                    "createOption": "FromImage"
+                },
+                "dataDisks": [{
+                        "vhd": {
+                            "uri": "[concat('http://',variables('sqlstorageName'),'.blob.core.usgovcloudapi.net/',parameters('vmContainerName'),'/', parameters('sql1VMName'), '-Data-1.vhd')]"
+                        },
+                        "name": "[concat(parameters('sql1VMName'), '-data-disk1')]",
+                        "caching": "None",
+                        "createOption": "empty",
+                        "diskSizeGB": 1000,
+                        "lun": 0
+                    },
+                    {
+                        "vhd": {
+                            "uri": "[concat('http://',variables('sqlstorageName'),'.blob.core.usgovcloudapi.net/',parameters('vmContainerName'),'/', parameters('sql1VMName'), '-Data-2.vhd')]"
+                        },
+                        "name": "[concat(parameters('sql1VMName'), '-data-disk2')]",
+                        "caching": "None",
+                        "createOption": "empty",
+                        "diskSizeGB": 1000,
+                        "lun": 1
+                    }
+                ]
+            },
+            "networkProfile": {
+                "networkInterfaces": [{
+                    "id": "[resourceId(resourceGroup().name,'Microsoft.Network/networkInterfaces', parameters('sql1NicName'))]"
+                }]
+            },
+            "diagnosticsProfile": {
+                "bootDiagnostics": {
+                    "enabled": "true",
+                    "storageUri": "[concat('http://',variables('diagstorageNameSQL'),'.blob.core.usgovcloudapi.net')]"
+                }
+            }
+        },
+        "resources": []
+    },
+    {
+        "apiVersion": "2016-03-30",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[parameters('sqlwVMName')]",
+        "location": "[parameters('location')]",
+        "tags": {
+            "Project": "BluePrint"
+        },
+        "dependsOn": [
+
+        ],
+        "properties": {
+            "hardwareProfile": {
+                "vmSize": "[parameters('witnessVMSize')]"
+            },
+            "availabilitySet": {
+                "id": "[resourceId('Microsoft.Compute/availabilitySets',parameters('sqlAvailabilitySetName'))]"
+            },
+            "osProfile": {
+                "computername": "[parameters('sqlwVMName')]",
+                "adminUsername": "[parameters('adminUsername')]",
+                "adminPassword": "[parameters('adminPassword')]"
+            },
+            "storageProfile": {
+                "imageReference": {
+                    "publisher": "[parameters('fswImagePublisher')]",
+                    "offer": "[parameters('fswImageOffer')]",
+                    "sku": "[parameters('fswImageSKU')]",
+                    "version": "latest"
+                },
+                "osDisk": {
+                    "name": "osdisk",
+                    "vhd": {
+                        "uri": "[concat('http://',variables('fswstorageName'),'.blob.core.usgovcloudapi.net/',parameters('vmContainerName'),'/',parameters('sqlwVMName'),'-osdisk.vhd')]"
+                    },
+                    "caching": "ReadWrite",
+                    "createOption": "FromImage"
+                },
+                "dataDisks": [{
+                    "vhd": {
+                        "uri": "[concat('http://',variables('fswstorageName'),'.blob.core.usgovcloudapi.net/',parameters('vmContainerName'),'/',parameters('sqlwVMName'),'-data-1.vhd')]"
+                    },
+                    "name": "[concat(parameters('sqlwVMName'),'-data-disk1')]",
+                    "caching": "None",
+                    "createOption": "empty",
+                    "diskSizeGB": 128,
+                    "lun": 0
+                }]
+            },
+            "networkProfile": {
+                "networkInterfaces": [{
+                    "id": "[resourceId(resourceGroup().name,'Microsoft.Network/networkInterfaces',parameters('sqlwNicName'))]"
+                }]
+            },
+            "diagnosticsProfile": {
+                "bootDiagnostics": {
+                    "enabled": "true",
+                    "storageUri": "[concat('http://',variables('diagstorageNameSQL'),'.blob.core.usgovcloudapi.net')]"
+                }
+            }
+        },
+        "resources": []
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[parameters('mgtVMName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('mgtVMSize')]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('mgtVMName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('mgtImagePublisher')]",
+            "offer": "[parameters('mgtImageOffer')]",
+            "sku": "[parameters('mgtImageSKU')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk",
+            "vhd": {
+              "uri": "[concat('http://',parameters('mgtStorageAccountName'),'.blob.core.usgovcloudapi.net/vhds/',parameters('mgtVMName'), 'disk0.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          },
+          "dataDisks": [
+            {
+              "name": "myvm-data-disk1",
+              "vhd": {
+                "Uri": "[concat('http://',parameters('mgtStorageAccountName'),'.blob.core.usgovcloudapi.net/vhds/',parameters('mgtVMName'), 'disk1.vhd')]"
+              },
+              "caching": "None",
+              "createOption": "Empty",
+              "diskSizeGB": "1000",
+              "lun": 0
+            }
+          ]
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('mgtNICName'))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": "true",
+            "storageUri": "[concat('http://',parameters('mgtStorageAccountName'),'.blob.core.usgovcloudapi.net')]"
+          }
+        }
+      }
+    },
+    {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[concat(parameters('WebVMName'), copyindex())]",
+        "location": "[parameters('location')]",
+        "tags": {
+            "Project": "BluePrint"
+        },
+        "copy": {
+            "name": "vmLoopDEL",
+            "count": "[parameters('numberOfWebInstances')]"
+        },
+        "dependsOn": [
+
+        ],
+        "properties": {
+            "hardwareProfile": {
+                "vmSize": "[parameters('WebVMSize')]"
+            },
+            "availabilitySet": {
+                "id": "[resourceId('Microsoft.Compute/availabilitySets',parameters('webAvailabilitySetName'))]"
+            },
+            "osProfile": {
+                "computername": "[concat(parameters('WebVMName'), copyindex())]",
+                "adminUsername": "[parameters('adminUsername')]",
+                "adminPassword": "[parameters('adminPassword')]"
+            },
+            "storageProfile": {
+                "imageReference": {
+                    "publisher": "[parameters('appImagePublisher')]",
+                    "offer": "[parameters('appImageOffer')]",
+                    "sku": "[parameters('appImageSKU')]",
+                    "version": "latest"
+                },
+                "osDisk": {
+                    "name": "osdisk",
+                    "vhd": {
+                        "uri": "[concat('http://',parameters('WebStorageAccountName'),'.blob.core.usgovcloudapi.net/',parameters('vmContainerName'),'/',parameters('WebVMName'), copyindex(), '-osdisk.vhd')]"
+                    },
+                    "caching": "ReadWrite",
+                    "createOption": "FromImage"
+                }
+            },
+            "networkProfile": {
+                "networkInterfaces": [{
+                    "id": "[resourceId(resourceGroup().name,'Microsoft.Network/networkInterfaces', concat(parameters('webNICName'), copyindex()))]"
+                }]
+            }
+        },
+        "resources": []
+    }
+  ],
+  "outputs": {}
+}

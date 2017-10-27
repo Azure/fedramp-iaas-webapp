@@ -1,0 +1,84 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "backupInfo": {
+      "type": "object"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "apiVersion": "2016-06-01",
+      "name": "[concat(parameters('backupInfo').rcVaultName, '/', parameters('backupInfo').backupPolicy)]",
+      "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
+      "dependsOn": [],
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "properties": {
+        "backupManagementType": "AzureIaasVM",
+        "schedulePolicy": {
+          "scheduleRunFrequency": "Daily",
+          "scheduleRunDays": null,
+          "scheduleRunTimes": "[parameters('backupInfo').backupScheduleRunTimes]",
+          "schedulePolicyType": "SimpleSchedulePolicy"
+        },
+        "retentionPolicy": {
+          "dailySchedule": {
+            "retentionTimes": "[parameters('backupInfo').backupScheduleRunTimes]",
+            "retentionDuration": {
+              "count": "[parameters('backupInfo').backupDailyRetentionDurationCount]",
+              "durationType": "Days"
+            }
+          },
+          "weeklySchedule": {
+            "daysOfTheWeek": "[parameters('backupInfo').backupDaysOfTheWeek]",
+            "retentionTimes": "[parameters('backupInfo').backupScheduleRunTimes]",
+            "retentionDuration": {
+              "count": "[parameters('backupInfo').backupWeeklyRetentionDurationCount]",
+              "durationType": "Weeks"
+            }
+          },
+          "monthlySchedule": {
+            "retentionScheduleFormatType": "Daily",
+            "retentionScheduleDaily": {
+              "daysOfTheMonth": [
+                {
+                  "date": 1,
+                  "isLast": false
+                }
+              ]
+            },
+            "retentionScheduleWeekly": null,
+            "retentionTimes": "[parameters('backupInfo').backupScheduleRunTimes]",
+            "retentionDuration": {
+              "count": "[parameters('backupInfo').backupMonthlyRetentionDurationCount]",
+              "durationType": "Months"
+            }
+          },
+          "yearlySchedule": {
+            "retentionScheduleFormatType": "Daily",
+            "monthsOfYear": "[parameters('backupInfo').backupMonthsOfYear]",
+            "retentionScheduleDaily": {
+              "daysOfTheMonth": [
+                {
+                  "date": 1,
+                  "isLast": false
+                }
+              ]
+            },
+            "retentionScheduleWeekly": null,
+            "retentionTimes": "[parameters('backupInfo').backupScheduleRunTimes]",
+            "retentionDuration": {
+              "count": "[parameters('backupInfo').backupYearlyRetentionDurationCount]",
+              "durationType": "Years"
+            }
+          },
+          "retentionPolicyType": "LongTermRetentionPolicy"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,303 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "numberOfWebInstances": {
+            "type": "int",
+            "defaultValue": 2,
+            "minValue": 2,
+            "maxValue": 5
+        },
+        "WebVMName": {
+            "type": "string"
+        },
+        "WebAvailabilitySetName": {
+            "type": "string"
+        },
+        "WebStorageAccountName": {
+            "type": "string"
+        },
+        "webStorageAccountType": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "WebVMSize": {
+            "type": "string"
+        },
+        "WEBNICName": {
+            "type": "string"
+        },
+        "adminUsername": {
+            "type": "securestring"
+        },
+        "adminPassword": {
+            "type": "securestring"
+        },
+        "appImagePublisher": {
+            "type": "string"
+        },
+        "appImageOffer": {
+            "type": "string"
+        },
+        "appImageSKU": {
+            "type": "string"
+        },
+        "vmContainerName": {
+            "type": "string"
+        },
+        "domainName": {
+            "type": "string"
+        },
+        "webModulesURL": {
+            "type": "string"
+        },
+        "webConfigurationFunction": {
+            "type": "string"
+        },
+        "subnetRef": {
+            "type": "string"
+        },
+        "webSubnetAddressRange": {
+            "type": "string"
+        },
+        "staticIPWEBStart": {
+            "type": "int"
+        },
+        "webNSGid": {
+            "type": "string"
+        },
+        "backupInfo": {
+            "type": "object"
+        },
+        "keyVaultName": {
+            "type": "string"
+        },
+        "vmEncryptionSettings": {
+            "type": "object"
+        },
+        "antimalwareInfo": {
+            "type": "object"
+        },
+        "workspaceName": {
+            "type": "string"
+        },
+        "AutomationAccountName": {
+            "type": "string"
+        },
+        "EnvironmentName": {
+            "type": "string"
+        },
+        "ResourceGroupName": {
+            "type": "string"
+        },
+        "AzureUserName": {
+            "type": "string"
+        },
+        "AzurePassword": {
+            "type": "securestring"
+        },
+        "SubscriptionId": {
+            "type": "string"
+        },
+        "provisioningHybridworkersUrl": {
+            "type": "string"
+        },
+        "omsWorkspaceName": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "domainJoinOptions": 3,
+        "domainJoinUserName": "[concat(parameters('domainName'), '\\', parameters('adminUsername'))]"
+    },
+    "resources": [
+        {
+              "comments": "Join domain - JsonADDomainExtension",
+              "apiVersion": "2015-06-15",
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "name": "[concat(parameters('WebVMName'), copyindex(), '/joindomain')]",
+              "tags": {
+                  "Project": "BluePrint"
+              },
+              "copy": {
+                  "name": "vmLoopJoin",
+                  "count": "[parameters('numberOfWebInstances')]"
+              },
+              "dependsOn": [
+              ],
+              "location": "[parameters('location')]",
+              "properties": {
+                  "publisher": "Microsoft.Compute",
+                  "type": "JsonADDomainExtension",
+                  "typeHandlerVersion": "1.3",
+                  "autoUpgradeMinorVersion": true,
+                  "settings": {
+                      "Name": "[parameters('domainName')]",
+                      "User": "[variables('domainJoinUserName')]",
+                      "Restart": "true",
+                      "Options": "[variables('domainJoinOptions')]",
+                      "OUPath": ""
+                  },
+                  "protectedSettings": {
+                      "Password": "[parameters('adminPassword')]"
+                  }
+
+              }
+          },
+          {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('WebVMName'), copyindex(), '/WebBaselineDSC')]",
+            "apiVersion": "2015-05-01-preview",
+            "tags": {
+                "Project": "BluePrint"
+            },
+            "copy": {
+                "name": "vmLoopBaseline",
+                "count": "[parameters('numberOfWebInstances')]"
+            },
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(parameters('WebVMName'),copyIndex()), 'joindomain')]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "ModulesUrl": "[parameters('webModulesURL')]",
+                    "ConfigurationFunction": "[parameters('webConfigurationFunction')]",
+                    "Properties": {
+                        "MachineName": "[concat(parameters('WebVMName'), copyindex())]",
+                        "ExclusionPath": "[parameters('antimalwareInfo').exclusionPath.web]",
+                        "ExclusionExtension": "[parameters('antimalwareInfo').exclusionExtension.web]",
+                        "ExclusionProcess": "[parameters('antimalwareInfo').exclusionProcess.web]",
+                        "RealTimeScanDirection": "[parameters('antimalwareInfo').realTimeScanDirection]",
+                        "RemediationScheduleDay": "[parameters('antimalwareInfo').remediationScheduleDay]",
+                        "ScanScheduleDay": "[parameters('antimalwareInfo').scanScheduleDay]",
+                        "DisableRealtimeMonitoring": "[parameters('antimalwareInfo').disableRealtimeMonitoring]"
+                    }
+                },
+                "protectedSettings": {
+                    "items": {
+                        "AzurePassword": "[parameters('AzurePassword')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[concat('ConfigurationVMEncryption-WEB-',copyIndex())]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "copy": {
+                "name": "encryptWebLoop",
+                "count": "[parameters('numberOfWebInstances')]"
+            },
+            "dependsOn": [
+                "vmLoopJoin",
+                "vmLoopBaseline"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vmName": {
+                        "value": "[concat(parameters('WebVMName'), copyindex())]"
+                    },
+                    "keyVaultName": {
+                        "value": "[parameters('keyVaultName')]"
+                    },
+                    "vmEncryptionSettings": {
+                        "value": "[parameters('vmEncryptionSettings')]"
+                    },
+                    "aadClientID": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[parameters('vmEncryptionSettings').keyVaultId]"
+                            },
+                            "secretName": "aadClientID"
+                        }
+                    },
+                    "aadClientSecret": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[parameters('vmEncryptionSettings').keyVaultId]"
+                            },
+                            "secretName": "aadClientSecret"
+                        }
+                    },
+                    "keyEncryptionKeyURL": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[parameters('vmEncryptionSettings').keyVaultId]"
+                            },
+                            "secretName": "keyEncryptionKeyURL"
+                        }
+                    },
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "AutomationAccountName": {
+                        "value": "[parameters('AutomationAccountName')]"
+                    },
+                    "EnvironmentName": {
+                        "value": "[parameters('EnvironmentName')]"
+                    },
+                    "ResourceGroupName": {
+                        "value": "[parameters('ResourceGroupName')]"
+                    },
+                    "AzureUserName": {
+                        "value": "[parameters('AzureUserName')]"
+                    },
+                    "AzurePassword": {
+                        "value": "[parameters('AzurePassword')]"
+                    },
+                    "SubscriptionId": {
+                        "value": "[parameters('SubscriptionId')]"
+                    },
+                    "provisioningHybridworkersUrl": {
+                        "value": "[parameters('provisioningHybridworkersUrl')]"
+                    },
+                    "MachinesToSetPasswordPolicy": {
+                        "value": ""
+                    }
+                }
+            }
+        },
+        {
+            "name": "[concat('Backup-WEB-',copyIndex())]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "copy": {
+                "name": "backupWebLoop",
+                "count": "[parameters('numberOfWebInstances')]"
+            },
+            "dependsOn": [
+                "encryptWebLoop"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('backupInfo').backupTemplateUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "backupInfo": {
+                        "value": "[parameters('backupInfo')]"
+                    },
+                    "vmName": {
+                        "value": "[concat(parameters('WebVMName'), copyindex())]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+
+    }
+}

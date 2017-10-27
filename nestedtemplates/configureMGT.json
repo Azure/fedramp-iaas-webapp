@@ -1,0 +1,265 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "mgtVMName": {
+        "type": "string",
+        "metadata": {
+          "description": ""
+        }
+    },
+    "location": {
+        "type": "string"
+    },
+    "domainName": {
+        "type": "string",
+        "metadata": {
+          "description": "The FQDN of the AD domain"
+        }
+    },
+    "adminUsername": {
+        "type": "securestring",
+        "metadata": {
+          "description": "Username of the account on the domain"
+        }
+    },
+    "adminPassword": {
+        "type": "securestring",
+        "metadata": {
+          "description": "Password of the account on the domain"
+        }
+    },
+    "mgtModulesURL": {
+        "type": "string"
+    },
+    "antimalwareInfo": {
+        "type": "object"
+    },
+    "mgtConfigurationFunction": {
+        "type": "string"
+    },
+    "azurePassword": {
+        "type": "securestring"
+    },
+    "vmEncryptionSettings": {
+        "type": "object"
+    },
+    "antimalwareInfo": {
+        "type": "object"
+    },
+    "workspaceName": {
+        "type": "string"
+    },
+    "AutomationAccountName": {
+        "type": "string"
+    },
+    "EnvironmentName": {
+        "type": "string"
+    },
+    "ResourceGroupName": {
+        "type": "string"
+    },
+    "AzureUserName": {
+        "type": "string"
+    },
+    "AzurePassword": {
+        "type": "securestring"
+    },
+    "SubscriptionId": {
+        "type": "string"
+    },
+    "backupInfo": {
+        "type": "object"
+    },
+    "keyVaultName": {
+        "type": "string"
+    },
+    "provisioningHybridworkersUrl": {
+        "type": "string"
+    }
+  },
+  "variables": {
+    "vmNames": {
+        "VMs": [
+            {
+                "Name": "[parameters('mgtVMName')]"
+            }
+        ]
+    }
+  },
+  "resources": [
+    {
+        "comments": "Join domain - JsonADDomainExtension",
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "name": "[concat(parameters('mgtVMName'),'/joindomain')]",
+        "tags": {
+            "Project": "BluePrint"
+        },
+        "dependsOn": [
+
+        ],
+        "location": "[parameters('location')]",
+        "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "JsonADDomainExtension",
+            "typeHandlerVersion": "1.3",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+                "Name": "[parameters('domainName')]",
+                "User": "[concat(parameters('domainName'), '\\', parameters('adminUsername'))]",
+                "Restart": "true",
+                "Options": 3,
+                "OUPath": ""
+            },
+            "protectedSettings": {
+                "Password": "[parameters('adminPassword')]"
+            }
+        }
+    },
+    {
+        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "name": "[concat(parameters('mgtVMName'),'/MGTBaselineDSC')]",
+        "apiVersion": "2015-06-15",
+        "location": "[parameters('location')]",
+        "tags": {
+            "Project": "BluePrint"
+        },
+        "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('mgtVMName'), 'joindomain')]"
+        ],
+        "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.19",
+            "autoUpgradeMinorVersion": false,
+            "settings": {
+                "modulesUrl": "[parameters('mgtModulesURL')]",
+                "configurationFunction": "[parameters('mgtConfigurationFunction')]",
+                "properties": {
+                    "ExclusionPath": "[parameters('antimalwareInfo').exclusionPath.mgt]",
+                    "ExclusionExtension": "[parameters('antimalwareInfo').exclusionExtension.mgt]",
+                    "ExclusionProcess": "[parameters('antimalwareInfo').exclusionProcess.mgt]",
+                    "RealTimeScanDirection": "[parameters('antimalwareInfo').realTimeScanDirection]",
+                    "RemediationScheduleDay": "[parameters('antimalwareInfo').remediationScheduleDay]",
+                    "ScanScheduleDay": "[parameters('antimalwareInfo').scanScheduleDay]",
+                    "DisableRealtimeMonitoring": "[parameters('antimalwareInfo').disableRealtimeMonitoring]"
+                }
+            },
+            "protectedSettings": {
+                "items": {
+                    "AzurePassword": "[parameters('azurePassword')]"
+                }
+            }
+        }
+    },
+    {
+        "name": "[concat('ConfigurationVMEncryption-', variables('vmNames').VMs[copyIndex()].Name)]",
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2015-01-01",
+        "dependsOn": [
+              "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('mgtVMName'), 'MGTBaselineDSC')]"
+        ],
+        "copy": {
+            "name": "encryptMGTLoop",
+            "count": "[length(variables('vmNames').VMs)]"
+        },
+        "properties": {
+            "mode": "Incremental",
+            "templateLink": {
+                "uri": "[parameters('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
+                "contentVersion": "1.0.0.0"
+            },
+            "parameters": {
+                "vmName": {
+                    "value": "[variables('vmNames').VMs[copyIndex()].Name]"
+                },
+                "keyVaultName": {
+                    "value": "[parameters('keyVaultName')]"
+                },
+                "vmEncryptionSettings": {
+                    "value": "[parameters('vmEncryptionSettings')]"
+                },
+                "aadClientID": {
+                    "reference": {
+                        "keyVault": {
+                            "id": "[parameters('vmEncryptionSettings').keyVaultId]"
+                        },
+                        "secretName": "aadClientID"
+                    }
+                },
+                "aadClientSecret": {
+                    "reference": {
+                        "keyVault": {
+                            "id": "[parameters('vmEncryptionSettings').keyVaultId]"
+                        },
+                        "secretName": "aadClientSecret"
+                    }
+                },
+                "keyEncryptionKeyURL": {
+                    "reference": {
+                        "keyVault": {
+                            "id": "[parameters('vmEncryptionSettings').keyVaultId]"
+                        },
+                        "secretName": "keyEncryptionKeyURL"
+                    }
+                },
+                "workspaceName": {
+                    "value": "[parameters('workspaceName')]"
+                },
+                "AutomationAccountName": {
+                    "value": "[parameters('AutomationAccountName')]"
+                },
+                "EnvironmentName": {
+                    "value": "[parameters('EnvironmentName')]"
+                },
+                "ResourceGroupName": {
+                    "value": "[parameters('ResourceGroupName')]"
+                },
+                "AzureUserName": {
+                    "value": "[parameters('AzureUserName')]"
+                },
+                "AzurePassword": {
+                    "value": "[parameters('AzurePassword')]"
+                },
+                "SubscriptionId": {
+                    "value": "[parameters('SubscriptionId')]"
+                },
+                "provisioningHybridworkersUrl": {
+                    "value": "[parameters('provisioningHybridworkersUrl')]"
+                },
+                "MachinesToSetPasswordPolicy": {
+                    "value": ""
+                }
+            }
+        }
+    },
+    {
+        "name": "[concat('BackupVM-',variables('vmNames').VMs[copyIndex()].Name)]",
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2015-01-01",
+        "copy": {
+            "name": "backupMGTLoop",
+            "count": "[length(variables('vmNames').VMs)]"
+        },
+        "dependsOn": [
+            "encryptMGTLoop"
+        ],
+        "properties": {
+            "mode": "Incremental",
+            "templateLink": {
+                "uri": "[parameters('backupInfo').backupTemplateUrl]",
+                "contentVersion": "1.0.0.0"
+            },
+            "parameters": {
+                "backupInfo": {
+                    "value": "[parameters('backupInfo')]"
+                },
+                "vmName": {
+                    "value": "[variables('vmNames').VMs[copyIndex()].Name]"
+                }
+            }
+        }
+    }
+  ]
+}

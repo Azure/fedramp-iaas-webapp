@@ -1,0 +1,262 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "addressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Address prefix for the Virtual Network"
+      }
+    },
+    "virtualNetworkName": {
+      "type": "string",
+      "metadata": {
+        "description": "Address prefix for the Virtual Network"
+      }
+    },
+    "vmLocation": {
+        "type": "string"
+    },
+    "subnetPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet prefix"
+      }
+    },
+    "skuName": {
+      "type": "string"
+    },
+    "capacity": {
+      "type": "int",
+      "minValue": 1,
+      "maxValue": 10,
+      "defaultValue": 2,
+      "metadata": {
+        "description": "Number of instances"
+      }
+    },
+    "backendIpsForPathRuleWEB": {
+      "type": "array",
+      "metadata": {
+        "description": "IP Address of Backend Server for Path Rule 1 match"
+      }
+    },
+    "pathMatch1": {
+      "type": "string",
+      "metadata": {
+        "description": "Path match string for Path Rule 1"
+      }
+    },
+    "subnetName": {
+      "type": "string"
+    },
+    "wafEnabled": {
+      "type": "bool",
+      "metadata": {
+        "description": "WAF Enabled"
+      }
+    },
+    "wafMode": {
+      "type": "string",
+      "metadata": {
+        "description": "WAF Mode"
+      }
+    },
+    "wafRuleSetType": {
+      "type": "string",
+      "metadata": {
+        "description": "WAF Rule Set Type"
+      }
+    },
+    "wafRuleSetVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "WAF Rule Set Version"
+      }
+    },
+    "certData": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Cert 64bit encoded .pfx file for SSL"
+      }
+    },
+    "certPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Cert 64bit encoded .pfx file for SSL"
+      }
+    }
+  },
+  "variables": {
+    "applicationGatewayName": "applicationGateway1",
+    "publicIPAddressName": "publicIpag",
+    "virtualNetworkName": "[parameters('virtualNetworkName')]",
+    "subnetName": "appGatewaySubnet",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+    "subnetRef": "[concat(variables('vnetID'),'/subnets/', parameters('subnetName'))]",
+    "publicIPRef": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
+    "applicationGatewayID": "[resourceId('Microsoft.Network/applicationGateways',variables('applicationGatewayName'))]",
+    "apiVersion": "2017-03-01"
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-03-30",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddressName')]",
+      "location": "[parameters('vmLocation')]",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "name": "[variables('applicationGatewayName')]",
+      "type": "Microsoft.Network/applicationGateways",
+      "location": "[parameters('vmLocation')]",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
+      ],
+      "properties": {
+        "sku": {
+          "name": "[parameters('skuName')]",
+          "tier": "WAF",
+          "capacity": "[parameters('capacity')]"
+        },
+        "sslCertificates": [
+          {
+            "name": "appGatewaySslCert",
+            "properties": {
+              "data": "[parameters('certData')]",
+              "password": "[parameters('certPassword')]"
+            }
+          }
+        ],
+        "gatewayIPConfigurations": [
+          {
+            "name": "appGatewayIpConfig",
+            "properties": {
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ],
+        "frontendIPConfigurations": [
+          {
+            "name": "appGatewayFrontendPublicIP",
+            "properties": {
+              "PublicIPAddress": {
+                "id": "[variables('publicIPRef')]"
+              }
+            }
+          }
+        ],
+        "frontendPorts": [
+          {
+            "name": "appGatewayFrontendPort443",
+            "properties": {
+              "Port": 443
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "appGatewayBackendPoolDefault",
+            "properties": {
+              "BackendAddresses": "[parameters('backendIpsForPathRuleWEB')]"
+            }
+          },
+          {
+            "name": "appGatewayBackendPool1",
+            "properties": {
+              "BackendAddresses": "[parameters('backendIpsForPathRuleWEB')]"
+            }
+          }
+        ],
+        "backendHttpSettingsCollection": [
+          {
+            "name": "appGatewayBackendHttpSettings",
+            "properties": {
+              "Port": 80,
+              "Protocol": "Http",
+              "CookieBasedAffinity": "Disabled"
+            }
+          }
+        ],
+        "httpListeners": [
+          {
+            "name": "appGatewayHttpListener",
+            "properties": {
+              "FrontendIPConfiguration": {
+                "Id": "[concat(variables('applicationGatewayID'), '/frontendIPConfigurations/appGatewayFrontendPublicIP')]"
+              },
+              "FrontendPort": {
+                "Id": "[concat(variables('applicationGatewayID'), '/frontendPorts/appGatewayFrontendPort443')]"
+              },
+              "Protocol": "Https",
+              "SslCertificate": {
+                "Id": "[concat(variables('applicationGatewayID'), '/sslCertificates/appGatewaySslCert')]"
+              }
+            }
+          }
+        ],
+        "urlPathMaps": [
+          {
+            "name": "urlPathMap1",
+            "properties": {
+              "defaultBackendAddressPool": {
+                "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appGatewayBackendPoolDefault')]"
+              },
+              "defaultBackendHttpSettings": {
+                "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+              },
+              "pathRules": [
+                {
+                  "name": "pathRule1",
+                  "properties": {
+                    "paths": [
+                      "[parameters('pathMatch1')]"
+                    ],
+                    "backendAddressPool": {
+                      "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appGatewayBackendPool1')]"
+                    },
+                    "backendHttpSettings": {
+                      "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "requestRoutingRules": [
+          {
+            "Name": "rule1",
+            "properties": {
+              "RuleType": "PathBasedRouting",
+              "httpListener": {
+                "id": "[concat(variables('applicationGatewayID'), '/httpListeners/appGatewayHttpListener')]"
+              },
+              "urlPathMap": {
+                "id": "[concat(variables('applicationGatewayID'), '/urlPathMaps/urlPathMap1')]"
+              }
+            }
+          }
+        ],
+        "webApplicationFirewallConfiguration": {
+          "enabled": "[parameters('wafEnabled')]",
+          "firewallMode": "[parameters('wafMode')]",
+          "ruleSetType": "[parameters('wafRuleSetType')]",
+          "ruleSetVersion": "[parameters('wafRuleSetVersion')]",
+          "disabledRuleGroups": [ ]
+        }
+      }
+    }
+  ]
+}

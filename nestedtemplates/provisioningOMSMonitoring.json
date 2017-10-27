@@ -1,0 +1,109 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vmName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "workspaceName": {
+            "type": "string"
+        },
+        "ResourceGroupName": {
+            "type": "string"
+        },
+        "AutomationAccountName": {
+            "type": "string"
+        },
+        "AzureUserName": {
+            "type": "string"
+        },
+        "AzurePassword": {
+            "type": "securestring"
+        },
+        "SubscriptionId": {
+            "type": "string"
+        },
+        "EnvironmentName": {
+            "type": "string"
+        },
+        "customScriptBaselineUrl": {
+            "type": "string"
+        },
+        "MachinesToSetPasswordPolicy": {
+            "type": "string"
+        },
+        "SQLPrimaryName": {
+            "type": "string"
+        },
+        "SQLSecondaryName": {
+            "type": "string"
+        },
+        "domainName": {
+            "type": "string"
+        },
+        "AlwaysOnAvailabilityGroupName": {
+            "type": "string"
+        },
+        "secondarySqlCustomCMDUrl": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "scriptFolder": ".",
+        "scriptFileName": "customScriptBaseline.ps1",
+        "scriptParameters": "[concat('-MachineName \"', parameters('vmName'), '-isIISMachine \"', parameters('isIISMachine'), '\" -ResourceGroupName \"', parameters('ResourceGroupName'), '\" -AutomationAccountName \"', parameters('AutomationAccountName'), '\" -WorkspaceName \"', parameters('workspaceName'), '\" -AzureUserName \"', parameters('AzureUserName'), '\" -AzurePassword \"', parameters('AzurePassword'),'\" -SubscriptionId \"', parameters('SubscriptionId'), '\" -EnvironmentName \"', parameters('EnvironmentName'), '\" -MachinesToSetPasswordPolicy \"', parameters('MachinesToSetPasswordPolicy'), '\" -SQLPrimaryName \"', parameters('SQLPrimaryName'), '\"  -SQLSecondaryName \"', parameters('SQLSecondaryName'), '\" -domainName \"', parameters('domainName'), '\"  -AlwaysOnAvailabilityGroupName \"', parameters('AlwaysOnAvailabilityGroupName'), '\"' )]"
+    },
+    "resources": [
+      {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('vmName'), '/EnterpriseCloudMonitoring')]",
+            "apiVersion": "2016-03-30",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "properties": {
+                "publisher": "Microsoft.EnterpriseCloud.Monitoring",
+                "type": "MicrosoftMonitoringAgent",
+                "typeHandlerVersion": "1.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2015-03-20').customerId]"
+                },
+                "protectedSettings": {
+                    "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2015-03-20').primarySharedKey]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2015-06-15",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('vmName'), '/customScriptBaseline')]",
+            "dependsOn": [
+              "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'),'EnterpriseCloudMonitoring')]"
+            ],
+            "location": "[parameters('location')]",
+            "tags": {
+                "displayName": "customScriptBaseline",
+                "Project": "BluePrint"
+            },
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('customScriptBaselineUrl')]",
+                        "[parameters('secondarySqlCustomCMDUrl')]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'))]"
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

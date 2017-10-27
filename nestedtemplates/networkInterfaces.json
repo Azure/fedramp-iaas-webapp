@@ -1,0 +1,260 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string"
+    },
+    "numberOfWebInstances": {
+        "type": "int",
+        "defaultValue": 2,
+        "minValue": 2,
+        "maxValue": 5
+    },
+    "webNICName": {
+        "type": "string"
+    },
+    "subnetRef": {
+        "type": "string"
+    },
+    "webSubnetAddressRange": {
+        "type": "string"
+    },
+    "staticIPWEBStart": {
+        "type": "int"
+    },
+    "webNSGid": {
+        "type": "string"
+    },
+    "adPDCNicName": {
+      "type": "string"
+    },
+    "adPDCNICIPAddress": {
+      "type": "string"
+    },
+    "dcSubnetRef": {
+      "type": "string"
+    },
+    "adBEAddressPoolID": {
+      "type": "string"
+    },
+    "adRDPNATRuleID": {
+      "type": "string"
+    },
+    "adBDCNicName": {
+      "type": "string"
+    },
+    "adBDCNICIPAddress": {
+      "type": "string"
+    },
+    "sql0NicName": {
+      "type": "string"
+    },
+    "sql1NicName": {
+      "type": "string"
+    },
+    "sqlSubnetRef": {
+      "type": "string"
+    },
+    "sqlBEAddressPoolID": {
+      "type": "string"
+    },
+    "sqlwNicName": {
+      "type": "string"
+    },
+    "sql0IPAddress": {
+      "type":"string"
+    },
+    "sql1IPAddress": {
+      "type":"string"
+    },
+    "sqlwIPAddress": {
+      "type":"string"
+    },
+    "sqlNSGid": {
+      "type": "string"
+    },
+    "dcNSGid": {
+      "type": "string"
+    },
+    "mgtNicName": {
+      "type": "string"
+    },
+    "mgtIPAddress": {
+      "type": "string"
+    },
+    "mgtNSGid": {
+      "type": "string"
+    },
+    "mgtSubnetRef": {
+      "type": "string"
+    },
+    "mgtPublicIPName": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[parameters('mgtPublicIPName')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "name": "[parameters('sql0NicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[parameters('location')]",
+      "apiVersion": "2015-06-15",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "subnet": {
+                "id": "[parameters('sqlSubnetRef')]"
+              },
+              "privateIPAddress": "[parameters('sql0IPAddress')]",
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[parameters('sqlBEAddressPoolID')]"
+                }
+              ]
+            }
+          }
+        ],
+        "networkSecurityGroup": {
+          "id": "[parameters('sqlNSGid')]"
+        }
+      }
+    },
+    {
+      "name": "[parameters('sql1NicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[parameters('location')]",
+      "apiVersion": "2015-06-15",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "subnet": {
+                "id": "[parameters('sqlSubnetRef')]"
+              },
+              "privateIPAddress": "[parameters('sql1IPAddress')]",
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[parameters('sqlBEAddressPoolID')]"
+                }
+              ]
+            }
+          }
+        ],
+        "networkSecurityGroup": {
+          "id": "[parameters('sqlNSGid')]"
+        }
+      }
+    },
+    {
+      "name": "[parameters('sqlwNicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[parameters('location')]",
+      "apiVersion": "2015-06-15",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[parameters('sqlwIPAddress')]",
+              "subnet": {
+                "id": "[parameters('sqlSubnetRef')]"
+              }
+            }
+          }
+        ],
+        "networkSecurityGroup": {
+          "id": "[parameters('sqlNSGid')]"
+        }
+      }
+    },
+    {
+      "name": "[parameters('mgtNicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses/', parameters('mgtPublicIPName'))]"
+      ],
+      "apiVersion": "2015-06-15",
+      "tags": {
+        "Project": "BluePrint"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('mgtPublicIPName'))]"
+              },
+              "privateIPAddress": "[parameters('mgtIPAddress')]",
+              "subnet": {
+                "id": "[parameters('mgtSubnetRef')]"
+              }
+            }
+          }
+        ],
+        "networkSecurityGroup": {
+            "id": "[parameters('mgtNSGid')]"
+        }
+      }
+    },
+    {
+        "apiVersion": "2015-05-01-preview",
+        "type": "Microsoft.Network/networkInterfaces",
+        "name": "[concat(parameters('webNICName'), copyindex())]",
+        "location": "[parameters('location')]",
+        "tags": {
+            "Project": "BluePrint"
+        },
+        "copy": {
+            "name": "nicLoopDEL",
+            "count": "[parameters('numberOfWebInstances')]"
+        },
+        "dependsOn": [],
+        "properties": {
+            "ipConfigurations": [{
+                "name": "ipconfig1",
+                "properties": {
+                    "privateIPAllocationMethod": "Static",
+                    "privateIPAddress": "[concat(split(parameters('webSubnetAddressRange'), '0/')[0], add(copyindex(), parameters('staticIPWEBStart')))]",
+                    "subnet": {
+                        "id": "[parameters('subnetRef')]"
+                    }
+                }
+            }],
+            "networkSecurityGroup": {
+                "id": "[parameters('webNSGid')]"
+            }
+        }
+    }
+  ],
+  "outputs": {}
+}

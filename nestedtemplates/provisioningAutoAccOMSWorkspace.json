@@ -1,0 +1,941 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "omsWorkspaceName": {
+            "type": "string"
+        },
+        "omsWorkspaceRegion": {
+            "type": "string"
+        },
+        "serviceTier": {
+            "type": "string"
+        },
+        "dataRetention": {
+            "type": "int"
+        },
+        "omsAutomationAccountName": {
+            "type": "string"
+        },
+        "artifactsLocation": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "batch1": {
+            "solutions": [{
+                    "name": "[concat('Updates', '(', parameters('omsWorkspaceName'), ')')]",
+                    "marketplaceName": "Updates"
+                },
+                {
+                    "name": "[concat('Security', '(', parameters('omsWorkspaceName'), ')')]",
+                    "marketplaceName": "Security"
+                },
+                {
+                    "Name": "[concat('AntiMalware', '(', parameters('omsWorkspaceName'), ')')]",
+                    "marketplaceName": "AntiMalware"
+                },
+                {
+                    "name": "[concat('AgentHealthAssessment', '(', parameters('omsWorkspaceName'), ')')]",
+                    "marketplaceName": "AgentHealthAssessment"
+                },
+                {
+                    "name": "[concat('SQLAssessment', '(', parameters('omsWorkspaceName'), ')')]",
+                    "marketplaceName": "SQLAssessment"
+                },
+                {
+                    "name": "[concat('ChangeTracking', '(', parameters('omsWorkspaceName'), ')')]",
+                    "marketplaceName": "ChangeTracking"
+                },
+
+                {
+                    "name": "[concat('AzureActivity', '(', parameters('omsWorkspaceName'), ')')]",
+                    "marketplaceName": "AzureActivity"
+                },
+                {
+                    "name": "[concat('AzureAutomation', '(', parameters('omsWorkspaceName'), ')')]",
+                    "marketplaceName": "AzureAutomation"
+                },
+                {
+                    "name": "[concat('ADAssessment', '(', parameters('omsWorkspaceName'), ')')]",
+                    "marketplaceName": "ADAssessment"
+                }
+            ]
+        },
+        "assets": {
+            "aaVariables": {
+                "OMSWorkspaceId": {
+                    "name": "OMSWorkspaceId",
+                    "description": "Workspace ID for the Log Analytics workspace"
+                },
+                "OMSWorkspaceKey": {
+                    "name": "OMSWorkspaceKey",
+                    "description": "Primary key for the Log Analytics workspace"
+                },
+                "AzureSubscriptionId": {
+                    "name": "AzureSubscriptionId",
+                    "description": "Azure subscription Id"
+                },
+                "HybridWorkerGroupName": {
+                    "name": "ComputerIdList",
+                    "description": "Hybrid Worker Group Name",
+                    "value": " "
+                }
+            }
+        },
+        "asrScripts": {
+            "runbooks": [{
+                "name": "AutomationRunbooks",
+                "url": "[concat(parameters('artifactsLocation'), '/ConfigAutomationRunbooks.ps1')]",
+                "version": "1.0.0.0",
+                "type": "PowerShellWorkflow",
+                "description": "ASR Runbook to configure Schedule as part of a recovery plan"
+            }],
+            "modules": [{
+                    "name": "AzureRm.Compute",
+                    "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.compute.2.8.0.nupkg"
+                },
+                {
+                    "name": "AzureRm.Resources",
+                    "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.resources.3.7.0.nupkg"
+                },
+                {
+                    "name": "AzureRm.Network",
+                    "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.network.3.6.0.nupkg"
+                },
+                {
+                    "name": "AzureRm.Automation",
+                    "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.automation.1.0.3.nupkg"
+                }
+            ]
+        },
+        "azureRmProfile": {
+            "name": "AzureRm.Profile",
+            "url": "https://devopsgallerystorage.blob.core.windows.net/packages/azurerm.profile.2.7.0.nupkg"
+        }
+
+    },
+    "resources": [{
+            "name": "[parameters('omsAutomationAccountName')]",
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2015-10-31",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "sku": {
+                    "name": "OMS"
+                }
+            },
+            "resources": [{
+                    "name": "[variables('assets').aaVariables.OMSWorkspaceId.name]",
+                    "type": "variables",
+                    "apiVersion": "2015-10-31",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "description": "[variables('assets').aaVariables.OMSWorkspaceId.description]",
+                        "value": "[concat('\"',reference(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName')), '2015-11-01-preview').customerId,'\"')]"
+                    }
+                },
+                {
+                    "name": "[variables('assets').aaVariables.OMSWorkspaceKey.name]",
+                    "type": "variables",
+                    "apiVersion": "2015-10-31",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "description": "Remote file for the passphrase",
+                        "value": "[concat('\"',listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName')), '2015-11-01-preview').primarySharedKey,'\"')]"
+                    }
+                },
+                {
+                    "name": "[variables('assets').aaVariables.AzureSubscriptionId.name]",
+                    "type": "variables",
+                    "apiVersion": "2015-10-31",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "description": "[variables('assets').aaVariables.AzureSubscriptionId.description]",
+                        "value": "[concat('\"',subscription().subscriptionId,'\"')]"
+                    }
+                },
+                {
+                    "name": "[variables('assets').aaVariables.HybridWorkerGroupName.name]",
+                    "type": "variables",
+                    "apiVersion": "2015-10-31",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "description": "[variables('assets').aaVariables.HybridWorkerGroupName.description]",
+                        "value": "[concat('\"',variables('assets').aaVariables.HybridWorkerGroupName.value,'\"')]"
+                    }
+                }
+
+
+            ]
+        },
+        {
+            "apiVersion": "2015-10-31",
+            "type": "Microsoft.Automation/automationAccounts/modules",
+            "name": "[concat(parameters('omsAutomationAccountName'), '/', variables('azureRmProfile').name)]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+            ],
+            "properties": {
+                "contentLink": {
+                    "uri": "[variables('azureRmProfile').url]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2015-10-31",
+            "type": "Microsoft.Automation/automationAccounts/modules",
+            "name": "[concat(parameters('omsAutomationAccountName'), '/', variables('asrScripts').modules[copyIndex()].Name)]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]",
+                "[resourceId('Microsoft.Automation/automationAccounts/modules/', parameters('omsAutomationAccountName'), variables('azureRmProfile').name)]"
+            ],
+            "copy": {
+                "name": "modulesLoop",
+                "count": "[length(variables('asrScripts').modules)]"
+            },
+            "properties": {
+                "contentLink": {
+                    "uri": "[variables('asrScripts').modules[copyIndex()].url]"
+                }
+            }
+        },
+        /*{
+            "apiVersion": "2015-10-31",
+            "type": "Microsoft.Automation/automationAccounts/runbooks",
+            "name": "[concat(parameters('omsAutomationAccountName'), '/', variables('asrScripts').runbooks[copyIndex()].Name)]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+            ],
+            "copy": {
+                "name": "runbooksLoop",
+                "count": "[length(variables('asrScripts').runbooks)]"
+            },
+            "properties": {
+                "description": "[variables('asrScripts').runbooks[copyIndex()].description]",
+                "runbookType": "[variables('asrScripts').runbooks[copyIndex()].type]",
+                "logProgress": false,
+                "logVerbose": true,
+                "publishContentLink": {
+                    "uri": "[variables('asrScripts').runbooks[copyIndex()].url]",
+                    "version": "[variables('asrScripts').runbooks[copyIndex()].version]"
+                }
+            }
+        },*/
+        {
+            "apiVersion": "2015-11-01-preview",
+            "location": "[parameters('omsWorkspaceRegion')]",
+            "name": "[parameters('omsWorkspaceName')]",
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "comments": "Log Analytics workspace",
+            "dependsOn": [
+                "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+            ],
+            "properties": {
+                "sku": {
+                    "name": "[parameters('serviceTier')]"
+                },
+                "retention": "[parameters('dataRetention')]"
+            },
+            "resources": [{
+                    "name": "AzureActivityLog",
+                    "type": "datasources",
+                    "apiVersion": "2015-11-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "AzureActivityLog",
+                    "properties": {
+                        "linkedResourceId": "[concat(subscription().id, '/providers/Microsoft.Insights/eventTypes/management')]"
+                    }
+                },
+                {
+                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'SoftwareUpdateFailed1')]",
+                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+                    "apiVersion": "2015-11-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "ETag": "*",
+                        "query": "Type=Event EventID=20 Source=\"Microsoft-Windows-WindowsUpdateClient\" EventLog=\"System\" TimeGenerated>NOW-24HOURS | Measure Count() By Computer",
+                        "displayName": "A Software Update Installation Failed",
+                        "category": "Software Updates"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'HyperV1')]",
+                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "properties": {
+                        "ETag": "*",
+                        "category": "HyperV",
+                        "displayName": "VMs created last 24 hours",
+                        "query": "EventLog=\"Microsoft-Windows-Hyper-V-VMMS-Admin\" EventLevelName=information EventID=13002 TimeGenerated>NOW-1DAY "
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'HyperV2')]",
+                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "properties": {
+                        "ETag": "*",
+                        "category": "HyperV",
+                        "displayName": "VMs deleted last 24 hours",
+                        "Query": "EventLog=\"Microsoft-Windows-Hyper-V-VMMS-Admin\" EventLevelName=information EventID=13003 TimeGenerated>NOW-1DAY"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'HyperV3')]",
+                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "properties": {
+                        "ETag": "*",
+                        "category": "HyperV",
+                        "displayName": "Replication throughput per VM",
+                        "query": "Type:Perf ObjectName=\"Hyper-V Azure Replication Agent\" CounterName=\"Replication Throughput\" TimeGenerated>NOW-8HOURS | measure  avg(CounterValue) by InstanceName  interval 15minutes"
+                    }
+                },
+                {
+                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'SoftwareUpdateFailed2')]",
+                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+                    "apiVersion": "2015-11-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "ETag": "*",
+                        "query": "Type=Event EventID=20 Source=\"Microsoft-Windows-WindowsUpdateClient\" EventLog=\"System\" TimeGenerated>NOW-168HOURS",
+                        "displayName": "A Software Update Installation Failed",
+                        "category": "Software Updates"
+                    }
+                },
+                {
+                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'Network1')]",
+                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+                    "apiVersion": "2015-11-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "ETag": "*",
+                        "query": "Type=Event EventID=4202 Source=\"TCPIP\" EventLog=\"System\" TimeGenerated>NOW-24HOURS | Measure Count() By Computer",
+                        "displayName": "A Network adatper was disconnected from the network",
+                        "category": "Networking"
+                    }
+                },
+                {
+                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'Network2')]",
+                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+                    "apiVersion": "2015-11-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "ETag": "*",
+                        "query": "Type=Event EventID=4198 OR EventID=4199 Source=\"TCPIP\" EventLog=\"System\" TimeGenerated>NOW-24HOURS",
+                        "displayName": "Duplicate IP address has been detected",
+                        "category": "Networking"
+                    }
+                },
+                {
+                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'NTFS1')]",
+                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+                    "apiVersion": "2015-11-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "ETag": "*",
+                        "query": "Type=Event EventID=98 Source=\"Microsoft-Windows-Ntfs\" EventLog=\"System\" TimeGenerated>NOW-24HOURS | Measure Count() By Computer",
+                        "displayName": "NTFS File System Corruption",
+                        "category": "NTFS"
+                    }
+                },
+                {
+                    "name": "[concat(parameters('omsWorkspaceName'), '/', 'NTFS2')]",
+                    "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+                    "apiVersion": "2015-11-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "ETag": "*",
+                        "query": "Type=Event EventID=40 OR EventID=36� Source=\"DISK\" EventLog=\"System\" TimeGenerated>NOW-24HOURS | Measure Count() By Compute",
+                        "displayName": "NTFS Quouta treshold limit reached",
+                        "category": "NTFS"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "LogicalDisk1",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "LogicalDisk",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Avg Disk sec/Read"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "LogicalDisk2",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "LogicalDisk",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Avg Disk sec/Write"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "LogicalDisk3",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "LogicalDisk",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Current Disk Queue Lenght"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "LogicalDisk4",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "LogicalDisk",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Disk Reads/sec"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "LogicalDisk5",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "LogicalDisk",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Disk Transfers/sec"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "LogicalDisk6",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "LogicalDisk",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Disk Writes/sec"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "LogicalDisk7",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "LogicalDisk",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Free Megabytes"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "LogicalDisk8",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "LogicalDisk",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "% Free Space"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Memory1",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Memory",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Available MBytes"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Memory2",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Memory",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "% Committed Bytes In Use"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Network1",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Network Adapter",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Bytes Received/sec"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Network2",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Network Adapter",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Bytes Sent/sec"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Network3",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Network Adapter",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Bytes Total/sec"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "CPU1",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Processor",
+                        "instanceName": "_Total",
+                        "intervalSeconds": 10,
+                        "counterName": "% Processor Time"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "CPU2",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "System",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Processor Queue Lenght"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "System",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsEvent",
+                    "properties": {
+                        "eventLogName": "System",
+                        "eventTypes": [{
+                                "eventType": "Error"
+                            },
+                            {
+                                "eventType": "Warning"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Application",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsEvent",
+                    "properties": {
+                        "eventLogName": "Application",
+                        "eventTypes": [{
+                                "eventType": "Error"
+                            },
+                            {
+                                "eventType": "Warning"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Microsoft-Windows-Hyper-V-VMMS-Admin",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsEvent",
+                    "properties": {
+                        "eventLogName": "Microsoft-Windows-Hyper-V-VMMS-Admin",
+                        "eventTypes": [{
+                                "eventType": "Error"
+                            },
+                            {
+                                "eventType": "Warning"
+                            },
+                            {
+                                "eventType": "Information"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Hyper-VAzureReplicationAgent1",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Hyper-V Azure Replication Agent",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Average Replication Size"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Hyper-VAzureReplicationAgent2",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Hyper-V Azure Replication Agent",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Replication Throughput"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Hyper-VAzureReplicationAgent3",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Hyper-V Azure Replication Agent",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Network Send Throughput"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Hyper-VAzureReplicationAgent4",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Hyper-V Azure Replication Agent",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Replication Count"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Hyper-VAzureReplicationAgent5",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Hyper-V Azure Replication Agent",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Network Bytes Sent"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Hyper-VAzureReplicationAgent6",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Hyper-V Azure Replication Agent",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Last Replication Size"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Hyper-VAzureReplicationAgent7",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "WindowsPerformanceCounter",
+                    "properties": {
+                        "objectName": "Hyper-V Azure Replication Agent",
+                        "instanceName": "*",
+                        "intervalSeconds": 10,
+                        "counterName": "Resynchronized Bytes"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Linux",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "LinuxPerformanceObject",
+                    "properties": {
+                        "performanceCounters": [{
+                                "counterName": "% Used Inodes"
+                            },
+                            {
+                                "counterName": "Free Megabytes"
+                            },
+                            {
+                                "counterName": "% Used Space"
+                            },
+                            {
+                                "counterName": "Disk Transfers/sec"
+                            },
+                            {
+                                "counterName": "Disk Reads/sec"
+                            },
+                            {
+                                "counterName": "Disk Writes/sec"
+                            }
+                        ],
+                        "objectName": "Logical Disk",
+                        "instanceName": "*",
+                        "intervalSeconds": 10
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "LinuxPerfCollection",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "LinuxPerformanceCollection",
+                    "properties": {
+                        "state": "Enabled"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "IISLog",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "IISLogs",
+                    "properties": {
+                        "state": "OnPremiseEnabled"
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "Syslog",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "LinuxSyslog",
+                    "properties": {
+                        "syslogName": "kern",
+                        "syslogSeverities": [{
+                                "severity": "emerg"
+                            },
+                            {
+                                "severity": "alert"
+                            },
+                            {
+                                "severity": "crit"
+                            },
+                            {
+                                "severity": "err"
+                            },
+                            {
+                                "severity": "warning"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "apiVersion": "2015-11-01-preview",
+                    "type": "datasources",
+                    "name": "SyslogCollection",
+                    "dependsOn": [
+                        "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]"
+                    ],
+                    "kind": "LinuxSyslogCollection",
+                    "properties": {
+                        "state": "Enabled"
+                    }
+                }
+
+            ]
+        },
+        {
+            "name": "[concat(parameters('omsWorkspaceName'), '/Automation')]",
+            "type": "microsoft.operationalinsights/workspaces/linkedservices",
+            "apiVersion": "2015-11-01-preview",
+            "tags": {},
+            "dependsOn": [
+                "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]",
+                "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+            ],
+            "properties": {
+                "resourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+            }
+        },
+        {
+            "apiVersion": "2015-11-01-preview",
+            "type": "Microsoft.OperationsManagement/solutions",
+            "name": "[concat(variables('batch1').solutions[copyIndex()].Name)]",
+            "location": "[parameters('omsWorkspaceRegion')]",
+            "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.OperationsManagement/solutions/', variables('batch1').solutions[copyIndex()].Name)]",
+            "dependsOn": [
+                "[concat('Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName'))]",
+                "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'))]"
+            ],
+            "copy": {
+                "name": "solutionCopy",
+                "count": "[length(variables('batch1').solutions)]"
+            },
+            "properties": {
+                "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('omsWorkspaceName'))]",
+                "referencedResources": [
+                    "[resourceId('Microsoft.Automation/automationAccounts/variables/', parameters('omsAutomationAccountName'), variables('assets').aaVariables.AzureSubscriptionId.name)]",
+                    "[resourceId('Microsoft.Automation/automationAccounts/variables/', parameters('omsAutomationAccountName'), variables('assets').aaVariables.OMSWorkspaceId.name)]",
+                    "[resourceId('Microsoft.Automation/automationAccounts/variables/', parameters('omsAutomationAccountName'), variables('assets').aaVariables.OMSWorkspaceKey.name)]"
+                ],
+                "containedResources": [
+                    "[resourceId('Microsoft.OperationalInsights/workspaces/views/', parameters('omsWorkspaceName'), concat(variables('batch1').solutions[copyIndex()].Name))]"
+                ]
+            },
+            "plan": {
+                "name": "[variables('batch1').solutions[copyIndex()].name]",
+                "product": "[concat('OMSGallery/', variables('batch1').solutions[copyIndex()].marketplaceName)]",
+                "promotionCode": "",
+                "publisher": "Microsoft"
+            }
+        }
+    ],
+    "outputs": {
+        "OMSWorkspaceKey": {
+            "type": "string",
+            "value": "[reference(Concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/variables/', variables('assets').aaVariables.OMSWorkspaceKey.name), '2015-10-31').value]"
+        }
+    }
+}
