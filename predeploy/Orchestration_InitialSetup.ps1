@@ -119,7 +119,6 @@ function checkPasswords
         checkPasswords -name $name
     }
 		If ($isGood -ge 6) {
-		"ADDED PASSWORD TO KEYVAULT"
       $passwords | Add-Member -MemberType NoteProperty -Name $name -Value $password
       return
     } Else {
