@@ -310,14 +310,14 @@
             "metadata": {
                 "description": "Linked Templates base url"
             },
-            "defaultValue": "https://raw.githubusercontent.com/AppliedIS/azure-blueprint/sqlcomplete/nestedtemplates"
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/jomolesk-patch-1/nestedtemplates"
         },
         "dscBaseUrl": {
             "type": "string",
             "metadata": {
                 "description": "DSC Scripts base url"
             },
-            "defaultValue": "https://raw.githubusercontent.com/AppliedIS/azure-blueprint/sqlcomplete/DSC"
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/jomolesk-patch-1/DSC"
         },
         "scriptsBaseUrl": {
             "type": "string",
@@ -325,7 +325,7 @@
                 "description": "DSC Scripts base url"
             },
 
-            "defaultValue": "https://raw.githubusercontent.com/AppliedIS/azure-blueprint/sqlcomplete/custom-scripts"
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/jomolesk-patch-1/custom-scripts"
         },
         "sqlServerVersion": {
             "type": "string",
