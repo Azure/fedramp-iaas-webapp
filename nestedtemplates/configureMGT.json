@@ -94,7 +94,7 @@
         "type": "Microsoft.Compute/virtualMachines/extensions",
         "name": "[concat(parameters('mgtVMName'),'/joindomain')]",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "dependsOn": [
 
@@ -123,7 +123,7 @@
         "apiVersion": "2015-06-15",
         "location": "[parameters('location')]",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('mgtVMName'), 'joindomain')]"

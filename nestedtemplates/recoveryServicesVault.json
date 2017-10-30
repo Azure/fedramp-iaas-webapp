@@ -23,7 +23,7 @@
       "name": "[parameters('backupInfo').rcVaultName]",
       "location": "[resourceGroup().location]",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "sku": {
         "name": "RS0",

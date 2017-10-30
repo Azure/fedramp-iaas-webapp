@@ -117,7 +117,7 @@
             "name": "[concat(parameters('sqlwVMName'),'/SQLWBaselineDSC')]",
             "apiVersion": "2015-06-15",
             "tags": {
-                "Project": "BluePrint"
+                "Project": "Blueprint"
             },
             "location": "[parameters('location')]",
             "properties": {
@@ -168,7 +168,7 @@
             "name": "[concat(parameters('sql0VMName'),'/SqlVmIaasExtension')]",
             "location": "[parameters('location')]",
             "tags": {
-                "Project": "BluePrint"
+                "Project": "Blueprint"
             },
             "properties": {
                 "type": "SqlIaaSAgent",
@@ -205,7 +205,7 @@
             "name": "[concat(parameters('sql1VMName'),'/SqlVmIaasExtension')]",
             "location": "[parameters('location')]",
             "tags": {
-                "Project": "BluePrint"
+                "Project": "Blueprint"
             },
             "properties": {
                 "type": "SqlIaaSAgent",
@@ -242,7 +242,7 @@
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('sql0VMName'),'/joindomain')]",
             "tags": {
-                "Project": "BluePrint"
+                "Project": "Blueprint"
             },
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlwVMName'),'/extensions/SQLWBaselineDSC')]",
@@ -272,7 +272,7 @@
             "apiVersion": "2016-04-30-preview",
             "location": "[parameters('location')]",
             "tags": {
-                "Project": "BluePrint"
+                "Project": "Blueprint"
             },
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('sql0VMName'),'/extensions/joindomain')]"

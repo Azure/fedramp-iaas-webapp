@@ -40,7 +40,7 @@
       "name": "[parameters('lbNSGName')]",
       "apiVersion": "2016-03-30",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "location": "[parameters('location')]",
       "properties": {
@@ -70,7 +70,7 @@
       "name": "[parameters('mgtNSGName')]",
       "apiVersion": "2016-03-30",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "location": "[parameters('location')]",
       "properties": {
@@ -100,7 +100,7 @@
       "name": "[parameters('dcNSGName')]",
       "apiVersion": "2016-03-30",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "location": "[parameters('location')]",
       "properties": {
@@ -455,7 +455,7 @@
       "name": "[parameters('sqlNSGName')]",
       "apiVersion": "2016-03-30",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "location": "[parameters('location')]",
       "properties": {
@@ -485,7 +485,7 @@
       "name": "[parameters('webNSGName')]",
       "apiVersion": "2016-03-30",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "location": "[parameters('location')]",
       "properties": {
@@ -530,7 +530,7 @@
       "location": "[parameters('location')]",
       "apiVersion": "2015-06-15",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "properties": {
         "addressSpace": {

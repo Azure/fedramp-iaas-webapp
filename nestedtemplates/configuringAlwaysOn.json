@@ -99,7 +99,7 @@
             "name": "[concat(parameters('sql1VMName'),'/SQL1BaselineDSC')]",
             "apiVersion": "2015-06-15",
             "tags": {
-                "Project": "BluePrint"
+                "Project": "Blueprint"
             },
             "location": "[parameters('location')]",
             "properties": {
@@ -160,7 +160,7 @@
             "apiVersion": "2016-04-30-preview",
             "location": "[parameters('location')]",
             "tags": {
-                "Project": "BluePrint"
+                "Project": "Blueprint"
             },
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('sql1VMName'),'/extensions/SQL1BaselineDSC')]"

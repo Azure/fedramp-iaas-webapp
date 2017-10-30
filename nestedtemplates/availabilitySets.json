@@ -21,7 +21,7 @@
         "name": "[parameters('adAvailabilitySetName')]",
         "apiVersion": "2015-06-15",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "location": "[parameters('location')]"
     },
@@ -30,7 +30,7 @@
         "name": "[parameters('sqlAvailabilitySetName')]",
         "apiVersion": "2015-06-15",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "location": "[parameters('location')]",
         "properties": {
@@ -43,7 +43,7 @@
         "name": "[parameters('webAvailabilitySetName')]",
         "apiVersion": "2015-06-15",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "location": "[parameters('location')]",
         "properties": {

@@ -53,7 +53,7 @@
         "name": "[concat(parameters('adBDCVMName'),'/BDCBaselineDSC')]",
         "apiVersion": "2016-03-30",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "location": "[parameters('location')]",
         "properties": {

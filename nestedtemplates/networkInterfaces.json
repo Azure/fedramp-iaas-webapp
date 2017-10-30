@@ -100,7 +100,7 @@
       "name": "[parameters('mgtPublicIPName')]",
       "location": "[parameters('location')]",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "properties": {
         "publicIPAllocationMethod": "Dynamic"
@@ -112,7 +112,7 @@
       "location": "[parameters('location')]",
       "apiVersion": "2015-06-15",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "properties": {
         "ipConfigurations": [
@@ -143,7 +143,7 @@
       "location": "[parameters('location')]",
       "apiVersion": "2015-06-15",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "properties": {
         "ipConfigurations": [
@@ -174,7 +174,7 @@
       "location": "[parameters('location')]",
       "apiVersion": "2015-06-15",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "properties": {
         "ipConfigurations": [
@@ -203,7 +203,7 @@
       ],
       "apiVersion": "2015-06-15",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "properties": {
         "ipConfigurations": [
@@ -232,7 +232,7 @@
         "name": "[concat(parameters('webNICName'), copyindex())]",
         "location": "[parameters('location')]",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "copy": {
             "name": "nicLoopDEL",

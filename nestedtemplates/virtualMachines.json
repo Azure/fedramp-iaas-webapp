@@ -166,7 +166,7 @@
         "name": "[parameters('sql0VMName')]",
         "location": "[parameters('location')]",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "dependsOn": [
 
@@ -240,7 +240,7 @@
         "name": "[parameters('sql1VMName')]",
         "location": "[parameters('location')]",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "dependsOn": [
 
@@ -314,7 +314,7 @@
         "name": "[parameters('sqlwVMName')]",
         "location": "[parameters('location')]",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "dependsOn": [
 
@@ -436,7 +436,7 @@
         "name": "[concat(parameters('WebVMName'), copyindex())]",
         "location": "[parameters('location')]",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "copy": {
             "name": "vmLoopDEL",

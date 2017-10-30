@@ -100,7 +100,7 @@
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "name": "[concat(parameters('sql1VMName'),'/joindomain')]",
           "tags": {
-              "Project": "BluePrint"
+              "Project": "Blueprint"
           },
           "dependsOn": [
 

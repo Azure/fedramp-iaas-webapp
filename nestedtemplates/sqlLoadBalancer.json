@@ -40,7 +40,7 @@
       "type": "Microsoft.Network/loadBalancers",
       "location": "[parameters('location')]",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "properties": {
         "frontendIPConfigurations": [

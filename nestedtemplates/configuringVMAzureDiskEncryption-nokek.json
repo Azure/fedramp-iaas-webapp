@@ -56,7 +56,7 @@
             "name": "[concat(parameters('vmName'),'/', parameters('vmEncryptionSettings').diskEncryptionExtensionName)]",
             "apiVersion": "2016-04-30-preview",
             "tags": {
-                "Project": "BluePrint"
+                "Project": "Blueprint"
             },
             "location": "[resourceGroup().location]",
             "properties": {
@@ -84,7 +84,7 @@
             "name": "[parameters('vmName')]",
             "location": "[resourceGroup().location]",
             "tags": {
-                "Project": "BluePrint"
+                "Project": "Blueprint"
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines/extensions',  parameters('vmName'), parameters('vmEncryptionSettings').diskEncryptionExtensionName)]"

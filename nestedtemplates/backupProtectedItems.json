@@ -21,7 +21,7 @@
       "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
       "apiVersion": "2016-06-01",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "location": "[resourceGroup().location]",
       "name": "[concat(parameters('backupInfo').rcVaultName,'/',variables('backupFabric'),'/',variables('v2VmContainer'),concat(resourceGroup().name,';',parameters('vmName')),'/',variables('v2Vm'),concat(resourceGroup().name,';',parameters('vmName')))]",

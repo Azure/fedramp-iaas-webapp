@@ -46,7 +46,7 @@
         "name": "[parameters('webStorageAccountName')]",
         "apiVersion": "2016-01-01",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "location": "[parameters('location')]",
         "sku": {
@@ -87,7 +87,7 @@
         "type": "Microsoft.Storage/storageAccounts",
         "apiVersion": "2016-01-01",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "location": "[parameters('location')]",
         "sku": {
@@ -128,7 +128,7 @@
         "name": "[parameters('dcStorageAccountName')]",
         "apiVersion": "2016-01-01",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "location": "[parameters('location')]",
         "sku": {
@@ -169,7 +169,7 @@
         "name": "[variables('fswstorageName')]",
         "apiVersion": "2016-01-01",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "location": "[parameters('location')]",
         "sku": {
@@ -210,7 +210,7 @@
         "name": "[parameters('mgtStorageAccountName')]",
         "apiVersion": "2016-01-01",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "location": "[parameters('location')]",
         "sku": {
@@ -251,7 +251,7 @@
         "name": "[variables('diagstorageNameSQL')]",
         "apiVersion": "2016-01-01",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "location": "[parameters('location')]",
         "sku": {
@@ -292,7 +292,7 @@
         "name": "[variables('diagstorageNameDC')]",
         "apiVersion": "2016-01-01",
         "tags": {
-            "Project": "BluePrint"
+            "Project": "Blueprint"
         },
         "location": "[parameters('location')]",
         "sku": {

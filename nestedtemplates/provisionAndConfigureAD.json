@@ -147,7 +147,7 @@
         "location": "[parameters('location')]",
         "apiVersion": "2015-06-15",
         "tags": {
-          "Project": "BluePrint"
+          "Project": "Blueprint"
         },
         "properties": {
           "ipConfigurations": [
@@ -173,7 +173,7 @@
         "location": "[parameters('location')]",
         "apiVersion": "2015-06-15",
         "tags": {
-          "Project": "BluePrint"
+          "Project": "Blueprint"
         },
         "properties": {
           "ipConfigurations": [
@@ -199,7 +199,7 @@
           "name": "[parameters('adPDCVMName')]",
           "location": "[parameters('location')]",
           "tags": {
-              "Project": "BluePrint"
+              "Project": "Blueprint"
           },
           "dependsOn": [
               "[resourceId('Microsoft.Network/networkInterfaces', parameters('adPDCNicName'))]"
@@ -262,7 +262,7 @@
           "name": "[parameters('adBDCVMName')]",
           "location": "[parameters('location')]",
           "tags": {
-              "Project": "BluePrint"
+              "Project": "Blueprint"
           },
           "dependsOn": [
               "[resourceId('Microsoft.Network/networkInterfaces', parameters('adBDCNicName'))]"
@@ -324,7 +324,7 @@
             "name": "[concat(parameters('adPDCVMName'),'/PDCBaselineDSC')]",
             "apiVersion": "2015-06-15",
             "tags": {
-                "Project": "BluePrint"
+                "Project": "Blueprint"
             },
             "location": "[parameters('location')]",
             "dependsOn": [

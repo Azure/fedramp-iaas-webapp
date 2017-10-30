@@ -86,7 +86,7 @@
             "location": "[parameters('location')]",
             "tags": {
                 "displayName": "customScriptBaseline",
-                "Project": "BluePrint"
+                "Project": "Blueprint"
             },
             "properties": {
                 "publisher": "Microsoft.Compute",

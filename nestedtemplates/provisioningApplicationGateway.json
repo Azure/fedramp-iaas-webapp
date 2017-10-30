@@ -105,7 +105,7 @@
       "name": "[variables('publicIPAddressName')]",
       "location": "[parameters('vmLocation')]",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "properties": {
         "publicIPAllocationMethod": "Dynamic"
@@ -117,7 +117,7 @@
       "type": "Microsoft.Network/applicationGateways",
       "location": "[parameters('vmLocation')]",
       "tags": {
-        "Project": "BluePrint"
+        "Project": "Blueprint"
       },
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
