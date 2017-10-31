@@ -50,7 +50,7 @@ The pre-deployment PowerShell script will verify that the necessary Azure PowerS
 * **sqlServerServiceAccountPassword**: SQL service account password you want to use (must meet the complexity requirements; see below)
 * **subscriptionId**: To find your Azure Government subscription ID, navigate to https://portal.azure.us and sign in. Expand the service menu on the left side of the portal, select "more services," and begin typing "subscription" in the filter box. Click **Subscriptions** to open the subscriptions blade. Note the subscription ID, which has the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.
 * **resourceGroupName**: Resource group name you want to use for this deployment; must be a string of 1-90 alphanumeric characters (such as 0-9, a-z, A-Z), periods, underscores, hyphens, and parenthesis and it cannot end in a period (e.g., `blueprint-rg`).
-* **keyVaultName**: Key Vault name you want to use for this deployment; must be a string 3-24 alphanumeric characters (such as 0-9, a-z, A-Z) and hyphens and must be unique across Azure Government. This must be a name for a new Key Vault; the deployment cannot use an existing Key Vault.
+* **keyVaultName**: Key Vault name you want to use for this deployment; must be a string 3-24 alphanumeric characters (such as 0-9, a-z, A-Z) and hyphens, must start with a letter, and must be unique across Azure Government. This must be a name for a new Key Vault; the deployment cannot use an existing Key Vault.
 * **domain**: Domain name for the self-signed SSL certificate (e.g., `contoso.local`).
 
 Passwords must be at least 14 characters and contain one each of the following: lower case character, upper case character, number, and special character.
