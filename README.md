@@ -5,7 +5,7 @@ IaaS web application Blueprint Automation for FedRAMP-compliant environments](ht
 
 ## Deploy the solution
 
-This Azure Blueprint solution is comprised of JSON configuration files and PowerShell scripts that are handled by Azure Resource Manager's API service to deploy resources within Azure. 
+This Azure Blueprint solution is comprised of JSON configuration files and PowerShell scripts that are handled by Azure Resource Manager's API service to deploy resources within Azure. ***Note: This solution deploys to Azure Government.***
 
 #### Quickstart
 1. Clone or download this repository to your local workstation.
