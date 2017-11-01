@@ -1,7 +1,7 @@
 ## Solution overview
 
 For more information about this solution, see [
-IaaS web application Blueprint Automation for FedRAMP-compliant environments](https://aka.ms/fedrampblueprint).
+Azure Blueprint Automation: Web Applications for FedRAMP ](https://aka.ms/fedrampblueprint).
 
 ## Deploy the solution
 
