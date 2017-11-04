@@ -124,13 +124,13 @@ If you do not want to specifically alter the template contents, you can edit the
 
 #### Troubleshooting
 
-If your deployment should fail, to avoid incurring costs and orphan resources it is advisable to delete the resource group associated with this solution in its entirety, fix the issue, and redeploy the solution. See the section below for instructions to delete all resources deployed by the solution.
+If your deployment should fail, first attempt to re-deploy the solution. Open the Resource groups blade in the Azure portal, select the appropriate resource group, click on Deployments, click on Microsoft.Template deployment, then click the redeploy button.  If you encounter further issues, to avoid incurring costs and orphan resources, it is advisable to delete the resource group associated with this solution in its entirety, fix the issue, and redeploy the solution. See the section below for instructions to delete all resources deployed by the solution.
 
 Please feel free to open and submit a GitHub issue pertaining to the error you are experiencing.
 
 #### How to delete deployed resources
 
-To help with deleting protected resources, use postdeploy/deleteProtectedItems.ps1 -- this PowerShell script will removing the delete lock on the resources inside your Recovery Services vault. Note, you will first need to edit the script to include your subscription ID and Recovery Service vault name.
+To help with deleting protected resources, use custom-scripts/deleteProtectedItems.ps1 -- this PowerShell script will removing the delete lock on the resources inside your Recovery Services vault. Note, you will first need to edit the script to include your subscription ID and Recovery Service vault name.
 
 ## Disclaimer
 
