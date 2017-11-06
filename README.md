@@ -74,7 +74,7 @@ After clicking the Deploy to Azure Gov button, the Azure portal will open and pr
 **Basics**
 * **Subscription**: Choose the same subscription used during the pre-deployment phase
 * **Resource group**: Select 'Use existing' and choose the resource group created during pre-deployment
-* **Location**: Select 'USGovVirginia' **Note: This solution must be deployed in the USGovVirginia region due to service availability.**
+* **Location**: Select 'USGovVirginia' ***Note: This solution must be deployed in the USGovVirginia region due to service availability.***
 
 **Settings**
 * **Key Vault Name**: Name of the Key Vault created during pre-deployment
