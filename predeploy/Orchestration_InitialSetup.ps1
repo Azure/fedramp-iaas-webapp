@@ -19,10 +19,6 @@ Must meet complexity requirements
 Write-Host "`n `nAZURE IAAS WEB APPLICATION BLUEPRINT AUTOMATION FOR FEDRAMP: Pre-Deployment Script `n" -foregroundcolor green
 Write-Host "This script can be used for creating the necessary preliminary resources to deploy a multi-tier web application architecture with pre-configured security controls to help customers achieve compliance with FedRAMP requirements. See https://github.com/Azure/fedramp-iaas-webapp for more information. `n " -foregroundcolor yellow
 
-Write-Host "Press any key to continue ..."
-
-$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-
 Write-Host "`n LOGIN TO AZURE `n" -foregroundcolor green
 $global:azureUsername = $null
 $global:azurePassword = $null
@@ -378,10 +374,6 @@ try{
 	loginToAzure -lginCount 1
 
 	Write-Host "You will now be asked to create credentials for the administrator and sql service accounts. `n"
-
-	Write-Host "Press any key to continue ..."
-
-	$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 
 	Write-Host "`n CREATE CREDENTIALS `n" -foregroundcolor green
 
