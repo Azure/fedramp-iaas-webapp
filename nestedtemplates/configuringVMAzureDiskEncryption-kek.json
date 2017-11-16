@@ -88,10 +88,6 @@
         "BitLockerKey": {
             "type": "string",
             "value": "[reference(resourceId('Microsoft.Compute/virtualMachines/extensions',  parameters('vmName'), parameters('vmEncryptionSettings').diskEncryptionExtensionName)).instanceView.statuses[0].message]"
-        },
-        "BitLockerKey": {
-            "type": "string",
-            "value": "[reference(resourceId('Microsoft.Compute/virtualMachines/extensions',  parameters('vmName'), parameters('vmEncryptionSettings').diskEncryptionExtensionName)).instanceView.statuses[0].message]"
         }
     }
 }
