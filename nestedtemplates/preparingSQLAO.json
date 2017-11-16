@@ -259,7 +259,7 @@
                             "password": "privateSettingsRef:SqlServerServiceAccountPassword"
                         },
                         "NumberOfDisks": "[parameters('numberOfDisks')]",
-                        "WorkloadType": "[parameters('workloadType')]",
+                        "WorkloadType": "[parameters('workloadType')]"
                     }
                 },
                 "protectedSettings": {
