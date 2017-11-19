@@ -977,7 +977,7 @@
                 },
                 "keyVaultId": {
                   "value": "[variables('derivedIds').keyVaultId]"
-                }
+                },
                 "adImagePublisher": {
                   "value": "[variables('vmSettings').dc.imagePublisher]"
                 },
