@@ -1,131 +1,134 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-        "adPDCVMName": {
-            "type": "string"
-        },
-        "dcStorageAccountName": {
-            "type": "string"
-        },
-        "dcSubnetRef": {
-            "type": "string"
-        },
-        "dcNSGid": {
-            "type": "string"
-        },
-        "adAvailabilitySetName": {
-            "type": "string"
-        },
-        "adVMSize": {
-            "type": "string"
-        },
-        "adminUsername": {
-            "type": "securestring"
-        },
-        "adminPassword": {
-            "type": "securestring"
-        },
-        "adImagePublisher": {
-            "type": "string"
-        },
-        "adImageOffer": {
-            "type": "string"
-        },
-        "adImageSKU": {
-            "type": "string"
-        },
-        "adPDCNicName": {
-            "type": "string"
-        },
-        "pdcConfigurationFunction": {
-            "type": "string"
-        },
-        "pdcModulesURL": {
-            "type": "string"
-        },
-        "adBDCVMName": {
-            "type": "string"
-        },
-        "adBDCNicName": {
-            "type": "string"
-        },
-        "location": {
-            "type": "string"
-        },
-        "vmContainerName": {
-            "type": "string"
-        },
-        "domainName": {
-            "type": "string"
-        },
-        "updateVnetWithDNSTemplateURL": {
-            "type": "string"
-        },
-        "virtualNetworkNameWithSuffix": {
-            "type": "string"
-        },
-        "virtualNetworkAddressRange": {
-            "type": "string"
-        },
-        "subnets": {
-            "type": "array"
-        },
-        "adPDCNICIPAddress": {
-            "type": "string"
-        },
-        "bdcConfigurationFunction": {
-            "type": "string"
-        },
-        "bdcModulesURL": {
-            "type": "string"
-        },
-        "configuringBackupADVMURL": {
-            "type": "string"
-        },
-        "adBDCNICIPAddress": {
-            "type": "string"
-        },
-        "updateNicTemplateURL": {
-            "type": "string"
-        },
-        "backupInfo": {
-            "type": "object"
-        },
-        "keyVaultName": {
-            "type": "string"
-        },
-        "vmEncryptionSettings": {
-            "type": "object"
-        },
-        "antimalwareInfo": {
-            "type": "object"
-        },
-        "workspaceName": {
-            "type": "string"
-        },
-        "AutomationAccountName": {
-            "type": "string"
-        },
-        "EnvironmentName": {
-            "type": "string"
-        },
-        "ResourceGroupName": {
-            "type": "string"
-        },
-        "AzureUserName": {
-            "type": "string"
-        },
-        "AzurePassword": {
-            "type": "securestring"
-        },
-        "SubscriptionId": {
-            "type": "string"
-        },
-        "provisioningHybridworkersUrl": {
-            "type": "string"
-        }
+  "parameters": {
+    "adPDCVMName": {
+      "type": "string"
     },
+    "dcStorageAccountName": {
+      "type": "string"
+    },
+    "dcSubnetRef": {
+      "type": "string"
+    },
+    "dcNSGid": {
+      "type": "string"
+    },
+    "adAvailabilitySetName": {
+      "type": "string"
+    },
+    "adVMSize": {
+      "type": "string"
+    },
+    "adminUsername": {
+      "type": "securestring"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    },
+    "adImagePublisher": {
+      "type": "string"
+    },
+    "adImageOffer": {
+      "type": "string"
+    },
+    "adImageSKU": {
+      "type": "string"
+    },
+    "adPDCNicName": {
+      "type": "string"
+    },
+    "pdcConfigurationFunction": {
+      "type": "string"
+    },
+    "pdcModulesURL": {
+      "type": "string"
+    },
+    "adBDCVMName": {
+      "type": "string"
+    },
+    "adBDCNicName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "vmContainerName": {
+      "type": "string"
+    },
+    "domainName": {
+      "type": "string"
+    },
+    "updateVnetWithDNSTemplateURL": {
+      "type": "string"
+    },
+    "virtualNetworkNameWithSuffix": {
+      "type": "string"
+    },
+    "virtualNetworkAddressRange": {
+      "type": "string"
+    },
+    "subnets": {
+      "type": "array"
+    },
+    "adPDCNICIPAddress": {
+      "type": "string"
+    },
+    "bdcCreateConfigurationFunction": {
+      "type": "string"
+    },
+    "bdcConfigureConfigurationFunction": {
+      "type": "string"
+    },
+    "bdcModulesURL": {
+      "type": "string"
+    },
+    "configuringBackupADVMURL": {
+      "type": "string"
+    },
+    "adBDCNICIPAddress": {
+      "type": "string"
+    },
+    "updateNicTemplateURL": {
+      "type": "string"
+    },
+    "backupInfo": {
+      "type": "object"
+    },
+    "keyVaultName": {
+      "type": "string"
+    },
+    "vmEncryptionSettings": {
+      "type": "object"
+    },
+    "antimalwareInfo": {
+      "type": "object"
+    },
+    "workspaceName": {
+      "type": "string"
+    },
+    "AutomationAccountName": {
+      "type": "string"
+    },
+    "EnvironmentName": {
+      "type": "string"
+    },
+    "ResourceGroupName": {
+      "type": "string"
+    },
+    "AzureUserName": {
+      "type": "string"
+    },
+    "AzurePassword": {
+      "type": "securestring"
+    },
+    "SubscriptionId": {
+      "type": "string"
+    },
+    "provisioningHybridworkersUrl": {
+      "type": "string"
+    }
+  },
     "variables": {
         "dcstorageName": "[parameters('dcStorageAccountName')]",
         "diagstorageNameDC": "[concat(parameters('dcStorageAccountName'), 'diag')]",
@@ -317,7 +320,42 @@
                   }
               }
           },
-          "resources": []
+        "resources": [
+          {
+            "type": "extensions",
+            "name": "BDCBaselineDSC",
+            "apiVersion": "2016-03-30",
+            "tags": {
+              "Project": "Blueprint"
+            },
+            "location": "[parameters('location')]",
+            "properties": {
+              "publisher": "Microsoft.Powershell",
+              "type": "DSC",
+              "typeHandlerVersion": "2.19",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "modulesURL": "[parameters('bdcModulesURL')]",
+                "configurationFunction": "[parameters('bdcCreateConfigurationFunction')]",
+                "Properties": {
+                  "DNSServer": "[parameters('adPDCNICIPAddress')]",
+                  "ExclusionPath": "[parameters('antimalwareInfo').exclusionPath.ad]",
+                  "ExclusionExtension": "[parameters('antimalwareInfo').exclusionExtension.ad]",
+                  "ExclusionProcess": "[parameters('antimalwareInfo').exclusionProcess.ad]",
+                  "RealTimeScanDirection": "[parameters('antimalwareInfo').realTimeScanDirection]",
+                  "RemediationScheduleDay": "[parameters('antimalwareInfo').remediationScheduleDay]",
+                  "ScanScheduleDay": "[parameters('antimalwareInfo').scanScheduleDay]",
+                  "DisableRealtimeMonitoring": "[parameters('antimalwareInfo').disableRealtimeMonitoring]"
+                },
+                "protectedSettings": {
+                  "items": {
+                    "AzurePassword": "[parameters('AzurePassword')]"
+                  }
+                }
+              }
+            }
+          }
+        ]
       },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -408,53 +446,56 @@
                     "uri": "[parameters('configuringBackupADVMURL')]",
                     "contentVersion": "1.0.0.0"
                 },
-                "parameters": {
-                    "location": {
-                        "value": "[parameters('location')]"
-                    },
-                    "adBDCVMName": {
-                        "value": "[parameters('adBDCVMName')]"
-                    },
-                    "adminPassword": {
-                        "value": "[parameters('adminPassword')]"
-                    },
-                    "domainName": {
-                        "value": "[parameters('domainName')]"
-                    },
-                    "bdcConfigurationFunction": {
-                        "value": "[parameters('bdcConfigurationFunction')]"
-                    },
-                    "bdcModulesURL": {
-                        "value": "[parameters('bdcModulesURL')]"
-                    },
-                    "adPDCNICIPAddress": {
-                        "value": "[parameters('adPDCNICIPAddress')]"
-                    },
-                    "antimalwareInfo": {
-                        "value": "[parameters('antimalwareInfo')]"
-                    },
-                    "workspaceName": {
-                        "value": "[parameters('workspaceName')]"
-                    },
-                    "ResourceGroupName": {
-                        "value": "[parameters('ResourceGroupName')]"
-                    },
-                    "AutomationAccountName": {
-                        "value": "[parameters('AutomationAccountName')]"
-                    },
-                    "AzureUserName": {
-                        "value": "[parameters('AzureUserName')]"
-                    },
-                    "AzurePassword": {
-                        "value": "[parameters('AzurePassword')]"
-                    },
-                    "SubscriptionId": {
-                        "value": "[parameters('SubscriptionId')]"
-                    },
-                    "EnvironmentName": {
-                        "value": "[parameters('EnvironmentName')]"
-                    }
+              "parameters": {
+                "location": {
+                  "value": "[parameters('location')]"
+                },
+                "adBDCVMName": {
+                  "value": "[parameters('adBDCVMName')]"
+                },
+                "adminUsername": {
+                  "value": "[parameters('adminUsername')]"
+                },
+                "adminPassword": {
+                  "value": "[parameters('adminPassword')]"
+                },
+                "domainName": {
+                  "value": "[parameters('domainName')]"
+                },
+                "bdcConfigureConfigurationFunction": {
+                  "value": "[parameters('bdcConfigureConfigurationFunction')]"
+                },
+                "bdcModulesURL": {
+                  "value": "[parameters('bdcModulesURL')]"
+                },
+                "adPDCNICIPAddress": {
+                  "value": "[parameters('adPDCNICIPAddress')]"
+                },
+                "antimalwareInfo": {
+                  "value": "[parameters('antimalwareInfo')]"
+                },
+                "workspaceName": {
+                  "value": "[parameters('workspaceName')]"
+                },
+                "ResourceGroupName": {
+                  "value": "[parameters('ResourceGroupName')]"
+                },
+                "AutomationAccountName": {
+                  "value": "[parameters('AutomationAccountName')]"
+                },
+                "AzureUserName": {
+                  "value": "[parameters('AzureUserName')]"
+                },
+                "AzurePassword": {
+                  "value": "[parameters('AzurePassword')]"
+                },
+                "SubscriptionId": {
+                  "value": "[parameters('SubscriptionId')]"
+                },
+                "EnvironmentName": {
+                  "value": "[parameters('EnvironmentName')]"
                 }
+              }
             }
         },
         {

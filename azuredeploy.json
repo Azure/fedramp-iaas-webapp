@@ -545,50 +545,51 @@
                 "mgt": "mgtpublicip"
             }
         },
-        "artifacts": {
-            "provisioningHybridworkerUrl": "[concat(parameters('scriptsBaseUrl'),'/provisioningHybridworkers.ps1')]",
-            "provisioningStorageAccountsUrl": "[concat(parameters('templatesBaseUrl'),'/storageAccounts.json')]",
-            "provisioningVirtualMachinesUrl": "[concat(parameters('templatesBaseUrl'),'/virtualMachines.json')]",
-            "provisioningAvailabilitySetsUrl": "[concat(parameters('templatesBaseUrl'),'/availabilitySets.json')]",
-            "customScriptBaselineUrl": "[concat(parameters('scriptsBaseUrl'),'/customScriptBaseline.ps1')]",
-            "secondarySqlCustomCMDUrl": "[concat(parameters('scriptsBaseUrl'),'/SQL0CustomCMD.sql')]",
-            "provisioningCustomScriptExtensionUrl": "[concat(parameters('templatesBaseUrl'),'/customScriptExtension.json')]",
-            "provisioningOMSWorkspaceUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutoAccOMSWorkspace.json')]",
-            "provisioningOMSAutomationScheduleUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutomationSchedule.json')]",
-            "vnetwithDNSTemplateURL": "[concat(parameters('templatesBaseUrl'),'/updateVnetWithDNS.json')]",
-            "nicTemplateURL": "[concat(parameters('templatesBaseUrl'),'/updateNic.json')]",
-            "sqlLoadBalancerURL": "[concat(parameters('templatesBaseUrl'),'/sqlLoadBalancer.json')]",
-            "applicationGatewayURL": "[concat(parameters('templatesBaseUrl'),'/provisioningApplicationGateway.json')]",
-            "provisioningNetworkInterfacesUrl": "[concat(parameters('templatesBaseUrl'),'/networkInterfaces.json')]",
-            "virtualNetworkNSGURL": "[concat(parameters('templatesBaseUrl'),'/virtualNetworkNSG.json')]",
-            "provisionAndConfigureADUrl": "[concat(parameters('templatesBaseUrl'),'/provisionAndConfigureAD.json')]",
-            "configureMGTUrl": "[concat(parameters('templatesBaseUrl'),'/configureMGT.json')]",
-            "configureWEBUrl": "[concat(parameters('templatesBaseUrl'),'/configureWEB.json')]",
-            "configureSQLUrl": "[concat(parameters('templatesBaseUrl'),'/configureSQL.json')]",
-            "provisioningRCV": "[concat(parameters('templatesBaseUrl'),'/recoveryServicesVault.json')]",
-            "backupVMProtectedItem": "[concat(parameters('templatesBaseUrl'),'/backupProtectedItems.json')]",
-            "backupPolicy": "[concat(parameters('templatesBaseUrl'),'/recoveryServicesBackupPolicy.json')]",
-            "configuringBackupADVMURL": "[concat(parameters('templatesBaseUrl'),'/configuringBackupADVM.json')]",
-            "preparingSQLAOUrl": "[concat(parameters('templatesBaseUrl'),'/preparingSQLAO.json')]",
-            "preparingAlwaysOnSqlServerURLAObypass": "[concat(parameters('templatesBaseUrl'),'/preparingSqlServerAObypass.json')]",
-            "configuringAlwaysOnURL": "[concat(parameters('templatesBaseUrl'),'/configuringAlwaysOn.json')]",
-            "configuringAlwaysOnURLAObypass": "[concat(parameters('templatesBaseUrl'),'/configuringAlwaysOnAObypass.json')]",
-            "provisioningOMSMonitoringUrl": "[concat(parameters('templatesBaseUrl'), '/provisioningOMSMonitoring.json') ]",
-            "pdcModulesURL": "[concat(parameters('dscBaseUrl'),'/PDCBaselineDSC.ps1.zip')]",
-            "pdcConfigurationFunction": "PDCBaselineDSC.ps1\\PDCBaselineDSC",
-            "bdcModulesURL": "[concat(parameters('dscBaseUrl'),'/BDCBaselineDSC.ps1.zip')]",
-            "bdcConfigurationFunction": "BDCBaselineDSC.ps1\\BDCBaselineDSC",
-            "sqlwModulesURL": "[concat(parameters('dscBaseUrl'),'/SQLWBaselineDSC.ps1.zip')]",
-            "sqlwConfigurationFunction": "SQLWBaselineDSC.ps1\\SQLWBaselineDSC",
-            "sql0ModulesURL": "[concat(parameters('dscBaseUrl'),'/SQL0BaselineDSC.ps1.zip')]",
-            "sql0ConfigurationFunction": "SQL0BaselineDSC.ps1\\SQL0BaselineDSC",
-            "sql1ModulesURL": "[concat(parameters('dscBaseUrl'),'/SQL1BaselineDSC.ps1.zip')]",
-            "sql1ConfigurationFunction": "SQL1BaselineDSC.ps1\\SQL1BaselineDSC",
-            "webModulesURL": "[concat(parameters('dscBaseUrl'),'/WEBBaselineDSC.ps1.zip')]",
-            "webConfigurationFunction": "WEBBaselineDSC.ps1\\WEBBaselineDSC",
-            "mgtModulesURL": "[concat(parameters('dscBaseUrl'),'/MGTBaselineDSC.ps1.zip')]",
-            "mgtConfigurationFunction": "MGTBaselineDSC.ps1\\MGTBaselineDSC"
-        },
+      "artifacts": {
+        "provisioningHybridworkerUrl": "[concat(parameters('scriptsBaseUrl'),'/provisioningHybridworkers.ps1')]",
+        "provisioningStorageAccountsUrl": "[concat(parameters('templatesBaseUrl'),'/storageAccounts.json')]",
+        "provisioningVirtualMachinesUrl": "[concat(parameters('templatesBaseUrl'),'/virtualMachines.json')]",
+        "provisioningAvailabilitySetsUrl": "[concat(parameters('templatesBaseUrl'),'/availabilitySets.json')]",
+        "customScriptBaselineUrl": "[concat(parameters('scriptsBaseUrl'),'/customScriptBaseline.ps1')]",
+        "secondarySqlCustomCMDUrl": "[concat(parameters('scriptsBaseUrl'),'/SQL0CustomCMD.sql')]",
+        "provisioningCustomScriptExtensionUrl": "[concat(parameters('templatesBaseUrl'),'/customScriptExtension.json')]",
+        "provisioningOMSWorkspaceUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutoAccOMSWorkspace.json')]",
+        "provisioningOMSAutomationScheduleUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutomationSchedule.json')]",
+        "vnetwithDNSTemplateURL": "[concat(parameters('templatesBaseUrl'),'/updateVnetWithDNS.json')]",
+        "nicTemplateURL": "[concat(parameters('templatesBaseUrl'),'/updateNic.json')]",
+        "sqlLoadBalancerURL": "[concat(parameters('templatesBaseUrl'),'/sqlLoadBalancer.json')]",
+        "applicationGatewayURL": "[concat(parameters('templatesBaseUrl'),'/provisioningApplicationGateway.json')]",
+        "provisioningNetworkInterfacesUrl": "[concat(parameters('templatesBaseUrl'),'/networkInterfaces.json')]",
+        "virtualNetworkNSGURL": "[concat(parameters('templatesBaseUrl'),'/virtualNetworkNSG.json')]",
+        "provisionAndConfigureADUrl": "[concat(parameters('templatesBaseUrl'),'/provisionAndConfigureAD.json')]",
+        "configureMGTUrl": "[concat(parameters('templatesBaseUrl'),'/configureMGT.json')]",
+        "configureWEBUrl": "[concat(parameters('templatesBaseUrl'),'/configureWEB.json')]",
+        "configureSQLUrl": "[concat(parameters('templatesBaseUrl'),'/configureSQL.json')]",
+        "provisioningRCV": "[concat(parameters('templatesBaseUrl'),'/recoveryServicesVault.json')]",
+        "backupVMProtectedItem": "[concat(parameters('templatesBaseUrl'),'/backupProtectedItems.json')]",
+        "backupPolicy": "[concat(parameters('templatesBaseUrl'),'/recoveryServicesBackupPolicy.json')]",
+        "configuringBackupADVMURL": "[concat(parameters('templatesBaseUrl'),'/configuringBackupADVM.json')]",
+        "preparingSQLAOUrl": "[concat(parameters('templatesBaseUrl'),'/preparingSQLAO.json')]",
+        "preparingAlwaysOnSqlServerURLAObypass": "[concat(parameters('templatesBaseUrl'),'/preparingSqlServerAObypass.json')]",
+        "configuringAlwaysOnURL": "[concat(parameters('templatesBaseUrl'),'/configuringAlwaysOn.json')]",
+        "configuringAlwaysOnURLAObypass": "[concat(parameters('templatesBaseUrl'),'/configuringAlwaysOnAObypass.json')]",
+        "provisioningOMSMonitoringUrl": "[concat(parameters('templatesBaseUrl'), '/provisioningOMSMonitoring.json') ]",
+        "pdcModulesURL": "[concat(parameters('dscBaseUrl'),'/PDCBaselineDSC.ps1.zip')]",
+        "pdcConfigurationFunction": "PDCBaselineDSC.ps1\\PDCBaselineDSC",
+        "bdcModulesURL": "[concat(parameters('dscBaseUrl'),'/BDCBaselineDSC.ps1.zip')]",
+        "bdcCreateConfigurationFunction": "BDCBaselineDSC.ps1\\BDCBaselineDSC",
+        "bdcConfigureConfigurationFunction": "BDCBaselineDSC.ps1\\BDCConfigureBaselineDSC",
+        "sqlwModulesURL": "[concat(parameters('dscBaseUrl'),'/SQLWBaselineDSC.ps1.zip')]",
+        "sqlwConfigurationFunction": "SQLWBaselineDSC.ps1\\SQLWBaselineDSC",
+        "sql0ModulesURL": "[concat(parameters('dscBaseUrl'),'/SQL0BaselineDSC.ps1.zip')]",
+        "sql0ConfigurationFunction": "SQL0BaselineDSC.ps1\\SQL0BaselineDSC",
+        "sql1ModulesURL": "[concat(parameters('dscBaseUrl'),'/SQL1BaselineDSC.ps1.zip')]",
+        "sql1ConfigurationFunction": "SQL1BaselineDSC.ps1\\SQL1BaselineDSC",
+        "webModulesURL": "[concat(parameters('dscBaseUrl'),'/WEBBaselineDSC.ps1.zip')]",
+        "webConfigurationFunction": "WEBBaselineDSC.ps1\\WEBBaselineDSC",
+        "mgtModulesURL": "[concat(parameters('dscBaseUrl'),'/MGTBaselineDSC.ps1.zip')]",
+        "mgtConfigurationFunction": "MGTBaselineDSC.ps1\\MGTBaselineDSC"
+      },
         "prepareAlwaysOnSQLInfo": {
             "artifacts": "[variables('artifacts')]",
             "resourceNames": "[variables('resourceNames')]",
@@ -939,151 +940,154 @@
                     "uri": "[variables('artifacts').provisionAndConfigureADUrl]",
                     "contentVersion": "1.0.0.0"
                 },
-                "parameters": {
-                    "adPDCVMName": {
-                        "value": "[variables('resourceNames').vms.adpdc]"
+              "parameters": {
+                "adPDCVMName": {
+                  "value": "[variables('resourceNames').vms.adpdc]"
+                },
+                "dcStorageAccountName": {
+                  "value": "[variables('resourceNames').storageAccounts.dc]"
+                },
+                "dcSubnetRef": {
+                  "value": "[variables('derivedIds').dcSubnet]"
+                },
+                "dcNSGid": {
+                  "value": "[variables('derivedIds').dcNSG]"
+                },
+                "adAvailabilitySetName": {
+                  "value": "[variables('resourceNames').availabilitySets.ad]"
+                },
+                "adVMSize": {
+                  "value": "[parameters('adVMSize')]"
+                },
+                "adminUsername": {
+                  "reference": {
+                    "keyVault": {
+                      "id": "[variables('derivedIds').keyVaultId]"
                     },
-                    "dcStorageAccountName": {
-                        "value": "[variables('resourceNames').storageAccounts.dc]"
+                    "secretName": "adminUsername"
+                  }
+                },
+                "adminPassword": {
+                  "reference": {
+                    "keyVault": {
+                      "id": "[variables('derivedIds').keyVaultId]"
                     },
-                    "dcSubnetRef": {
-                        "value": "[variables('derivedIds').dcSubnet]"
+                    "secretName": "adminPassword"
+                  }
+                },
+                "adImagePublisher": {
+                  "value": "[variables('vmSettings').dc.imagePublisher]"
+                },
+                "adImageOffer": {
+                  "value": "[variables('vmSettings').dc.imageOffer]"
+                },
+                "adImageSKU": {
+                  "value": "[variables('vmSettings').dc.imageSKU]"
+                },
+                "adPDCNicName": {
+                  "value": "[variables('resourceNames').nics.adpdc]"
+                },
+                "pdcConfigurationFunction": {
+                  "value": "[variables('artifacts').pdcConfigurationFunction]"
+                },
+                "pdcModulesURL": {
+                  "value": "[variables('artifacts').pdcModulesURL]"
+                },
+                "adBDCVMName": {
+                  "value": "[variables('resourceNames').vms.adbdc]"
+                },
+                "adBDCNicName": {
+                  "value": "[variables('resourceNames').nics.adbdc]"
+                },
+                "location": {
+                  "value": "[variables('vmSettings').location]"
+                },
+                "vmContainerName": {
+                  "value": "[variables('vmSettings').vmContainerName]"
+                },
+                "domainName": {
+                  "value": "[parameters('domainName')]"
+                },
+                "updateVnetWithDNSTemplateURL": {
+                  "value": "[variables('artifacts').vnetwithDNSTemplateURL]"
+                },
+                "virtualNetworkNameWithSuffix": {
+                  "value": "[variables('resourceNames').virtualNetworkNameWithSuffix]"
+                },
+                "virtualNetworkAddressRange": {
+                  "value": "[variables('virtualNetworkAddressRange')]"
+                },
+                "subnets": {
+                  "value": "[variables('subnetArray')]"
+                },
+                "adPDCNICIPAddress": {
+                  "value": "[variables('vmSettings').dc.ipAddressPDC]"
+                },
+                "bdcCreateConfigurationFunction": {
+                  "value": "[variables('artifacts').bdcCreateConfigurationFunction]"
+                },
+                "bdcConfigureConfigurationFunction": {
+                  "value": "[variables('artifacts').bdcConfigureConfigurationFunction]"
+                },
+                "bdcModulesURL": {
+                  "value": "[variables('artifacts').bdcModulesURL]"
+                },
+                "configuringBackupADVMURL": {
+                  "value": "[variables('artifacts').configuringBackupADVMURL]"
+                },
+                "adBDCNICIPAddress": {
+                  "value": "[variables('vmSettings').dc.ipAddressBDC]"
+                },
+                "updateNicTemplateURL": {
+                  "value": "[variables('artifacts').nicTemplateURL]"
+                },
+                "backupInfo": {
+                  "value": "[variables('backupInfo')]"
+                },
+                "keyVaultName": {
+                  "value": "[parameters('keyVaultName')]"
+                },
+                "vmEncryptionSettings": {
+                  "value": "[variables('vmEncryptionSettings')]"
+                },
+                "antimalwareInfo": {
+                  "value": "[variables('antimalwareInfo')]"
+                },
+                "workspaceName": {
+                  "value": "[variables('resourceNames').omsWorkspace]"
+                },
+                "AutomationAccountName": {
+                  "value": "[variables('resourceNames').automationAccount]"
+                },
+                "EnvironmentName": {
+                  "value": "[parameters('EnvironmentName')]"
+                },
+                "ResourceGroupName": {
+                  "value": "[resourceGroup().name]"
+                },
+                "AzureUserName": {
+                  "reference": {
+                    "keyVault": {
+                      "id": "[variables('derivedIds').keyVaultId]"
                     },
-                    "dcNSGid": {
-                        "value": "[variables('derivedIds').dcNSG]"
+                    "secretName": "azureUsername"
+                  }
+                },
+                "AzurePassword": {
+                  "reference": {
+                    "keyVault": {
+                      "id": "[variables('derivedIds').keyVaultId]"
                     },
-                    "adAvailabilitySetName": {
-                        "value": "[variables('resourceNames').availabilitySets.ad]"
-                    },
-                    "adVMSize": {
-                        "value": "[parameters('adVMSize')]"
-                    },
-                    "adminUsername": {
-                      "reference": {
-                        "keyVault": {
-                          "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "adminUsername"
-                      }
-                    },
-                    "adminPassword": {
-                      "reference": {
-                        "keyVault": {
-                          "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "adminPassword"
-                      }
-                    },
-                    "adImagePublisher": {
-                      "value": "[variables('vmSettings').dc.imagePublisher]"
-                    },
-                    "adImageOffer": {
-                      "value": "[variables('vmSettings').dc.imageOffer]"
-                    },
-                    "adImageSKU": {
-                      "value": "[variables('vmSettings').dc.imageSKU]"
-                    },
-                    "adPDCNicName": {
-                      "value": "[variables('resourceNames').nics.adpdc]"
-                    },
-                    "pdcConfigurationFunction": {
-                        "value": "[variables('artifacts').pdcConfigurationFunction]"
-                    },
-                    "pdcModulesURL": {
-                        "value": "[variables('artifacts').pdcModulesURL]"
-                    },
-                    "adBDCVMName": {
-                        "value": "[variables('resourceNames').vms.adbdc]"
-                    },
-                    "adBDCNicName": {
-                        "value": "[variables('resourceNames').nics.adbdc]"
-                    },
-                    "location": {
-                        "value": "[variables('vmSettings').location]"
-                    },
-                    "vmContainerName": {
-                        "value": "[variables('vmSettings').vmContainerName]"
-                    },
-                    "domainName": {
-                        "value":"[parameters('domainName')]"
-                    },
-                    "updateVnetWithDNSTemplateURL": {
-                        "value": "[variables('artifacts').vnetwithDNSTemplateURL]"
-                    },
-                    "virtualNetworkNameWithSuffix": {
-                        "value": "[variables('resourceNames').virtualNetworkNameWithSuffix]"
-                    },
-                    "virtualNetworkAddressRange": {
-                        "value": "[variables('virtualNetworkAddressRange')]"
-                    },
-                    "subnets": {
-                        "value": "[variables('subnetArray')]"
-                    },
-                    "adPDCNICIPAddress": {
-                        "value": "[variables('vmSettings').dc.ipAddressPDC]"
-                    },
-                    "bdcConfigurationFunction": {
-                        "value": "[variables('artifacts').bdcConfigurationFunction]"
-                    },
-                    "bdcModulesURL": {
-                        "value": "[variables('artifacts').bdcModulesURL]"
-                    },
-                    "configuringBackupADVMURL": {
-                        "value": "[variables('artifacts').configuringBackupADVMURL]"
-                    },
-                    "adBDCNICIPAddress": {
-                        "value": "[variables('vmSettings').dc.ipAddressBDC]"
-                    },
-                    "updateNicTemplateURL": {
-                        "value": "[variables('artifacts').nicTemplateURL]"
-                    },
-                    "backupInfo": {
-                        "value": "[variables('backupInfo')]"
-                    },
-                    "keyVaultName": {
-                        "value": "[parameters('keyVaultName')]"
-                    },
-                    "vmEncryptionSettings": {
-                        "value": "[variables('vmEncryptionSettings')]"
-                    },
-                    "antimalwareInfo": {
-                        "value": "[variables('antimalwareInfo')]"
-                    },
-                    "workspaceName": {
-                        "value": "[variables('resourceNames').omsWorkspace]"
-                    },
-                    "AutomationAccountName": {
-                        "value": "[variables('resourceNames').automationAccount]"
-                    },
-                    "EnvironmentName": {
-                        "value": "[parameters('EnvironmentName')]"
-                    },
-                    "ResourceGroupName": {
-                        "value": "[resourceGroup().name]"
-                    },
-                    "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
-                    },
-                    "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
-                    },
-                    "SubscriptionId": {
-                        "value": "[subscription().subscriptionId]"
-                    },
-                    "provisioningHybridworkersUrl": {
-                        "value": "[variables('artifacts').provisioningHybridworkerUrl]"
-                    }
+                    "secretName": "azurePassword"
+                  }
+                },
+                "SubscriptionId": {
+                  "value": "[subscription().subscriptionId]"
+                },
+                "provisioningHybridworkersUrl": {
+                  "value": "[variables('artifacts').provisioningHybridworkerUrl]"
                 }
+              }
             }
         },
         {
