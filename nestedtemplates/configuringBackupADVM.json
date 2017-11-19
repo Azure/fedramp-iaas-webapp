@@ -9,7 +9,7 @@
       "type": "string"
     },
     "adminUsername": {
-      "type": "string"
+      "type": "securestring"
     },
     "adminPassword": {
       "type": "securestring"
@@ -71,12 +71,11 @@
                 "domainName": "[parameters('domainName')]",
                 "adminCreds": {
                   "userName": "[parameters('adminUsername')]",
-                  "password": "PrivateSettingsRef:adminPassword"
+                  "password": "[parameters('adminPassword')]"
                 }
               },
                 "protectedSettings": {
                   "items": {
-                    "adminPassword": "[parameters('adminPassword')]",
                     "AzurePassword": "[parameters('AzurePassword')]"
                   }
                 }
