@@ -329,6 +329,9 @@
               "Project": "Blueprint"
             },
             "location": "[parameters('location')]",
+            "dependsOn": [
+              "[concat('Microsoft.Compute/virtualMachines/', parameters('adBDCVMName'))]"
+            ],
             "properties": {
               "publisher": "Microsoft.Powershell",
               "type": "DSC",
