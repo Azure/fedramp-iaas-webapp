@@ -9,10 +9,10 @@
       "type": "string"
     },
     "adminUsername": {
-      "type": "securestring"
+      "type": "string"
     },
     "adminPassword": {
-      "type": "securestring"
+      "type": "string"
     },
     "domainName": {
       "type": "string"
