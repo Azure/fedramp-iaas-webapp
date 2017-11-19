@@ -440,9 +440,10 @@
             "name": "ConfiguringBackupADVM",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
-            "dependsOn": [
-                "Microsoft.Resources/deployments/UpdatingDNStoPrimaryADVM"
-            ],
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('adBDCVMName'), 'BDCBaselineDSC')]",
+            "Microsoft.Resources/deployments/UpdatingDNStoPrimaryADVM"
+          ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
