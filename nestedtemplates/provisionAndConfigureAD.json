@@ -383,7 +383,7 @@
                         "domainName": "[parameters('domainName')]",
                         "adminCreds": {
                             "userName": "[parameters('adminUsername')]",
-                            "password": "PrivateSettingsRef:adminPassword"
+                            "password": "[parameters('adminPassword')]"
                         },
                         "ExclusionPath": "[parameters('antimalwareInfo').exclusionPath.ad]",
                         "ExclusionExtension": "[parameters('antimalwareInfo').exclusionExtension.ad]",
@@ -396,7 +396,6 @@
                 },
                 "protectedSettings": {
                     "items": {
-                        "adminPassword": "[parameters('adminPassword')]",
                         "AzurePassword": "[parameters('AzurePassword')]"
                     }
                 }
