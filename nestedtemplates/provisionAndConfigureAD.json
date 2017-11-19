@@ -26,6 +26,9 @@
     "adminPassword": {
       "type": "securestring"
     },
+    "keyVaultId": {
+      "type": "string"
+    },
     "adImagePublisher": {
       "type": "string"
     },
@@ -461,7 +464,12 @@
                   "value": "[parameters('adminUsername')]"
                 },
                 "adminPassword": {
-                  "value": "[parameters('adminPassword')]"
+                  "reference": {
+                    "keyVault": {
+                      "id": "[parameters('keyVaultId')]"
+                    },
+                    "secretName": "adminPassword"
+                  }
                 },
                 "domainName": {
                   "value": "[parameters('domainName')]"
