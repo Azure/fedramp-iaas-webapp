@@ -1,53 +1,56 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-        "adBDCVMName": {
-            "type": "string"
-        },
-        "location": {
-            "type": "string"
-        },
-        "adminPassword": {
-            "type": "securestring"
-        },
-        "domainName": {
-            "type": "string"
-        },
-        "bdcConfigurationFunction": {
-            "type": "string"
-        },
-        "bdcModulesURL": {
-            "type": "string"
-        },
-        "adPDCNICIPAddress": {
-            "type": "string"
-        },
-        "antimalwareInfo": {
-            "type": "object"
-        },
-        "workspaceName": {
-            "type": "string"
-        },
-        "ResourceGroupName": {
-            "type": "string"
-        },
-        "AutomationAccountName": {
-            "type": "string"
-        },
-        "AzureUserName": {
-            "type": "string"
-        },
-        "AzurePassword": {
-            "type": "securestring"
-        },
-        "SubscriptionId": {
-            "type": "string"
-        },
-        "EnvironmentName": {
-            "type": "string"
-        }
+  "parameters": {
+    "adBDCVMName": {
+      "type": "string"
     },
+    "location": {
+      "type": "string"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    },
+    "domainName": {
+      "type": "string"
+    },
+    "bdcConfigureConfigurationFunction": {
+      "type": "string"
+    },
+    "bdcModulesURL": {
+      "type": "string"
+    },
+    "adPDCNICIPAddress": {
+      "type": "string"
+    },
+    "antimalwareInfo": {
+      "type": "object"
+    },
+    "workspaceName": {
+      "type": "string"
+    },
+    "ResourceGroupName": {
+      "type": "string"
+    },
+    "AutomationAccountName": {
+      "type": "string"
+    },
+    "AzureUserName": {
+      "type": "string"
+    },
+    "AzurePassword": {
+      "type": "securestring"
+    },
+    "SubscriptionId": {
+      "type": "string"
+    },
+    "EnvironmentName": {
+      "type": "string"
+    }
+  },
     "resources": [{
         "type": "Microsoft.Compute/virtualMachines/extensions",
         "name": "[concat(parameters('adBDCVMName'),'/BDCBaselineDSC')]",
@@ -63,21 +66,19 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
                 "modulesURL": "[parameters('bdcModulesURL')]",
-                "configurationFunction": "[parameters('bdcConfigurationFunction')]",
-                "Properties": {
-                    "DNSServer": "[parameters('adPDCNICIPAddress')]",
-                    "ExclusionPath": "[parameters('antimalwareInfo').exclusionPath.ad]",
-                    "ExclusionExtension": "[parameters('antimalwareInfo').exclusionExtension.ad]",
-                    "ExclusionProcess": "[parameters('antimalwareInfo').exclusionProcess.ad]",
-                    "RealTimeScanDirection": "[parameters('antimalwareInfo').realTimeScanDirection]",
-                    "RemediationScheduleDay": "[parameters('antimalwareInfo').remediationScheduleDay]",
-                    "ScanScheduleDay": "[parameters('antimalwareInfo').scanScheduleDay]",
-                    "DisableRealtimeMonitoring": "[parameters('antimalwareInfo').disableRealtimeMonitoring]"
-                },
+                "configurationFunction": "[parameters('bdcConfigureConfigurationFunction')]",
+              "Properties": {
+                "domainName": "[parameters('domainName')]",
+                "adminCreds": {
+                  "userName": "[parameters('adminUsername')]",
+                  "password": "PrivateSettingsRef:adminPassword"
+                }
+              },
                 "protectedSettings": {
-                    "items": {
-                        "AzurePassword": "[parameters('AzurePassword')]"
-                    }
+                  "items": {
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "AzurePassword": "[parameters('AzurePassword')]"
+                  }
                 }
             }
         }
