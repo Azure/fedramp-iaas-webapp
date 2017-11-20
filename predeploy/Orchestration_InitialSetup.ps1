@@ -19,10 +19,10 @@ Must meet complexity requirements
 Write-Host "`n `nAZURE IAAS WEB APPLICATION BLUEPRINT AUTOMATION FOR FEDRAMP: Pre-Deployment Script `n" -foregroundcolor green
 Write-Host "This script can be used for creating the necessary preliminary resources to deploy a multi-tier web application architecture with pre-configured security controls to help customers achieve compliance with FedRAMP requirements. See https://github.com/Azure/fedramp-iaas-webapp for more information. `n " -foregroundcolor yellow
 
-Write-Host "Press any key to continue ..."
-
-$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-
+#Write-Host "Press any key to continue ..."
+#
+#$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+#
 Write-Host "`n LOGIN TO AZURE `n" -foregroundcolor green
 $global:azureUsername = $null
 $global:azurePassword = $null
@@ -40,7 +40,7 @@ function loginToAzure
 
 	$global:azureUsername = Read-Host "Enter your Azure username"
 	$global:azurePassword = Read-Host -assecurestring "Enter your Azure password"
-
+    $EnvironmentName = "AzureUSGovernment"
 
 	$AzureAuthCreds = New-Object System.Management.Automation.PSCredential -ArgumentList @($global:azureUsername,$global:azurePassword)
 	$azureEnv = Get-AzureRmEnvironment -Name $EnvironmentName
@@ -311,14 +311,14 @@ function orchestration
 		Generate-Cert -certPassword $secureCertPassword -domain $domain
 		$certificate = Get-Content -Path ".\cert.txt" | Out-String
 
-		Write-Host "Set Azure Key Vault Access Policy. Set AzureUserName in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'azureUsername' -Destination 'Software'
-		$azureUsernameSecureString = ConvertTo-SecureString $azureUsername -AsPlainText -Force
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'azureUsername' -SecretValue $azureUsernameSecureString
+#		Write-Host "Set Azure Key Vault Access Policy. Set AzureUserName in Key Vault: $keyVaultName";
+#		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'azureUsername' -Destination 'Software'
+#		$azureUsernameSecureString = ConvertTo-SecureString $azureUsername -AsPlainText -Force
+#		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'azureUsername' -SecretValue $azureUsernameSecureString
 
-		Write-Host "Set Azure Key Vault Access Policy. Set AzurePassword in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'azurePassword' -Destination 'Software'
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'azurePassword' -SecretValue $azurePassword
+#		Write-Host "Set Azure Key Vault Access Policy. Set AzurePassword in Key Vault: $keyVaultName";
+#		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'azurePassword' -Destination 'Software'
+#		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'azurePassword' -SecretValue $azurePassword
 
 		Write-Host "Set Azure Key Vault Access Policy. Set adminUsername in Key Vault: $keyVaultName";
 		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'adminUsername' -Destination 'Software'
@@ -379,9 +379,9 @@ try{
 
 	Write-Host "You will now be asked to create credentials for the administrator and sql service accounts. `n"
 
-	Write-Host "Press any key to continue ..."
+	#Write-Host "Press any key to continue ..."
 
-	$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+	#$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 
 	Write-Host "`n CREATE CREDENTIALS `n" -foregroundcolor green
 
