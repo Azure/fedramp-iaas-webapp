@@ -68,18 +68,15 @@ function loginToAzure
 ########################################################################################################################
 function checkAdminUserName
 {
-    Param(
-        [Parameter(Mandatory=$true)]
-        [string]$username
-    )
-
     $username = Read-Host "Enter an admin username"
 
     if ($username.ToLower() -eq "admin")
     {
-        "Not a valid username, please select another"  
-        checkAdminUserName -username $username
+        Write-Host "Not a valid Admin username, please select another"  
+        checkAdminUserName
+        return
     }
+    return $username
 }
 
 ########################################################################################################################
@@ -403,7 +400,7 @@ try{
 	$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 
 	Write-Host "`n CREATE CREDENTIALS `n" -foregroundcolor green
-    checkAdminUserName -username " "
+    $adminUsername = checkAdminUserName
 
 	$passwordNames = @("adminPassword","sqlServerServiceAccountPassword")
 	$passwords = New-Object -TypeName PSObject
