@@ -1172,7 +1172,7 @@
                         "value": "[variables('resourceNames').publicIPs.mgt]"
                     },
                     "numberOfWebInstances": {
-                      "value": "[variables('numberOfWebInstances')]"
+                      "value": "[parameters('numberOfWebInstances')]"
                     },
                     "webNICName": {
                         "value": "[variables('resourceNames').nics.web]"
@@ -1287,7 +1287,7 @@
                       "value": "[variables('vmSettings').location]"
                   },
                   "numberOfWebInstances": {
-                      "value": "[variables('numberOfWebInstances')]"
+                      "value": "[parameters('numberOfWebInstances')]"
                   },
                   "WebVMName": {
                       "value": "[variables('resourceNames').vms.web]"
@@ -1692,7 +1692,7 @@
                 },
                 "parameters": {
                     "numberOfWebInstances": {
-                        "value": "[variables('numberOfWebInstances')]"
+                        "value": "[parameters('numberOfWebInstances')]"
                     },
                     "WebVMName": {
                         "value": "[variables('resourceNames').vms.web]"
@@ -1910,7 +1910,7 @@
             ],
             "copy": {
                 "name": "monitorVMLoopWEB",
-                "count": "[variables('numberOfWebInstances')]"
+                "count": "[parameters('numberOfWebInstances')]"
             },
             "properties": {
                 "mode": "Incremental",
