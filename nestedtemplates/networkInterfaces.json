@@ -91,6 +91,9 @@
     },
     "mgtPublicIPName": {
       "type": "string"
+    },
+	"ipAddressArray": {
+      "type": "array"
     }
   },
   "resources": [
@@ -236,7 +239,7 @@
         },
         "copy": {
             "name": "nicLoopDEL",
-            "count": "[parameters('numberOfWebInstances')]"
+            "count": "[length(parameters('ipAddressArray'))]"
         },
         "dependsOn": [],
         "properties": {
@@ -244,7 +247,7 @@
                 "name": "ipconfig1",
                 "properties": {
                     "privateIPAllocationMethod": "Static",
-                    "privateIPAddress": "[concat(split(parameters('webSubnetAddressRange'), '0/')[0], add(copyindex(), parameters('staticIPWEBStart')))]",
+                    "privateIPAddress": "[parameters('ipAddressArray')[copyindex()]]",
                     "subnet": {
                         "id": "[parameters('subnetRef')]"
                     }

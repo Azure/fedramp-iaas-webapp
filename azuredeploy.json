@@ -46,12 +46,6 @@
             },
             "defaultValue": ""
         },
-        "numberOfWebInstances": {
-            "type": "int",
-            "defaultValue": 2,
-            "minValue": 2,
-            "maxValue": 5
-        },
         "useExistingKek": {
             "type": "string",
             "defaultValue": "kek",
@@ -1223,7 +1217,7 @@
                         "value": "[variables('resourceNames').gatewaySkuName]"
                     },
                     "capacity": {
-                        "value": 2
+                        "value": "[variables('numberOfWebInstances')]"
                     },
                     "backendIpsForPathRuleWEB": {
                         "value": "[variables('vmSettings').web.ipAddresses]"
