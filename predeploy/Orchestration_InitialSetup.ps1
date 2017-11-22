@@ -7,6 +7,10 @@
 .Description
 This script will create a Key Vault with a Key Encryption Key for VM DIsk Encryption and Azure AD Application Service Principal inside a specified Azure subscription
 
+.Parameter adminUsername
+Name of the local admin credentials for all VM's to be created.
+(This value cannot be 'admin')
+
 .Parameter adminPassword
 Must meet complexity requirements
 14+ characters, 2 numbers, 2 upper and lower case, and 2 special chars
@@ -14,14 +18,15 @@ Must meet complexity requirements
 .Parameter sqlServerServiceAccountPassword
 Must meet complexity requirements
 14+ characters, 2 numbers, 2 upper and lower case, and 2 special chars
+
+.Parameter domain
+Must be the Domain name to be created 
+Example: contoso.local
+
 #>
 
 Write-Host "`n `nAZURE IAAS WEB APPLICATION BLUEPRINT AUTOMATION FOR FEDRAMP: Pre-Deployment Script `n" -foregroundcolor green
 Write-Host "This script can be used for creating the necessary preliminary resources to deploy a multi-tier web application architecture with pre-configured security controls to help customers achieve compliance with FedRAMP requirements. See https://github.com/Azure/fedramp-iaas-webapp for more information. `n " -foregroundcolor yellow
-
-Write-Host "Press any key to continue ..."
-
-$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 
 Write-Host "`n LOGIN TO AZURE `n" -foregroundcolor green
 $global:azureUsername = $null
@@ -61,6 +66,22 @@ function loginToAzure
 
 		}
 	}
+}
+
+########################################################################################################################
+# ADMIN USERNAME VALIDATION FUNCTION
+########################################################################################################################
+function checkAdminUserName
+{
+    $username = Read-Host "Enter an admin username"
+
+    if ($username.ToLower() -eq "admin")
+    {
+        Write-Host "Not a valid Admin username, please select another"  
+        checkAdminUserName
+        return
+    }
+    return $username
 }
 
 ########################################################################################################################
@@ -379,13 +400,8 @@ try{
 
 	Write-Host "You will now be asked to create credentials for the administrator and sql service accounts. `n"
 
-	Write-Host "Press any key to continue ..."
-
-	$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-
 	Write-Host "`n CREATE CREDENTIALS `n" -foregroundcolor green
-
-	$adminUsername = Read-Host "Enter an admin username"
+    $adminUsername = checkAdminUserName
 
 	$passwordNames = @("adminPassword","sqlServerServiceAccountPassword")
 	$passwords = New-Object -TypeName PSObject
