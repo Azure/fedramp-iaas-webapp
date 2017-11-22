@@ -241,7 +241,7 @@
                 "name": "ipconfig1",
                 "properties": {
                     "privateIPAllocationMethod": "Static",
-                    "privateIPAddress": "[parameters('ipAddressArray')[copyindex()]]",
+                    "privateIPAddress": "[parameters('ipAddressArray')[copyindex('nicLoopDEL')].IpAddress]",
                     "subnet": {
                         "id": "[parameters('subnetRef')]"
                     }
