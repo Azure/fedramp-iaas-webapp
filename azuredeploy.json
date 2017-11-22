@@ -410,7 +410,8 @@
                 "staticIPWEBStart": 5,
                 "ipAddresses": [
                     { "IpAddress": "10.200.2.5" },
-                    { "IpAddress": "10.200.2.6" }
+                    { "IpAddress": "10.200.2.6" },
+					{ "IpAddress": "10.200.2.7" }
                 ]
             },
             "mgt": {
@@ -1165,8 +1166,8 @@
                     "mgtPublicIPName": {
                         "value": "[variables('resourceNames').publicIPs.mgt]"
                     },
-                    "numberOfWebInstances": {
-                      "value": "[variables('numberOfWebInstances')]"
+                    "ipAddressArray": {
+                      "value": "[variables('vmSettings').web.ipAddresses]"
                     },
                     "webNICName": {
                         "value": "[variables('resourceNames').nics.web]"
@@ -1217,7 +1218,7 @@
                         "value": "[variables('resourceNames').gatewaySkuName]"
                     },
                     "capacity": {
-                        "value": "[variables('numberOfWebInstances')]"
+                         "value": "[variables('numberOfWebInstances')]"
                     },
                     "backendIpsForPathRuleWEB": {
                         "value": "[variables('vmSettings').web.ipAddresses]"

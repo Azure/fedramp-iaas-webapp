@@ -5,12 +5,6 @@
     "location": {
       "type": "string"
     },
-    "numberOfWebInstances": {
-        "type": "int",
-        "defaultValue": 2,
-        "minValue": 2,
-        "maxValue": 5
-    },
     "webNICName": {
         "type": "string"
     },
