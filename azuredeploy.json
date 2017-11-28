@@ -1005,7 +1005,12 @@
                         "value": "[variables('vmSettings').vmContainerName]"
                     },
                     "domainName": {
-                        "value":"[parameters('domainName')]"
+                        "reference": {
+			    "keyVault": {
+			      "id": "[variables('derivedIds').keyVaultId]"
+			    },
+			    "secretName": "domain"
+			  }
                     },
                     "updateVnetWithDNSTemplateURL": {
                         "value": "[variables('artifacts').vnetwithDNSTemplateURL]"
