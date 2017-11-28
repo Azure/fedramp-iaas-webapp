@@ -9,6 +9,18 @@
                 "description": "Assign the environment for Azure (Azure Commercial or Gov)"
             }
         },
+        "azureUsername": {
+          "type": "string",
+          "metadata": {
+            "description": "User name of the Azure account."
+          }
+        },
+        "azurePassword": {
+          "type": "secureString",
+          "metadata": {
+            "description": "Password of the Azure account."
+          }
+        },
         "keyVaultName": {
             "type": "string",
             "metadata": {
@@ -19,13 +31,6 @@
             "type": "string",
             "metadata": {
                 "description": "Name of the resource group that holds the key vault above"
-            }
-        },
-        "domainName": {
-            "type": "string",
-            "defaultValue": "contoso.local",
-            "metadata": {
-                "description": "Name of domain"
             }
         },
         "configureSQLAO": {
@@ -45,12 +50,6 @@
                 "description": "Prefix for environement (production or staging). You can change the allowed values based on your preference."
             },
             "defaultValue": ""
-        },
-        "numberOfWebInstances": {
-            "type": "int",
-            "defaultValue": 2,
-            "minValue": 2,
-            "maxValue": 5
         },
         "useExistingKek": {
             "type": "string",
@@ -416,7 +415,8 @@
                 "staticIPWEBStart": 5,
                 "ipAddresses": [
                     { "IpAddress": "10.200.2.5" },
-                    { "IpAddress": "10.200.2.6" }
+                    { "IpAddress": "10.200.2.6" },
+					{ "IpAddress": "10.200.2.7" }
                 ]
             },
             "mgt": {
@@ -1062,20 +1062,10 @@
                         "value": "[resourceGroup().name]"
                     },
                     "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
+                        "value": "[parameters('azureUsername')]"
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1171,8 +1161,8 @@
                     "mgtPublicIPName": {
                         "value": "[variables('resourceNames').publicIPs.mgt]"
                     },
-                    "numberOfWebInstances": {
-                      "value": "[variables('numberOfWebInstances')]"
+                    "ipAddressArray": {
+                      "value": "[variables('vmSettings').web.ipAddresses]"
                     },
                     "webNICName": {
                         "value": "[variables('resourceNames').nics.web]"
@@ -1223,7 +1213,7 @@
                         "value": "[variables('resourceNames').gatewaySkuName]"
                     },
                     "capacity": {
-                        "value": 2
+                         "value": "[variables('numberOfWebInstances')]"
                     },
                     "backendIpsForPathRuleWEB": {
                         "value": "[variables('vmSettings').web.ipAddresses]"
@@ -1411,7 +1401,12 @@
                       "value": "[variables('vmSettings').mgt.imageSKU]"
                   },
                   "domainName": {
-                      "value": "[parameters('domainName')]"
+                    "reference": {
+                      "keyVault": {
+                        "id": "[variables('derivedIds').keyVaultId]"
+                      },
+                      "secretName": "domain"
+                    }
                   },
                   "witnessVMSize": {
                       "value": "[parameters('witnessVMSize')]"
@@ -1487,12 +1482,7 @@
                     }
                   },
                   "AzurePassword": {
-                      "reference": {
-                          "keyVault": {
-                              "id": "[variables('derivedIds').keyVaultId]"
-                          },
-                          "secretName": "azurePassword"
-                      }
+                      "value": "[parameters('azurePassword')]"
                   },
                   "mgtModulesURL": {
                       "value": "[variables('artifacts').mgtModulesURL]"
@@ -1522,12 +1512,7 @@
                       "value": "[resourceGroup().name]"
                   },
                   "AzureUserName": {
-                      "reference": {
-                          "keyVault": {
-                              "id": "[variables('derivedIds').keyVaultId]"
-                          },
-                          "secretName": "azureUsername"
-                      }
+                      "value": "[parameters('azureUsername')]"
                   },
                   "SubscriptionId": {
                       "value": "[subscription().subscriptionId]"
@@ -1588,7 +1573,12 @@
                       "value": "[variables('vmSettings').location]"
                     },
                     "domainName": {
-                        "value":"[parameters('domainName')]"
+                      "reference": {
+                        "keyVault": {
+                          "id": "[variables('derivedIds').keyVaultId]"
+                        },
+                        "secretName": "domain"
+                      }
                     },
                     "sqlwVMName": {
                         "value": "[variables('resourceNames').vms.sqlw]"
@@ -1639,20 +1629,10 @@
                         "value": "[resourceGroup().name]"
                     },
                     "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
+                        "value": "[parameters('azureUsername')]"
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1749,9 +1729,14 @@
                     "webNSGid": {
                         "value": "[variables('derivedIds').webNSG]"
                     },
-                    "domainName": {
-                        "value":"[parameters('domainName')]"
-                    },
+                  "domainName": {
+                    "reference": {
+                      "keyVault": {
+                        "id": "[variables('derivedIds').keyVaultId]"
+                      },
+                      "secretName": "domain"
+                    }
+                  },
                     "webModulesURL": {
                         "value": "[variables('artifacts').webModulesURL]"
                     },
@@ -1786,20 +1771,10 @@
                         "value": "[parameters('EnvironmentName')]"
                     },
                     "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
+                        "value": "[parameters('azureUsername')]"
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1850,20 +1825,10 @@
                         "value": "[parameters('EnvironmentName')]"
                     },
                     "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
+                        "value": "[parameters('azureUsername')]"
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1887,7 +1852,12 @@
                         "value": "[variables('resourceNames').vms.sql0]"
                     },
                     "domainName": {
-                        "value":"[parameters('domainName')]"
+                      "reference": {
+                        "keyVault": {
+                          "id": "[variables('derivedIds').keyVaultId]"
+                        },
+                        "secretName": "domain"
+                      }
                     },
                     "AlwaysOnAvailabilityGroupName": {
                         "value": "[variables('vmSettings').sql.sqlAOAGName]"
@@ -1932,20 +1902,10 @@
                         "value": "[parameters('EnvironmentName')]"
                     },
                     "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
+                        "value": "[parameters('azureUsername')]"
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1969,7 +1929,12 @@
                         "value": "[variables('resourceNames').vms.sql0]"
                     },
                     "DomainName": {
-                        "value":"[parameters('domainName')]"
+                      "reference": {
+                        "keyVault": {
+                          "id": "[variables('derivedIds').keyVaultId]"
+                        },
+                        "secretName": "domain"
+                      }
                     },
                     "AlwaysOnAvailabilityGroupName": {
                         "value": "[variables('vmSettings').sql.sqlAOAGName]"

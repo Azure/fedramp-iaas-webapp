@@ -7,6 +7,10 @@
 .Description
 This script will create a Key Vault with a Key Encryption Key for VM DIsk Encryption and Azure AD Application Service Principal inside a specified Azure subscription
 
+.Parameter adminUsername
+Name of the local admin credentials for all VM's to be created.
+(This value cannot be 'admin')
+
 .Parameter adminPassword
 Must meet complexity requirements
 14+ characters, 2 numbers, 2 upper and lower case, and 2 special chars
@@ -14,6 +18,11 @@ Must meet complexity requirements
 .Parameter sqlServerServiceAccountPassword
 Must meet complexity requirements
 14+ characters, 2 numbers, 2 upper and lower case, and 2 special chars
+
+.Parameter domain
+Must be the Domain name to be created 
+Example: contoso.local
+
 #>
 
 Write-Host "`n `nAZURE IAAS WEB APPLICATION BLUEPRINT AUTOMATION FOR FEDRAMP: Pre-Deployment Script `n" -foregroundcolor green
@@ -36,7 +45,7 @@ function loginToAzure
 
 	$global:azureUsername = Read-Host "Enter your Azure username"
 	$global:azurePassword = Read-Host -assecurestring "Enter your Azure password"
-
+    $EnvironmentName = "AzureUSGovernment"
 
 	$AzureAuthCreds = New-Object System.Management.Automation.PSCredential -ArgumentList @($global:azureUsername,$global:azurePassword)
 	$azureEnv = Get-AzureRmEnvironment -Name $EnvironmentName
@@ -346,15 +355,6 @@ function orchestration
 		$secureCertPassword = ConvertTo-SecureString $certPassword -AsPlainText -Force
 		Generate-Cert -certPassword $secureCertPassword -domain $domain
 		$certificate = Get-Content -Path ".\cert.txt" | Out-String
-
-		Write-Host "Set Azure Key Vault Access Policy. Set AzureUserName in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'azureUsername' -Destination 'Software'
-		$azureUsernameSecureString = ConvertTo-SecureString $azureUsername -AsPlainText -Force
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'azureUsername' -SecretValue $azureUsernameSecureString
-
-		Write-Host "Set Azure Key Vault Access Policy. Set AzurePassword in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'azurePassword' -Destination 'Software'
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'azurePassword' -SecretValue $azurePassword
 
 		Write-Host "Set Azure Key Vault Access Policy. Set adminUsername in Key Vault: $keyVaultName";
 		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'adminUsername' -Destination 'Software'
