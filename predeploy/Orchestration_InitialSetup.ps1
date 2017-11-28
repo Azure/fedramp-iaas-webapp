@@ -60,6 +60,26 @@ function loginToAzure
 }
 
 ########################################################################################################################
+# KEY VAULT NAME VALIDATION FUNCTION
+########################################################################################################################
+function checkKeyVaultName
+{
+    Param(
+		[Parameter(Mandatory=$true)]
+		[string]$keyVaultName
+	)
+   
+    $firstchar = $keyVaultName[0]
+    if ($firstchar -match '^[0-9]+$')
+    {
+        $keyVaultNew = Read-Host "KeyVault name can't start with numeric value, Enter keyVaultName"
+        checkKeyVaultName -keyVaultName $keyVaultNew
+        return;
+    }
+    return $keyVaultName;
+}
+
+########################################################################################################################
 # ADMIN USERNAME VALIDATION FUNCTION
 ########################################################################################################################
 function checkAdminUserName
@@ -212,6 +232,8 @@ function orchestration
 
 	$errorActionPreference = 'stop'
 
+    $keyVaultName = checkKeyVaultName -keyVaultName $keyVaultName;
+    
 	try
 	{
 		$Exists = Get-AzureRmSubscription  -SubscriptionId $SubscriptionId
