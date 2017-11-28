@@ -69,6 +69,26 @@ function loginToAzure
 }
 
 ########################################################################################################################
+# KEY VAULT NAME VALIDATION FUNCTION
+########################################################################################################################
+function checkKeyVaultName
+{
+    Param(
+		[Parameter(Mandatory=$true)]
+		[string]$keyVaultName
+	)
+   
+    $firstchar = $keyVaultName[0]
+    if ($firstchar -match '^[0-9]+$')
+    {
+        $keyVaultNew = Read-Host "KeyVault name can't start with numeric value, Enter keyVaultName"
+        checkKeyVaultName -keyVaultName $keyVaultNew
+        return;
+    }
+    return $keyVaultName;
+}
+
+########################################################################################################################
 # ADMIN USERNAME VALIDATION FUNCTION
 ########################################################################################################################
 function checkAdminUserName
@@ -221,6 +241,8 @@ function orchestration
 
 	$errorActionPreference = 'stop'
 
+    $keyVaultName = checkKeyVaultName -keyVaultName $keyVaultName;
+    
 	try
 	{
 		$Exists = Get-AzureRmSubscription  -SubscriptionId $SubscriptionId
@@ -254,9 +276,11 @@ function orchestration
 					$now = [System.DateTime]::Now;
 					$oneYearFromNow = $now.AddYears(1);
 					$aadClientSecret = [Guid]::NewGuid();
+                    # changes due to parameter change in AzureRM 5.0.0
+                    $securePassword = ConvertTo-SecureString $aadClientSecret -AsPlainText -Force 
 
 					Write-Host "Creating new AAD application ($aadAppName)";
-					$ADApp = New-AzureRmADApplication -DisplayName $aadAppName -HomePage $defaultHomePage -IdentifierUris $identifierUri  -StartDate $now -EndDate $oneYearFromNow -Password $aadClientSecret;
+					$ADApp = New-AzureRmADApplication -DisplayName $aadAppName -HomePage $defaultHomePage -IdentifierUris $identifierUri  -StartDate $now -EndDate $oneYearFromNow -Password $securePassword;
 					$servicePrincipal = New-AzureRmADServicePrincipal -ApplicationId $ADApp.ApplicationId;
 					$SvcPrincipals = (Get-AzureRmADServicePrincipal -SearchString $aadAppName);
 					if(-not $SvcPrincipals)
