@@ -9,18 +9,18 @@
                 "description": "Assign the environment for Azure (Azure Commercial or Gov)"
             }
         },
-		"azureUsername": {
-			"type": "string",
-			"metadata": {
-				"description": "User name of the Azure account."
-			}
-		},
-		"azurePassword": {
-			"type": "secureString",
-			"metadata": {
-				"description": "Password of the Azure account."
-			}
-		},
+        "azureUsername": {
+          "type": "string",
+          "metadata": {
+            "description": "User name of the Azure account."
+          }
+        },
+        "azurePassword": {
+          "type": "secureString",
+          "metadata": {
+            "description": "Password of the Azure account."
+          }
+        },
         "keyVaultName": {
             "type": "string",
             "metadata": {
