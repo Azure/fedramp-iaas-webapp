@@ -86,7 +86,7 @@
     "mgtPublicIPName": {
       "type": "string"
     },
-	"ipAddressArray": {
+    "ipAddressArray": {
       "type": "array"
     }
   },
