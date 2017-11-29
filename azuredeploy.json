@@ -305,21 +305,21 @@
             }
         },
         "templatesBaseUrl": {
-            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/nestedtemplates",
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/nestedtemplates",
             "type": "String",
             "metadata": {
                 "description": "Linked Templates base url"
             }
         },
         "dscBaseUrl": {
-            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/DSC",
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/DSC",
             "type": "String",
             "metadata": {
                 "description": "DSC Scripts base url"
             }
         },
         "scriptsBaseUrl": {
-            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/custom-scripts",
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/custom-scripts",
             "type": "String",
             "metadata": {
                 "description": "DSC Scripts base url"
