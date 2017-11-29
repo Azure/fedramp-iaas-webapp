@@ -15,6 +15,18 @@
                 "description": "Name of key vault used to store encrypted values for deployment. This key vault is created during predeployment steps."
             }
         },
+        "azureUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Azure Username"
+            }
+        },
+        "azurePassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Azure Password"
+            }
+        },
         "keyVaultResourceGroupName": {
             "type": "string",
             "metadata": {
@@ -29,15 +41,15 @@
             }
         },
         "configureSQLAO": {
-          "type": "string",
-          "defaultValue": "yes",
-          "allowedValues": [
-            "yes",
-            "no"
-          ],
-          "metadata": {
-              "description": "Choose to skip SQL Always On configuration"
-          }
+            "type": "string",
+            "defaultValue": "yes",
+            "allowedValues": [
+                "yes",
+                "no"
+            ],
+            "metadata": {
+                "description": "Choose to skip SQL Always On configuration"
+            }
         },
         "environmentPrefix": {
             "type": "string",
@@ -324,7 +336,6 @@
             "metadata": {
                 "description": "DSC Scripts base url"
             },
-
             "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/custom-scripts"
         },
         "sqlServerVersion": {
@@ -370,9 +381,9 @@
         "RDPNAT": "RDP",
         "SQLAOProbe": "SQLAlwaysOnEndPointProbe",
         "omsSettings": {
-          "workspaceRegion": "USGov Virginia",
-          "serviceTier": "PerNode",
-          "dataRetention": 365
+            "workspaceRegion": "USGov Virginia",
+            "serviceTier": "PerNode",
+            "dataRetention": 365
         },
         "vmSettings": {
             "location": "USGov Virginia",
@@ -415,8 +426,12 @@
                 "imageSKU": "2016-Datacenter",
                 "staticIPWEBStart": 5,
                 "ipAddresses": [
-                    { "IpAddress": "10.200.2.5" },
-                    { "IpAddress": "10.200.2.6" }
+                    {
+                        "IpAddress": "10.200.2.5"
+                    },
+                    {
+                        "IpAddress": "10.200.2.6"
+                    }
                 ]
             },
             "mgt": {
@@ -448,37 +463,37 @@
             "sqllbFEConfigID": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').sqlLBName),'/frontendIPConfigurations/',variables('lbSettings').sqlLBFEName)]",
             "sqllbProbeID": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').sqlLBName),'/probes/',variables('SQLAOProbe'))]"
         },
-        "subnets":{
-          "sql": {
-              "name": "sql",
-              "properties": {
-                  "addressPrefix": "10.200.1.0/24"
-              }
-          },
-          "dc": {
-              "name": "dc",
-              "properties": {
-                  "addressPrefix": "10.200.0.0/24"
-              }
-          },
-          "web": {
-              "name": "web",
-              "properties": {
-                  "addressPrefix": "10.200.2.0/24"
-              }
-          },
-          "mgt": {
-              "name": "mgt",
-              "properties": {
-                  "addressPrefix": "10.200.3.0/24"
-              }
-          },
-          "appGateway": {
-              "name": "appgateway",
-              "properties": {
-                  "addressPrefix": "10.200.4.0/24"
-              }
-          }
+        "subnets": {
+            "sql": {
+                "name": "sql",
+                "properties": {
+                    "addressPrefix": "10.200.1.0/24"
+                }
+            },
+            "dc": {
+                "name": "dc",
+                "properties": {
+                    "addressPrefix": "10.200.0.0/24"
+                }
+            },
+            "web": {
+                "name": "web",
+                "properties": {
+                    "addressPrefix": "10.200.2.0/24"
+                }
+            },
+            "mgt": {
+                "name": "mgt",
+                "properties": {
+                    "addressPrefix": "10.200.3.0/24"
+                }
+            },
+            "appGateway": {
+                "name": "appgateway",
+                "properties": {
+                    "addressPrefix": "10.200.4.0/24"
+                }
+            }
         },
         "subnetArray": [
             "[variables('subnets').sql]",
@@ -606,12 +621,18 @@
             "backupPolicy": "CustomPolicy",
             "backupTemplateUrl": "[variables('artifacts').backupVMProtectedItem]",
             "backupPolicyTemplateUrl": "[variables('artifacts').backupPolicy]",
-            "backupScheduleRunTimes": ["2017-05-09T23:00:00"],
+            "backupScheduleRunTimes": [
+                "2017-05-09T23:00:00"
+            ],
             "backupDailyRetentionDurationCount": 30,
-            "backupDaysOfTheWeek": ["Sunday"],
+            "backupDaysOfTheWeek": [
+                "Sunday"
+            ],
             "backupWeeklyRetentionDurationCount": 104,
             "backupMonthlyRetentionDurationCount": 36,
-            "backupMonthsOfYear": ["January"],
+            "backupMonthsOfYear": [
+                "January"
+            ],
             "backupYearlyRetentionDurationCount": 5
         },
         "vmEncryptionSettings": {
@@ -628,25 +649,55 @@
         },
         "antimalwareInfo": {
             "exclusionPath": {
-                "web": ["c:\\Users"],
-                "sql": ["c:\\Users"],
+                "web": [
+                    "c:\\Users"
+                ],
+                "sql": [
+                    "c:\\Users"
+                ],
                 "sqlWS2012": "c:\\Users",
-                "ad": ["c:\\Users"],
-                "mgt": ["c:\\Users\\adminuser"]
+                "ad": [
+                    "c:\\Users"
+                ],
+                "mgt": [
+                    "c:\\Users\\adminuser"
+                ]
             },
             "exclusionExtension": {
-                "web": [".txt", ".ps1"],
-                "sql": [".txt", ".ps1"],
+                "web": [
+                    ".txt",
+                    ".ps1"
+                ],
+                "sql": [
+                    ".txt",
+                    ".ps1"
+                ],
                 "sqlWS2012": ".txt;.ps1",
-                "ad": [".txt", ".ps1"],
-                "mgt": [".txt"]
+                "ad": [
+                    ".txt",
+                    ".ps1"
+                ],
+                "mgt": [
+                    ".txt"
+                ]
             },
             "exclusionProcess": {
-                "web": ["w3wp.exe", "explorer.exe"],
-                "sql": ["w3wp.exe", "explorer.exe"],
+                "web": [
+                    "w3wp.exe",
+                    "explorer.exe"
+                ],
+                "sql": [
+                    "w3wp.exe",
+                    "explorer.exe"
+                ],
                 "sqlWS2012": "w3wp.exe;explorer.exe",
-                "ad": ["w3wp.exe", "explorer.exe"],
-                "mgt": ["explorer.exe"]
+                "ad": [
+                    "w3wp.exe",
+                    "explorer.exe"
+                ],
+                "mgt": [
+                    "explorer.exe"
+                ]
             },
             "realTimeScanDirection": "Both",
             "remediationScheduleDay": "Everyday",
@@ -654,7 +705,8 @@
             "disableRealtimeMonitoring": false
         },
         "vmNamesArray": {
-            "VMs": [{
+            "VMs": [
+                {
                     "Name": "[variables('resourceNames').vms.adpdc]"
                 },
                 {
@@ -676,7 +728,7 @@
         }
     },
     "resources": [
-      {
+        {
             "name": "ProvisionAutomationAccountAndOMSWorkspace",
             "comments": "Creates an Azure Automation Account and OMS Workspace",
             "type": "Microsoft.Resources/deployments",
@@ -715,7 +767,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-              "Microsoft.Resources/deployments/ProvisionAutomationAccountAndOMSWorkspace"
+                "Microsoft.Resources/deployments/ProvisionAutomationAccountAndOMSWorkspace"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -959,32 +1011,32 @@
                         "value": "[parameters('adVMSize')]"
                     },
                     "adminUsername": {
-                      "reference": {
-                        "keyVault": {
-                          "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "adminUsername"
-                      }
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "adminUsername"
+                        }
                     },
                     "adminPassword": {
-                      "reference": {
-                        "keyVault": {
-                          "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "adminPassword"
-                      }
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "adminPassword"
+                        }
                     },
                     "adImagePublisher": {
-                      "value": "[variables('vmSettings').dc.imagePublisher]"
+                        "value": "[variables('vmSettings').dc.imagePublisher]"
                     },
                     "adImageOffer": {
-                      "value": "[variables('vmSettings').dc.imageOffer]"
+                        "value": "[variables('vmSettings').dc.imageOffer]"
                     },
                     "adImageSKU": {
-                      "value": "[variables('vmSettings').dc.imageSKU]"
+                        "value": "[variables('vmSettings').dc.imageSKU]"
                     },
                     "adPDCNicName": {
-                      "value": "[variables('resourceNames').nics.adpdc]"
+                        "value": "[variables('resourceNames').nics.adpdc]"
                     },
                     "pdcConfigurationFunction": {
                         "value": "[variables('artifacts').pdcConfigurationFunction]"
@@ -1005,7 +1057,7 @@
                         "value": "[variables('vmSettings').vmContainerName]"
                     },
                     "domainName": {
-                        "value":"[parameters('domainName')]"
+                        "value": "[parameters('domainName')]"
                     },
                     "updateVnetWithDNSTemplateURL": {
                         "value": "[variables('artifacts').vnetwithDNSTemplateURL]"
@@ -1062,20 +1114,10 @@
                         "value": "[resourceGroup().name]"
                     },
                     "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
+                        "value": "[parameters('azureUsername')]"
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1116,7 +1158,6 @@
                     "dcSubnetRef": {
                         "value": "[variables('derivedIds').dcSubnet]"
                     },
-
                     "mgtSubnetRef": {
                         "value": "[variables('derivedIds').mgtSubnet]"
                     },
@@ -1172,7 +1213,7 @@
                         "value": "[variables('resourceNames').publicIPs.mgt]"
                     },
                     "numberOfWebInstances": {
-                      "value": "[variables('numberOfWebInstances')]"
+                        "value": "[variables('numberOfWebInstances')]"
                     },
                     "webNICName": {
                         "value": "[variables('resourceNames').nics.web]"
@@ -1247,20 +1288,20 @@
                         "value": "[variables('wafSettings').wafRuleSetVersion]"
                     },
                     "certData": {
-                      "reference": {
-                        "keyVault": {
-                          "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "sslCert"
-                      }
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "sslCert"
+                        }
                     },
                     "certPassword": {
-                      "reference": {
-                        "keyVault": {
-                          "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "sslPassword"
-                      }
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "sslPassword"
+                        }
                     }
                 }
             }
@@ -1283,160 +1324,160 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                  "location": {
-                      "value": "[variables('vmSettings').location]"
-                  },
-                  "numberOfWebInstances": {
-                      "value": "[variables('numberOfWebInstances')]"
-                  },
-                  "WebVMName": {
-                      "value": "[variables('resourceNames').vms.web]"
-                  },
-                  "WebStorageAccountName": {
-                      "value": "[variables('resourceNames').storageAccounts.web]"
-                  },
-                  "WebVMSize": {
-                      "value": "[parameters('webVMSize')]"
-                  },
-                  "webNICName": {
-                      "value": "[variables('resourceNames').nics.web]"
-                  },
-                  "appImagePublisher": {
-                      "value": "[variables('vmSettings').web.imagePublisher]"
-                  },
-                  "appImageOffer": {
-                      "value": "[variables('vmSettings').web.imageOffer]"
-                  },
-                  "appImageSKU": {
-                      "value": "[variables('vmSettings').web.imageSKU]"
-                  },
-                  "webAvailabilitySetName": {
-                      "value": "[variables('resourceNames').availabilitySets.web]"
-                  },
-                  "adAvailabilitySetName": {
-                      "value": "[variables('resourceNames').availabilitySets.ad]"
-                  },
-                  "sqlAvailabilitySetName": {
-                      "value": "[variables('resourceNames').availabilitySets.sql]"
-                  },
-                  "adPDCVMName": {
-                      "value": "[variables('resourceNames').vms.adpdc]"
-                  },
-                  "adVMSize": {
-                      "value": "[parameters('adVMSize')]"
-                  },
-                  "adminUsername": {
-                    "reference": {
-                      "keyVault": {
-                        "id": "[variables('derivedIds').keyVaultId]"
-                      },
-                      "secretName": "adminUsername"
+                    "location": {
+                        "value": "[variables('vmSettings').location]"
+                    },
+                    "numberOfWebInstances": {
+                        "value": "[variables('numberOfWebInstances')]"
+                    },
+                    "WebVMName": {
+                        "value": "[variables('resourceNames').vms.web]"
+                    },
+                    "WebStorageAccountName": {
+                        "value": "[variables('resourceNames').storageAccounts.web]"
+                    },
+                    "WebVMSize": {
+                        "value": "[parameters('webVMSize')]"
+                    },
+                    "webNICName": {
+                        "value": "[variables('resourceNames').nics.web]"
+                    },
+                    "appImagePublisher": {
+                        "value": "[variables('vmSettings').web.imagePublisher]"
+                    },
+                    "appImageOffer": {
+                        "value": "[variables('vmSettings').web.imageOffer]"
+                    },
+                    "appImageSKU": {
+                        "value": "[variables('vmSettings').web.imageSKU]"
+                    },
+                    "webAvailabilitySetName": {
+                        "value": "[variables('resourceNames').availabilitySets.web]"
+                    },
+                    "adAvailabilitySetName": {
+                        "value": "[variables('resourceNames').availabilitySets.ad]"
+                    },
+                    "sqlAvailabilitySetName": {
+                        "value": "[variables('resourceNames').availabilitySets.sql]"
+                    },
+                    "adPDCVMName": {
+                        "value": "[variables('resourceNames').vms.adpdc]"
+                    },
+                    "adVMSize": {
+                        "value": "[parameters('adVMSize')]"
+                    },
+                    "adminUsername": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "adminUsername"
+                        }
+                    },
+                    "environmentPrefix": {
+                        "value": "[parameters('environmentPrefix')]"
+                    },
+                    "adminPassword": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "adminPassword"
+                        }
+                    },
+                    "adImagePublisher": {
+                        "value": "[variables('vmSettings').dc.imagePublisher]"
+                    },
+                    "adImageOffer": {
+                        "value": "[variables('vmSettings').dc.imageOffer]"
+                    },
+                    "adImageSKU": {
+                        "value": "[variables('vmSettings').dc.imageSKU]"
+                    },
+                    "adPDCNicName": {
+                        "value": "[variables('resourceNames').nics.adpdc]"
+                    },
+                    "adBDCVMName": {
+                        "value": "[variables('resourceNames').vms.adbdc]"
+                    },
+                    "adBDCNicName": {
+                        "value": "[variables('resourceNames').nics.adbdc]"
+                    },
+                    "sql0VMName": {
+                        "value": "[variables('resourceNames').vms.sql0]"
+                    },
+                    "sql1VMName": {
+                        "value": "[variables('resourceNames').vms.sql1]"
+                    },
+                    "sqlStorageAccountName": {
+                        "value": "[variables('resourceNames').storageAccounts.sql]"
+                    },
+                    "dcStorageAccountName": {
+                        "value": "[variables('resourceNames').storageAccounts.dc]"
+                    },
+                    "mgtStorageAccountName": {
+                        "value": "[variables('resourceNames').storageAccounts.mgt]"
+                    },
+                    "sqlVMSize": {
+                        "value": "[parameters('sqlVMSize')]"
+                    },
+                    "fswImagePublisher": {
+                        "value": "[variables('vmSettings').sqlw.imagePublisher]"
+                    },
+                    "fswImageOffer": {
+                        "value": "[variables('vmSettings').sqlw.imageOffer]"
+                    },
+                    "fswImageSKU": {
+                        "value": "[variables('vmSettings').sqlw.imageSKU]"
+                    },
+                    "vmContainerName": {
+                        "value": "[variables('vmSettings').vmContainerName]"
+                    },
+                    "sqlImagePublisher": {
+                        "value": "[variables('vmSettings').sql.imagePublisher]"
+                    },
+                    "sqlImageOffer": {
+                        "value": "[variables('vmSettings').sql.imageOffer]"
+                    },
+                    "sqlImageSKU": {
+                        "value": "[variables('vmSettings').sql.imageSKU]"
+                    },
+                    "mgtImagePublisher": {
+                        "value": "[variables('vmSettings').mgt.imagePublisher]"
+                    },
+                    "mgtImageOffer": {
+                        "value": "[variables('vmSettings').mgt.imageOffer]"
+                    },
+                    "mgtImageSKU": {
+                        "value": "[variables('vmSettings').mgt.imageSKU]"
+                    },
+                    "domainName": {
+                        "value": "[parameters('domainName')]"
+                    },
+                    "witnessVMSize": {
+                        "value": "[parameters('witnessVMSize')]"
+                    },
+                    "sqlwVMName": {
+                        "value": "[variables('resourceNames').vms.sqlw]"
+                    },
+                    "sqlwNicName": {
+                        "value": "[variables('resourceNames').nics.sqlw]"
+                    },
+                    "sql0NicName": {
+                        "value": "[variables('resourceNames').nics.sql0]"
+                    },
+                    "sql1NicName": {
+                        "value": "[variables('resourceNames').nics.sql1]"
+                    },
+                    "mgtVMName": {
+                        "value": "[variables('resourceNames').vms.mgt]"
+                    },
+                    "mgtVMSize": {
+                        "value": "[parameters('mgtVMSize')]"
+                    },
+                    "mgtNICName": {
+                        "value": "[variables('resourceNames').nics.mgt]"
                     }
-                  },
-                  "environmentPrefix": {
-                      "value": "[parameters('environmentPrefix')]"
-                  },
-                  "adminPassword": {
-                      "reference": {
-                          "keyVault": {
-                              "id": "[variables('derivedIds').keyVaultId]"
-                          },
-                          "secretName": "adminPassword"
-                      }
-                  },
-                  "adImagePublisher": {
-                      "value": "[variables('vmSettings').dc.imagePublisher]"
-                  },
-                  "adImageOffer": {
-                      "value": "[variables('vmSettings').dc.imageOffer]"
-                  },
-                  "adImageSKU": {
-                      "value": "[variables('vmSettings').dc.imageSKU]"
-                  },
-                  "adPDCNicName": {
-                      "value": "[variables('resourceNames').nics.adpdc]"
-                  },
-                  "adBDCVMName": {
-                      "value": "[variables('resourceNames').vms.adbdc]"
-                  },
-                  "adBDCNicName": {
-                      "value": "[variables('resourceNames').nics.adbdc]"
-                  },
-                  "sql0VMName": {
-                      "value": "[variables('resourceNames').vms.sql0]"
-                  },
-                  "sql1VMName": {
-                      "value": "[variables('resourceNames').vms.sql1]"
-                  },
-                  "sqlStorageAccountName": {
-                      "value": "[variables('resourceNames').storageAccounts.sql]"
-                  },
-                  "dcStorageAccountName": {
-                      "value": "[variables('resourceNames').storageAccounts.dc]"
-                  },
-                  "mgtStorageAccountName": {
-                      "value": "[variables('resourceNames').storageAccounts.mgt]"
-                  },
-                  "sqlVMSize": {
-                      "value": "[parameters('sqlVMSize')]"
-                  },
-                  "fswImagePublisher": {
-                      "value": "[variables('vmSettings').sqlw.imagePublisher]"
-                  },
-                  "fswImageOffer": {
-                      "value": "[variables('vmSettings').sqlw.imageOffer]"
-                  },
-                  "fswImageSKU": {
-                      "value": "[variables('vmSettings').sqlw.imageSKU]"
-                  },
-                  "vmContainerName": {
-                      "value": "[variables('vmSettings').vmContainerName]"
-                  },
-                  "sqlImagePublisher": {
-                      "value": "[variables('vmSettings').sql.imagePublisher]"
-                  },
-                  "sqlImageOffer": {
-                      "value": "[variables('vmSettings').sql.imageOffer]"
-                  },
-                  "sqlImageSKU": {
-                      "value": "[variables('vmSettings').sql.imageSKU]"
-                  },
-                  "mgtImagePublisher": {
-                      "value": "[variables('vmSettings').mgt.imagePublisher]"
-                  },
-                  "mgtImageOffer": {
-                      "value": "[variables('vmSettings').mgt.imageOffer]"
-                  },
-                  "mgtImageSKU": {
-                      "value": "[variables('vmSettings').mgt.imageSKU]"
-                  },
-                  "domainName": {
-                      "value": "[parameters('domainName')]"
-                  },
-                  "witnessVMSize": {
-                      "value": "[parameters('witnessVMSize')]"
-                  },
-                  "sqlwVMName": {
-                      "value": "[variables('resourceNames').vms.sqlw]"
-                  },
-                  "sqlwNicName": {
-                      "value": "[variables('resourceNames').nics.sqlw]"
-                  },
-                  "sql0NicName": {
-                      "value": "[variables('resourceNames').nics.sql0]"
-                  },
-                  "sql1NicName": {
-                      "value": "[variables('resourceNames').nics.sql1]"
-                  },
-                  "mgtVMName": {
-                      "value": "[variables('resourceNames').vms.mgt]"
-                  },
-                  "mgtVMSize": {
-                      "value": "[parameters('mgtVMSize')]"
-                  },
-                  "mgtNICName": {
-                      "value": "[variables('resourceNames').nics.mgt]"
-                  }
                 }
             }
         },
@@ -1447,7 +1488,6 @@
             "comments": "Configures MGT VM with custom settings",
             "dependsOn": [
                 "Microsoft.Resources/deployments/ProvisionVirtualMachines"
-
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1456,88 +1496,78 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                  "mgtVMName": {
-                      "value": "[variables('resourceNames').vms.mgt]"
-                  },
-                  "location": {
-                      "value": "[variables('vmSettings').location]"
-                  },
-                  "domainName": {
-                    "reference": {
-                      "keyVault": {
-                        "id": "[variables('derivedIds').keyVaultId]"
-                      },
-                      "secretName": "domain"
+                    "mgtVMName": {
+                        "value": "[variables('resourceNames').vms.mgt]"
+                    },
+                    "location": {
+                        "value": "[variables('vmSettings').location]"
+                    },
+                    "domainName": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "domain"
+                        }
+                    },
+                    "adminUsername": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "adminUsername"
+                        }
+                    },
+                    "adminPassword": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "adminPassword"
+                        }
+                    },
+                    "AzurePassword": {
+                        "value": "[parameters('azurePassword')]"
+                    },
+                    "mgtModulesURL": {
+                        "value": "[variables('artifacts').mgtModulesURL]"
+                    },
+                    "antimalwareInfo": {
+                        "value": "[variables('antimalwareInfo')]"
+                    },
+                    "mgtConfigurationFunction": {
+                        "value": "[variables('artifacts').mgtConfigurationFunction]"
+                    },
+                    "vmEncryptionSettings": {
+                        "value": "[variables('vmEncryptionSettings')]"
+                    },
+                    "keyVaultName": {
+                        "value": "[parameters('keyVaultName')]"
+                    },
+                    "workspaceName": {
+                        "value": "[variables('resourceNames').omsWorkspace]"
+                    },
+                    "AutomationAccountName": {
+                        "value": "[variables('resourceNames').automationAccount]"
+                    },
+                    "EnvironmentName": {
+                        "value": "[parameters('EnvironmentName')]"
+                    },
+                    "ResourceGroupName": {
+                        "value": "[resourceGroup().name]"
+                    },
+                    "AzureUserName": {
+                        "value": "[parameters('azureUsername')]"
+                    },
+                    "SubscriptionId": {
+                        "value": "[subscription().subscriptionId]"
+                    },
+                    "backupInfo": {
+                        "value": "[variables('backupInfo')]"
+                    },
+                    "provisioningHybridworkersUrl": {
+                        "value": "[variables('artifacts').provisioningHybridworkerUrl]"
                     }
-                  },
-                  "adminUsername": {
-                    "reference": {
-                      "keyVault": {
-                        "id": "[variables('derivedIds').keyVaultId]"
-                      },
-                      "secretName": "adminUsername"
-                    }
-                  },
-                  "adminPassword": {
-                    "reference": {
-                        "keyVault": {
-                            "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "adminPassword"
-                    }
-                  },
-                  "AzurePassword": {
-                      "reference": {
-                          "keyVault": {
-                              "id": "[variables('derivedIds').keyVaultId]"
-                          },
-                          "secretName": "azurePassword"
-                      }
-                  },
-                  "mgtModulesURL": {
-                      "value": "[variables('artifacts').mgtModulesURL]"
-                  },
-                  "antimalwareInfo": {
-                      "value": "[variables('antimalwareInfo')]"
-                  },
-                  "mgtConfigurationFunction": {
-                      "value": "[variables('artifacts').mgtConfigurationFunction]"
-                  },
-                  "vmEncryptionSettings": {
-                      "value": "[variables('vmEncryptionSettings')]"
-                  },
-                  "keyVaultName": {
-                      "value": "[parameters('keyVaultName')]"
-                  },
-                  "workspaceName": {
-                      "value": "[variables('resourceNames').omsWorkspace]"
-                  },
-                  "AutomationAccountName": {
-                      "value": "[variables('resourceNames').automationAccount]"
-                  },
-                  "EnvironmentName": {
-                      "value": "[parameters('EnvironmentName')]"
-                  },
-                  "ResourceGroupName": {
-                      "value": "[resourceGroup().name]"
-                  },
-                  "AzureUserName": {
-                      "reference": {
-                          "keyVault": {
-                              "id": "[variables('derivedIds').keyVaultId]"
-                          },
-                          "secretName": "azureUsername"
-                      }
-                  },
-                  "SubscriptionId": {
-                      "value": "[subscription().subscriptionId]"
-                  },
-                  "backupInfo": {
-                      "value": "[variables('backupInfo')]"
-                  },
-                  "provisioningHybridworkersUrl": {
-                      "value": "[variables('artifacts').provisioningHybridworkerUrl]"
-                  }
                 }
             }
         },
@@ -1560,20 +1590,20 @@
                         "value": "[variables('resourceNames').vms.adpdc]"
                     },
                     "adminUsername": {
-                      "reference": {
-                        "keyVault": {
-                          "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "adminUsername"
-                      }
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "adminUsername"
+                        }
                     },
                     "adminPassword": {
-                      "reference": {
-                        "keyVault": {
-                          "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "adminPassword"
-                      }
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "adminPassword"
+                        }
                     },
                     "adBDCVMName": {
                         "value": "[variables('resourceNames').vms.adbdc]"
@@ -1585,10 +1615,10 @@
                         "value": "[variables('resourceNames').vms.sql1]"
                     },
                     "location": {
-                      "value": "[variables('vmSettings').location]"
+                        "value": "[variables('vmSettings').location]"
                     },
                     "domainName": {
-                        "value":"[parameters('domainName')]"
+                        "value": "[parameters('domainName')]"
                     },
                     "sqlwVMName": {
                         "value": "[variables('resourceNames').vms.sqlw]"
@@ -1647,12 +1677,7 @@
                         }
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1672,7 +1697,6 @@
                     "workspaceName": {
                         "value": "[variables('resourceNames').omsWorkspace]"
                     }
-
                 }
             }
         },
@@ -1713,12 +1737,12 @@
                         "value": "[parameters('webVMSize')]"
                     },
                     "adminUsername": {
-                      "reference": {
-                        "keyVault": {
-                          "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "adminUsername"
-                      }
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "adminUsername"
+                        }
                     },
                     "adminPassword": {
                         "reference": {
@@ -1750,7 +1774,7 @@
                         "value": "[variables('derivedIds').webNSG]"
                     },
                     "domainName": {
-                        "value":"[parameters('domainName')]"
+                        "value": "[parameters('domainName')]"
                     },
                     "webModulesURL": {
                         "value": "[variables('artifacts').webModulesURL]"
@@ -1794,12 +1818,7 @@
                         }
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1850,20 +1869,10 @@
                         "value": "[parameters('EnvironmentName')]"
                     },
                     "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
+                        "value": "[parameters('azureUsername')]"
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1887,7 +1896,7 @@
                         "value": "[variables('resourceNames').vms.sql0]"
                     },
                     "domainName": {
-                        "value":"[parameters('domainName')]"
+                        "value": "[parameters('domainName')]"
                     },
                     "AlwaysOnAvailabilityGroupName": {
                         "value": "[variables('vmSettings').sql.sqlAOAGName]"
@@ -1932,20 +1941,10 @@
                         "value": "[parameters('EnvironmentName')]"
                     },
                     "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
+                        "value": "[parameters('azureUsername')]"
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1969,7 +1968,7 @@
                         "value": "[variables('resourceNames').vms.sql0]"
                     },
                     "DomainName": {
-                        "value":"[parameters('domainName')]"
+                        "value": "[parameters('domainName')]"
                     },
                     "AlwaysOnAvailabilityGroupName": {
                         "value": "[variables('vmSettings').sql.sqlAOAGName]"
@@ -2003,12 +2002,12 @@
                         "value": "[variables('resourceNames').automationSchedule]"
                     },
                     "scheduleJobGuid": {
-                      "reference": {
-                          "keyVault": {
-                              "id": "[variables('derivedIds').keyVaultId]"
-                          },
-                          "secretName": "guid"
-                      }
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('derivedIds').keyVaultId]"
+                            },
+                            "secretName": "guid"
+                        }
                     },
                     "computerIdList": {
                         "value": ""
