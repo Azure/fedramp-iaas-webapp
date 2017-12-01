@@ -60,22 +60,6 @@ function loginToAzure
 }
 
 ########################################################################################################################
-# ADMIN USERNAME VALIDATION FUNCTION
-########################################################################################################################
-function checkAdminUserName
-{
-    $username = Read-Host "Enter an admin username"
-
-    if ($username.ToLower() -eq "admin")
-    {
-        Write-Host "Not a valid Admin username, please select another"  
-        checkAdminUserName
-        return
-    }
-    return $username
-}
-
-########################################################################################################################
 # PASSWORD VALIDATION FUNCTION
 ########################################################################################################################
 function checkPasswords
@@ -245,11 +229,9 @@ function orchestration
 					$now = [System.DateTime]::Now;
 					$oneYearFromNow = $now.AddYears(1);
 					$aadClientSecret = [Guid]::NewGuid();
-                    # changes due to parameter change in AzureRM 5.0.0
-                    $securePassword = ConvertTo-SecureString $aadClientSecret -AsPlainText -Force 
 
 					Write-Host "Creating new AAD application ($aadAppName)";
-					$ADApp = New-AzureRmADApplication -DisplayName $aadAppName -HomePage $defaultHomePage -IdentifierUris $identifierUri  -StartDate $now -EndDate $oneYearFromNow -Password $securePassword;
+					$ADApp = New-AzureRmADApplication -DisplayName $aadAppName -HomePage $defaultHomePage -IdentifierUris $identifierUri  -StartDate $now -EndDate $oneYearFromNow -Password $aadClientSecret;
 					$servicePrincipal = New-AzureRmADServicePrincipal -ApplicationId $ADApp.ApplicationId;
 					$SvcPrincipals = (Get-AzureRmADServicePrincipal -SearchString $aadAppName);
 					if(-not $SvcPrincipals)
@@ -394,7 +376,8 @@ try{
 	Write-Host "You will now be asked to create credentials for the administrator and sql service accounts. `n"
 
 	Write-Host "`n CREATE CREDENTIALS `n" -foregroundcolor green
-    $adminUsername = checkAdminUserName
+
+	$adminUsername = Read-Host "Enter an admin username"
 
 	$passwordNames = @("adminPassword","sqlServerServiceAccountPassword")
 	$passwords = New-Object -TypeName PSObject
