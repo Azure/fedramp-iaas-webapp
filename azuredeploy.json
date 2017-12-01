@@ -9,7 +9,7 @@
                 "description": "Assign the environment for Azure (Azure Commercial or Gov)"
             }
         },
-        "keyVaultName": {
+        "keyVaultNam": {
             "type": "string",
             "metadata": {
                 "description": "Name of key vault used to store encrypted values for deployment. This key vault is created during predeployment steps."
