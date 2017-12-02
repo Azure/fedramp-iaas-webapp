@@ -7,6 +7,10 @@
 .Description
 This script will create a Key Vault with a Key Encryption Key for VM DIsk Encryption and Azure AD Application Service Principal inside a specified Azure subscription
 
+.Parameter adminUsername
+Name of the local admin credentials for all VM's to be created.
+(This value cannot be 'admin')
+
 .Parameter adminPassword
 Must meet complexity requirements
 14+ characters, 2 numbers, 2 upper and lower case, and 2 special chars
@@ -14,6 +18,11 @@ Must meet complexity requirements
 .Parameter sqlServerServiceAccountPassword
 Must meet complexity requirements
 14+ characters, 2 numbers, 2 upper and lower case, and 2 special chars
+
+.Parameter domain
+Must be the Domain name to be created 
+Example: contoso.local
+
 #>
 
 Write-Host "`n `nAZURE IAAS WEB APPLICATION BLUEPRINT AUTOMATION FOR FEDRAMP: Pre-Deployment Script `n" -foregroundcolor green
