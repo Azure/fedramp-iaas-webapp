@@ -7,6 +7,10 @@
 .Description
 This script will create a Key Vault with a Key Encryption Key for VM DIsk Encryption and Azure AD Application Service Principal inside a specified Azure subscription
 
+.Parameter adminUsername
+Name of the local admin credentials for all VM's to be created.
+(This value cannot be 'admin')
+
 .Parameter adminPassword
 Must meet complexity requirements
 14+ characters, 2 numbers, 2 upper and lower case, and 2 special chars
@@ -14,6 +18,11 @@ Must meet complexity requirements
 .Parameter sqlServerServiceAccountPassword
 Must meet complexity requirements
 14+ characters, 2 numbers, 2 upper and lower case, and 2 special chars
+
+.Parameter domain
+Must be the Domain name to be created 
+Example: contoso.local
+
 #>
 
 Write-Host "`n `nAZURE IAAS WEB APPLICATION BLUEPRINT AUTOMATION FOR FEDRAMP: Pre-Deployment Script `n" -foregroundcolor green
@@ -57,22 +66,6 @@ function loginToAzure
 
 		}
 	}
-}
-
-########################################################################################################################
-# ADMIN USERNAME VALIDATION FUNCTION
-########################################################################################################################
-function checkAdminUserName
-{
-    $username = Read-Host "Enter an admin username"
-
-    if ($username.ToLower() -eq "admin")
-    {
-        Write-Host "Not a valid Admin username, please select another"  
-        checkAdminUserName
-        return
-    }
-    return $username
 }
 
 ########################################################################################################################
@@ -245,11 +238,9 @@ function orchestration
 					$now = [System.DateTime]::Now;
 					$oneYearFromNow = $now.AddYears(1);
 					$aadClientSecret = [Guid]::NewGuid();
-                    # changes due to parameter change in AzureRM 5.0.0
-                    $securePassword = ConvertTo-SecureString $aadClientSecret -AsPlainText -Force 
 
 					Write-Host "Creating new AAD application ($aadAppName)";
-					$ADApp = New-AzureRmADApplication -DisplayName $aadAppName -HomePage $defaultHomePage -IdentifierUris $identifierUri  -StartDate $now -EndDate $oneYearFromNow -Password $securePassword;
+					$ADApp = New-AzureRmADApplication -DisplayName $aadAppName -HomePage $defaultHomePage -IdentifierUris $identifierUri  -StartDate $now -EndDate $oneYearFromNow -Password $aadClientSecret;
 					$servicePrincipal = New-AzureRmADServicePrincipal -ApplicationId $ADApp.ApplicationId;
 					$SvcPrincipals = (Get-AzureRmADServicePrincipal -SearchString $aadAppName);
 					if(-not $SvcPrincipals)
@@ -394,7 +385,8 @@ try{
 	Write-Host "You will now be asked to create credentials for the administrator and sql service accounts. `n"
 
 	Write-Host "`n CREATE CREDENTIALS `n" -foregroundcolor green
-    $adminUsername = checkAdminUserName
+
+	$adminUsername = Read-Host "Enter an admin username"
 
 	$passwordNames = @("adminPassword","sqlServerServiceAccountPassword")
 	$passwords = New-Object -TypeName PSObject
@@ -412,3 +404,4 @@ catch{
 	Write-Host $PSItem.Exception.Message
 	Write-Host "Thank You"
 }
+

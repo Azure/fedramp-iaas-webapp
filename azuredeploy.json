@@ -21,13 +21,6 @@
                 "description": "Name of the resource group that holds the key vault above"
             }
         },
-        "domainName": {
-            "type": "string",
-            "defaultValue": "contoso.local",
-            "metadata": {
-                "description": "Name of domain"
-            }
-        },
         "configureSQLAO": {
           "type": "string",
           "defaultValue": "yes",
@@ -1006,7 +999,12 @@
                   "value": "[variables('vmSettings').vmContainerName]"
                 },
                 "domainName": {
-                  "value": "[parameters('domainName')]"
+                  "reference": {
+                    "keyVault": {
+                      "id": "[variables('derivedIds').keyVaultId]"
+                    },
+                    "secretName": "domain"
+                  }
                 },
                 "updateVnetWithDNSTemplateURL": {
                   "value": "[variables('artifacts').vnetwithDNSTemplateURL]"
@@ -1415,7 +1413,12 @@
                       "value": "[variables('vmSettings').mgt.imageSKU]"
                   },
                   "domainName": {
-                      "value": "[parameters('domainName')]"
+                    "reference": {
+                      "keyVault": {
+                        "id": "[variables('derivedIds').keyVaultId]"
+                      },
+                      "secretName": "domain"
+                    }
                   },
                   "witnessVMSize": {
                       "value": "[parameters('witnessVMSize')]"
@@ -1592,7 +1595,12 @@
                       "value": "[variables('vmSettings').location]"
                     },
                     "domainName": {
-                        "value":"[parameters('domainName')]"
+                      "reference": {
+                        "keyVault": {
+                          "id": "[variables('derivedIds').keyVaultId]"
+                        },
+                        "secretName": "domain"
+                      }
                     },
                     "sqlwVMName": {
                         "value": "[variables('resourceNames').vms.sqlw]"
@@ -1754,7 +1762,12 @@
                         "value": "[variables('derivedIds').webNSG]"
                     },
                     "domainName": {
-                        "value":"[parameters('domainName')]"
+                      "reference": {
+                        "keyVault": {
+                          "id": "[variables('derivedIds').keyVaultId]"
+                        },
+                        "secretName": "domain"
+                      }
                     },
                     "webModulesURL": {
                         "value": "[variables('artifacts').webModulesURL]"
@@ -1891,7 +1904,12 @@
                         "value": "[variables('resourceNames').vms.sql0]"
                     },
                     "domainName": {
-                        "value":"[parameters('domainName')]"
+                      "reference": {
+                        "keyVault": {
+                          "id": "[variables('derivedIds').keyVaultId]"
+                        },
+                        "secretName": "domain"
+                      }
                     },
                     "AlwaysOnAvailabilityGroupName": {
                         "value": "[variables('vmSettings').sql.sqlAOAGName]"
@@ -1973,7 +1991,12 @@
                         "value": "[variables('resourceNames').vms.sql0]"
                     },
                     "DomainName": {
-                        "value":"[parameters('domainName')]"
+                      "reference": {
+                        "keyVault": {
+                          "id": "[variables('derivedIds').keyVaultId]"
+                        },
+                        "secretName": "domain"
+                      }
                     },
                     "AlwaysOnAvailabilityGroupName": {
                         "value": "[variables('vmSettings').sql.sqlAOAGName]"
