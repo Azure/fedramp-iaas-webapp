@@ -9,6 +9,18 @@
                 "description": "Assign the environment for Azure (Azure Commercial or Gov)"
             }
         },
+		"azureUsername": {
+          "type": "string",
+          "metadata": {
+            "description": "User name of the Azure account."
+          }
+        },
+        "azurePassword": {
+          "type": "secureString",
+          "metadata": {
+            "description": "Password of the Azure account."
+          }
+        },
         "keyVaultName": {
             "type": "string",
             "metadata": {
@@ -1059,20 +1071,10 @@
                   "value": "[resourceGroup().name]"
                 },
                 "AzureUserName": {
-                  "reference": {
-                    "keyVault": {
-                      "id": "[variables('derivedIds').keyVaultId]"
-                    },
-                    "secretName": "azureUsername"
-                  }
+                  "value": "[parameters('azureUsername')]"
                 },
                 "AzurePassword": {
-                  "reference": {
-                    "keyVault": {
-                      "id": "[variables('derivedIds').keyVaultId]"
-                    },
-                    "secretName": "azurePassword"
-                  }
+                  "value": "[parameters('azurePassword')]"
                 },
                 "SubscriptionId": {
                   "value": "[subscription().subscriptionId]"
@@ -1488,13 +1490,8 @@
                         "secretName": "adminPassword"
                     }
                   },
-                  "AzurePassword": {
-                      "reference": {
-                          "keyVault": {
-                              "id": "[variables('derivedIds').keyVaultId]"
-                          },
-                          "secretName": "azurePassword"
-                      }
+     			  "AzurePassword": {
+                     "value": "[parameters('azurePassword')]"
                   },
                   "mgtModulesURL": {
                       "value": "[variables('artifacts').mgtModulesURL]"
@@ -1524,12 +1521,7 @@
                       "value": "[resourceGroup().name]"
                   },
                   "AzureUserName": {
-                      "reference": {
-                          "keyVault": {
-                              "id": "[variables('derivedIds').keyVaultId]"
-                          },
-                          "secretName": "azureUsername"
-                      }
+                     "value": "[parameters('azureUsername')]"
                   },
                   "SubscriptionId": {
                       "value": "[subscription().subscriptionId]"
@@ -1646,20 +1638,10 @@
                         "value": "[resourceGroup().name]"
                     },
                     "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
+                        "value": "[parameters('azureUsername')]"
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1798,20 +1780,10 @@
                         "value": "[parameters('EnvironmentName')]"
                     },
                     "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
+                        "value": "[parameters('azureUsername')]"
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1862,20 +1834,10 @@
                         "value": "[parameters('EnvironmentName')]"
                     },
                     "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
+                        "value": "[parameters('azureUsername')]"
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1949,20 +1911,10 @@
                         "value": "[parameters('EnvironmentName')]"
                     },
                     "AzureUserName": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azureUsername"
-                        }
+                        "value": "[parameters('azureUsername')]"
                     },
                     "AzurePassword": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('derivedIds').keyVaultId]"
-                            },
-                            "secretName": "azurePassword"
-                        }
+                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
