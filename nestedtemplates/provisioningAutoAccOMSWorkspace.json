@@ -227,7 +227,7 @@
                 "sku": {
                     "name": "[parameters('serviceTier')]"
                 },
-                "retention": "[parameters('dataRetention')]"
+                "retentionInDays": "[parameters('dataRetention')]"
             },
             "resources": [{
                     "name": "AzureActivityLog",
