@@ -39,12 +39,6 @@
             },
             "defaultValue": ""
         },
-        "numberOfWebInstances": {
-            "type": "int",
-            "defaultValue": 2,
-            "minValue": 2,
-            "maxValue": 5
-        },
         "useExistingKek": {
             "type": "string",
             "defaultValue": "kek",
@@ -409,7 +403,8 @@
                 "staticIPWEBStart": 5,
                 "ipAddresses": [
                     { "IpAddress": "10.200.2.5" },
-                    { "IpAddress": "10.200.2.6" }
+                    { "IpAddress": "10.200.2.6" },
+					{ "IpAddress": "10.200.2.7" }
                 ]
             },
             "mgt": {
@@ -1173,8 +1168,8 @@
                     "mgtPublicIPName": {
                         "value": "[variables('resourceNames').publicIPs.mgt]"
                     },
-                    "numberOfWebInstances": {
-                      "value": "[variables('numberOfWebInstances')]"
+                    "ipAddressArray": {
+                      "value": "[variables('vmSettings').web.ipAddresses]"
                     },
                     "webNICName": {
                         "value": "[variables('resourceNames').nics.web]"
@@ -1225,7 +1220,7 @@
                         "value": "[variables('resourceNames').gatewaySkuName]"
                     },
                     "capacity": {
-                        "value": 2
+                        "value": "[variables('numberOfWebInstances')]"
                     },
                     "backendIpsForPathRuleWEB": {
                         "value": "[variables('vmSettings').web.ipAddresses]"
