@@ -69,6 +69,42 @@ function loginToAzure
 }
 
 ########################################################################################################################
+# KEY VAULT NAME VALIDATION FUNCTION
+########################################################################################################################
+function checkKeyVaultName
+{
+    Param(
+		[Parameter(Mandatory=$true)]
+		[string]$keyVaultName
+	)
+   
+    $firstchar = $keyVaultName[0]
+    if ($firstchar -match '^[0-9]+$')
+    {
+        $keyVaultNew = Read-Host "KeyVault name can't start with numeric value, Enter keyVaultName"
+        checkKeyVaultName -keyVaultName $keyVaultNew
+        return;
+    }
+    return $keyVaultName;
+}
+
+########################################################################################################################
+# ADMIN USERNAME VALIDATION FUNCTION
+########################################################################################################################
+function checkAdminUserName
+{
+    $username = Read-Host "Enter an admin username"
+
+    if ($username.ToLower() -eq "admin")
+    {
+        Write-Host "Not a valid Admin username, please select another"  
+        checkAdminUserName
+        return
+    }
+    return $username
+}
+
+########################################################################################################################
 # PASSWORD VALIDATION FUNCTION
 ########################################################################################################################
 function checkPasswords
@@ -205,6 +241,8 @@ function orchestration
 
 	$errorActionPreference = 'stop'
 
+    $keyVaultName = checkKeyVaultName -keyVaultName $keyVaultName;
+    
 	try
 	{
 		$Exists = Get-AzureRmSubscription  -SubscriptionId $SubscriptionId
@@ -287,7 +325,7 @@ function orchestration
 		Set-AzureRmKeyVaultAccessPolicy -VaultName $keyVaultName -ServicePrincipalName $aadClientID -PermissionsToKeys wrapKey -PermissionsToSecrets set;
 		Set-AzureRmKeyVaultAccessPolicy -VaultName $keyVaultName -ResourceGroupName $resourceGroupName -ServicePrincipalName $aadClientID -PermissionsToKeys backup,get,list,wrapKey -PermissionsToSecrets get,list,set;
 		Set-AzureRmKeyVaultAccessPolicy -VaultName $keyVaultName -EnabledForDiskEncryption;
-    $keyEncryptionKeyName = $keyVaultName + "kek"
+        $keyEncryptionKeyName = $keyVaultName + "kek"
 
 		if($keyEncryptionKeyName)
 		{
@@ -385,8 +423,7 @@ try{
 	Write-Host "You will now be asked to create credentials for the administrator and sql service accounts. `n"
 
 	Write-Host "`n CREATE CREDENTIALS `n" -foregroundcolor green
-
-	$adminUsername = Read-Host "Enter an admin username"
+    $adminUsername = checkAdminUserName
 
 	$passwordNames = @("adminPassword","sqlServerServiceAccountPassword")
 	$passwords = New-Object -TypeName PSObject
