@@ -354,15 +354,6 @@ function orchestration
 		Generate-Cert -certPassword $secureCertPassword -domain $domain
 		$certificate = Get-Content -Path ".\cert.txt" | Out-String
 
-		Write-Host "Set Azure Key Vault Access Policy. Set AzureUserName in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'azureUsername' -Destination 'Software'
-		$azureUsernameSecureString = ConvertTo-SecureString $azureUsername -AsPlainText -Force
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'azureUsername' -SecretValue $azureUsernameSecureString
-
-		Write-Host "Set Azure Key Vault Access Policy. Set AzurePassword in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'azurePassword' -Destination 'Software'
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'azurePassword' -SecretValue $azurePassword
-
 		Write-Host "Set Azure Key Vault Access Policy. Set adminUsername in Key Vault: $keyVaultName";
 		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'adminUsername' -Destination 'Software'
 		$adminUsernameSecureString = ConvertTo-SecureString $adminUsername -AsPlainText -Force
