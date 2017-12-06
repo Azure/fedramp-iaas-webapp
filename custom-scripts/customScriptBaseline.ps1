@@ -369,7 +369,7 @@ try{
             #this does not error out
             Set-ADDefaultDomainPasswordPolicy -Identity $Domain -AuthType Negotiate -MaxPasswordAge 60.00:00:00 -MinPasswordAge 1.00:00:00 -PasswordHistoryCount 24 -ComplexityEnabled $true -ReversibleEncryptionEnabled $true -MinPasswordLength 14
             Set-GPLink -Guid (Get-GPO -Name "Default Domain Policy").id -Target $target -LinkEnabled Yes -Enforced Yes
-
+            .\accountmanagementprincipals.ps1
         }
 
     }
@@ -443,4 +443,21 @@ Invoke-Expression "tzutil.exe /s ""UTC"""
 
 $Logs = Get-Eventlog -List |ForEach {
 Limit-Eventlog -Logname $_.Log -MaximumSize 64000Kb
+
+}
+
+
+try{
+    # Set Password Policy
+
+    if([string]::IsNullOrWhiteSpace($MachinesToSetPasswordPolicy)){
+        $adMachineArray = $MachinesToSetPasswordPolicy.Split(";")
+        $index = $adMachineArray.IndexOf($MachineName)
+        if($index -gt -1){
+            .\accountmanagementprincipals.ps1
+        }
+
+    }
+}
+catch{
 }
