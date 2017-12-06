@@ -32,6 +32,9 @@
         "customScriptBaselineUrl": {
             "type": "string"
         },
+        "accountManagementPrincipalsUrl": {
+            "type": "string"
+        },
         "MachinesToSetPasswordPolicy": {
             "type": "string"
         },
@@ -96,7 +99,8 @@
                 "settings": {
                     "fileUris": [
                         "[parameters('customScriptBaselineUrl')]",
-                        "[parameters('secondarySqlCustomCMDUrl')]"
+                        "[parameters('secondarySqlCustomCMDUrl')]",
+                        "[parameters('accountManagementPrincipalsUrl')]"
                     ]
                 },
                 "protectedSettings": {

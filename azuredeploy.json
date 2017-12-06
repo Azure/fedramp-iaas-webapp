@@ -551,6 +551,7 @@
         "provisioningVirtualMachinesUrl": "[concat(parameters('templatesBaseUrl'),'/virtualMachines.json')]",
         "provisioningAvailabilitySetsUrl": "[concat(parameters('templatesBaseUrl'),'/availabilitySets.json')]",
         "customScriptBaselineUrl": "[concat(parameters('scriptsBaseUrl'),'/customScriptBaseline.ps1')]",
+        "accountManagementPrincipalsUrl": "[concat(parameters('scriptsBaseUrl'),'/accountmanagementprincipals.ps1')]",
         "secondarySqlCustomCMDUrl": "[concat(parameters('scriptsBaseUrl'),'/SQL0CustomCMD.sql')]",
         "provisioningCustomScriptExtensionUrl": "[concat(parameters('templatesBaseUrl'),'/customScriptExtension.json')]",
         "provisioningOMSWorkspaceUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutoAccOMSWorkspace.json')]",
@@ -654,13 +655,8 @@
             "scanScheduleDay": "Everyday",
             "disableRealtimeMonitoring": false
         },
-        "vmNamesArray": {
-            "VMs": [{
-                    "Name": "[variables('resourceNames').vms.adpdc]"
-                },
-                {
-                    "Name": "[variables('resourceNames').vms.adbdc]"
-                },
+        "vmNamesArraySQLMGT": {
+            "VMs": [
                 {
                     "Name": "[variables('resourceNames').vms.mgt]"
                 },
@@ -672,6 +668,16 @@
                 },
                 {
                     "Name": "[variables('resourceNames').vms.sql1]"
+                }
+            ]
+        },
+        "vmNamesArrayAD": {
+            "VMs": [
+                {
+                    "Name": "[variables('resourceNames').vms.adpdc]"
+                },
+                {
+                    "Name": "[variables('resourceNames').vms.adbdc]"
                 }
             ]
         }
@@ -1086,6 +1092,84 @@
             }
         },
         {
+            "name": "[concat('ConfigureOMSMonitoringAD-', variables('vmNamesArrayAD').VMs[copyIndex()].Name)]",
+            "comments": "Creates OMS Monitoring Extension for SQL, AD, and MGT",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "ProvisionAndConfigureAD"
+            ],
+            "copy": {
+                "name": "monitorVMLoopAD",
+                "count": "[length(variables('vmNamesArrayAD').VMs)]"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('artifacts').provisioningOMSMonitoringUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vmName": {
+                        "value": "[variables('vmNamesArrayAD').VMs[copyIndex()].Name]"
+                    },
+                    "workspaceName": {
+                        "value": "[variables('resourceNames').omsWorkspace]"
+                    },
+                    "AutomationAccountName": {
+                        "value": "[variables('resourceNames').automationAccount]"
+                    },
+                    "EnvironmentName": {
+                        "value": "[parameters('EnvironmentName')]"
+                    },
+                    "AzureUserName": {
+                        "value": "[parameters('azureUsername')]"
+                    },
+                    "AzurePassword": {
+                        "value": "[parameters('azurePassword')]"
+                    },
+                    "SubscriptionId": {
+                        "value": "[subscription().subscriptionId]"
+                    },
+                    "ResourceGroupName": {
+                        "value": "[resourceGroup().name]"
+                    },
+                    "customScriptBaselineUrl": {
+                        "value": "[variables('artifacts').customScriptBaselineUrl]"
+                    },
+                    "accountManagementPrincipalsUrl": {
+                        "value": "[variables('artifacts').accountManagementPrincipalsUrl]"
+                    },
+                    "MachinesToSetPasswordPolicy": {
+                        "value": "[concat(variables('resourceNames').vms.adpdc,';', variables('resourceNames').vms.adbdc)]"
+                    },
+                    "location": {
+                        "value": "[variables('vmSettings').location]"
+                    },
+                    "SQLPrimaryName": {
+                        "value": "[variables('resourceNames').vms.sql1]"
+                    },
+                    "SQLSecondaryName": {
+                        "value": "[variables('resourceNames').vms.sql0]"
+                    },
+                    "domainName": {
+                      "reference": {
+                        "keyVault": {
+                          "id": "[variables('derivedIds').keyVaultId]"
+                        },
+                        "secretName": "domain"
+                      }
+                    },
+                    "AlwaysOnAvailabilityGroupName": {
+                        "value": "[variables('vmSettings').sql.sqlAOAGName]"
+                    },
+                    "secondarySqlCustomCMDUrl": {
+                        "value": "[variables('artifacts').secondarySqlCustomCMDUrl]"
+                    }
+                }
+            }
+        },
+        {
             "name": "ProvisionNICs",
             "comments": "Creates Network Interfaces for MGT, WEB, and SQL VMs",
             "type": "Microsoft.Resources/deployments",
@@ -1450,7 +1534,8 @@
             "apiVersion": "2015-01-01",
             "comments": "Configures MGT VM with custom settings",
             "dependsOn": [
-                "Microsoft.Resources/deployments/ProvisionVirtualMachines"
+                "Microsoft.Resources/deployments/ProvisionVirtualMachines",
+                "monitorVMLoopAD"
 
             ],
             "properties": {
@@ -1541,7 +1626,8 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                "Microsoft.Resources/deployments/ProvisionVirtualMachines"
+                "Microsoft.Resources/deployments/ProvisionVirtualMachines",
+                "monitorVMLoopAD"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1671,7 +1757,8 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                "Microsoft.Resources/deployments/ProvisionVirtualMachines"
+                "Microsoft.Resources/deployments/ProvisionVirtualMachines",
+                "monitorVMLoopAD"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1801,18 +1888,18 @@
             }
         },
         {
-            "name": "[concat('ConfigureOMSMonitoringSQLADMGT-', variables('vmNamesArray').VMs[copyIndex()].Name)]",
+            "name": "[concat('ConfigureOMSMonitoringSQLMGT-', variables('vmNamesArraySQLMGT').VMs[copyIndex()].Name)]",
             "comments": "Creates OMS Monitoring Extension for SQL, AD, and MGT",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                "ConfigureSQL",
-                "ConfigureWEB",
-                "ConfigureMGT"
+                "monitorVMLoopAD",
+                "ConfigureMGT",
+                "ConfigureSQL"
             ],
             "copy": {
                 "name": "monitorVMLoopSQLAD",
-                "count": "[length(variables('vmNamesArray').VMs)]"
+                "count": "[length(variables('vmNamesArraySQLMGT').VMs)]"
             },
             "properties": {
                 "mode": "Incremental",
@@ -1822,7 +1909,7 @@
                 },
                 "parameters": {
                     "vmName": {
-                        "value": "[variables('vmNamesArray').VMs[copyIndex()].Name]"
+                        "value": "[variables('vmNamesArraySQLMGT').VMs[copyIndex()].Name]"
                     },
                     "workspaceName": {
                         "value": "[variables('resourceNames').omsWorkspace]"
@@ -1847,6 +1934,9 @@
                     },
                     "customScriptBaselineUrl": {
                         "value": "[variables('artifacts').customScriptBaselineUrl]"
+                    },
+                    "accountManagementPrincipalsUrl": {
+                        "value": "[variables('artifacts').accountManagementPrincipalsUrl]"
                     },
                     "MachinesToSetPasswordPolicy": {
                         "value": "[concat(variables('resourceNames').vms.adpdc,';', variables('resourceNames').vms.adbdc)]"
@@ -1883,9 +1973,8 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                "ConfigureSQL",
-                "ConfigureWEB",
-                "ConfigureMGT"
+                "monitorVMLoopAD",
+                "ConfigureWEB"
             ],
             "copy": {
                 "name": "monitorVMLoopWEB",
@@ -1924,6 +2013,9 @@
                     },
                     "customScriptBaselineUrl": {
                         "value": "[variables('artifacts').customScriptBaselineUrl]"
+                    },
+                    "accountManagementPrincipalsUrl": {
+                        "value": "[variables('artifacts').accountManagementPrincipalsUrl]"
                     },
                     "MachinesToSetPasswordPolicy": {
                         "value": ""
