@@ -309,14 +309,14 @@
             "metadata": {
                 "description": "Linked Templates base url"
             },
-            "defaultValue": "https://raw.githubusercontent.com/davoodharun/fedramp-iaas-webapp/dev/nestedtemplates"
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/nestedtemplates"
         },
         "dscBaseUrl": {
             "type": "string",
             "metadata": {
                 "description": "DSC Scripts base url"
             },
-            "defaultValue": "https://raw.githubusercontent.com/davoodharun/fedramp-iaas-webapp/dev/DSC"
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/DSC"
         },
         "scriptsBaseUrl": {
             "type": "string",
@@ -324,7 +324,7 @@
                 "description": "DSC Scripts base url"
             },
 
-            "defaultValue": "https://raw.githubusercontent.com/davoodharun/fedramp-iaas-webapp/dev/custom-scripts"
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/custom-scripts"
         },
         "sqlServerVersion": {
             "type": "string",
