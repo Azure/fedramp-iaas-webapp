@@ -2091,7 +2091,7 @@
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",
-                "count": "[length(variables('resourceNames').vms.web)]"
+                "count": "[variables('numberOfWebInstances')]"
             },
             "properties": {
                 "mode": "Incremental",
