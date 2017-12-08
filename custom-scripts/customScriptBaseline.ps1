@@ -486,10 +486,11 @@ try{
 
             Invoke-GPUpdate -Boot
 
-            Restart-Computer -Wait -For PowerShell -Timeout 100 -Delay 2
         }
 
     }
 }
 catch{
 }
+
+gpupdate
