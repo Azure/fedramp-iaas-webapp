@@ -79,7 +79,7 @@
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[parameters('vmName')]",
             "location": "[resourceGroup().location]",
-            "dependsOn": "[resourceId('Microsoft.Compute/virtualMachines/extensions',  parameters('vmName'), variables('vmEncryptionSettings').diskEncryptionExtensionName)]",
+            "dependsOn": "[resourceId('Microsoft.Compute/virtualMachines/extensions',  parameters('vmName'), parameters('vmEncryptionSettings').diskEncryptionExtensionName)]",
             "properties": {
                 "storageProfile": {
                     "osDisk": {
