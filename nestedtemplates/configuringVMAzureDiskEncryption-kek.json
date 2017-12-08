@@ -50,7 +50,7 @@
     "resources": [{
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('vmName'),'/', parameters('vmEncryptionSettings').diskEncryptionExtensionName)]",
-            "apiVersion": "2016-04-30-preview",
+            "apiVersion": "2017-12-01",
             "tags": {
                 "Project": "Blueprint"
             },
