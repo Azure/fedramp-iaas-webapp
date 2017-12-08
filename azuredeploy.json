@@ -415,8 +415,7 @@
                 "staticIPWEBStart": 5,
                 "ipAddresses": [
                     { "IpAddress": "10.200.2.5" },
-                    { "IpAddress": "10.200.2.6" },
-					{ "IpAddress": "10.200.2.7" }
+                    { "IpAddress": "10.200.2.6" }
                 ]
             },
             "mgt": {
