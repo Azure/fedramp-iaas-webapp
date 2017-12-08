@@ -188,88 +188,6 @@
             }
         },
         {
-            "name": "[concat('ConfigurationVMEncryption-WEB-',copyIndex())]",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2015-01-01",
-            "copy": {
-                "name": "encryptWebLoop",
-                "count": "[parameters('numberOfWebInstances')]"
-            },
-            "dependsOn": [
-                "vmLoopJoin",
-                "vmLoopBaseline"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[parameters('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "vmName": {
-                        "value": "[concat(parameters('WebVMName'), copyindex())]"
-                    },
-                    "keyVaultName": {
-                        "value": "[parameters('keyVaultName')]"
-                    },
-                    "vmEncryptionSettings": {
-                        "value": "[parameters('vmEncryptionSettings')]"
-                    },
-                    "aadClientID": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[parameters('vmEncryptionSettings').keyVaultId]"
-                            },
-                            "secretName": "aadClientID"
-                        }
-                    },
-                    "aadClientSecret": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[parameters('vmEncryptionSettings').keyVaultId]"
-                            },
-                            "secretName": "aadClientSecret"
-                        }
-                    },
-                    "keyEncryptionKeyURL": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[parameters('vmEncryptionSettings').keyVaultId]"
-                            },
-                            "secretName": "keyEncryptionKeyURL"
-                        }
-                    },
-                    "workspaceName": {
-                        "value": "[parameters('workspaceName')]"
-                    },
-                    "AutomationAccountName": {
-                        "value": "[parameters('AutomationAccountName')]"
-                    },
-                    "EnvironmentName": {
-                        "value": "[parameters('EnvironmentName')]"
-                    },
-                    "ResourceGroupName": {
-                        "value": "[parameters('ResourceGroupName')]"
-                    },
-                    "AzureUserName": {
-                        "value": "[parameters('AzureUserName')]"
-                    },
-                    "AzurePassword": {
-                        "value": "[parameters('AzurePassword')]"
-                    },
-                    "SubscriptionId": {
-                        "value": "[parameters('SubscriptionId')]"
-                    },
-                    "provisioningHybridworkersUrl": {
-                        "value": "[parameters('provisioningHybridworkersUrl')]"
-                    },
-                    "MachinesToSetPasswordPolicy": {
-                        "value": ""
-                    }
-                }
-            }
-        },
-        {
             "name": "[concat('Backup-WEB-',copyIndex())]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
@@ -278,7 +196,7 @@
                 "count": "[parameters('numberOfWebInstances')]"
             },
             "dependsOn": [
-                "encryptWebLoop"
+                "vmLoopBaseline"
             ],
             "properties": {
                 "mode": "Incremental",

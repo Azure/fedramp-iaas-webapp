@@ -154,87 +154,6 @@
         }
     },
     {
-        "name": "[concat('ConfigurationVMEncryption-', variables('vmNames').VMs[copyIndex()].Name)]",
-        "type": "Microsoft.Resources/deployments",
-        "apiVersion": "2015-01-01",
-        "dependsOn": [
-              "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('mgtVMName'), 'MGTBaselineDSC')]"
-        ],
-        "copy": {
-            "name": "encryptMGTLoop",
-            "count": "[length(variables('vmNames').VMs)]"
-        },
-        "properties": {
-            "mode": "Incremental",
-            "templateLink": {
-                "uri": "[parameters('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
-                "contentVersion": "1.0.0.0"
-            },
-            "parameters": {
-                "vmName": {
-                    "value": "[variables('vmNames').VMs[copyIndex()].Name]"
-                },
-                "keyVaultName": {
-                    "value": "[parameters('keyVaultName')]"
-                },
-                "vmEncryptionSettings": {
-                    "value": "[parameters('vmEncryptionSettings')]"
-                },
-                "aadClientID": {
-                    "reference": {
-                        "keyVault": {
-                            "id": "[parameters('vmEncryptionSettings').keyVaultId]"
-                        },
-                        "secretName": "aadClientID"
-                    }
-                },
-                "aadClientSecret": {
-                    "reference": {
-                        "keyVault": {
-                            "id": "[parameters('vmEncryptionSettings').keyVaultId]"
-                        },
-                        "secretName": "aadClientSecret"
-                    }
-                },
-                "keyEncryptionKeyURL": {
-                    "reference": {
-                        "keyVault": {
-                            "id": "[parameters('vmEncryptionSettings').keyVaultId]"
-                        },
-                        "secretName": "keyEncryptionKeyURL"
-                    }
-                },
-                "workspaceName": {
-                    "value": "[parameters('workspaceName')]"
-                },
-                "AutomationAccountName": {
-                    "value": "[parameters('AutomationAccountName')]"
-                },
-                "EnvironmentName": {
-                    "value": "[parameters('EnvironmentName')]"
-                },
-                "ResourceGroupName": {
-                    "value": "[parameters('ResourceGroupName')]"
-                },
-                "AzureUserName": {
-                    "value": "[parameters('AzureUserName')]"
-                },
-                "AzurePassword": {
-                    "value": "[parameters('AzurePassword')]"
-                },
-                "SubscriptionId": {
-                    "value": "[parameters('SubscriptionId')]"
-                },
-                "provisioningHybridworkersUrl": {
-                    "value": "[parameters('provisioningHybridworkersUrl')]"
-                },
-                "MachinesToSetPasswordPolicy": {
-                    "value": ""
-                }
-            }
-        }
-    },
-    {
         "name": "[concat('BackupVM-',variables('vmNames').VMs[copyIndex()].Name)]",
         "type": "Microsoft.Resources/deployments",
         "apiVersion": "2015-01-01",
@@ -243,7 +162,7 @@
             "count": "[length(variables('vmNames').VMs)]"
         },
         "dependsOn": [
-            "encryptMGTLoop"
+              "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('mgtVMName'), 'MGTBaselineDSC')]"
         ],
         "properties": {
             "mode": "Incremental",
