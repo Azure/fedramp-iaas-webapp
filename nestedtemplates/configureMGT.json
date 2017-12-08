@@ -162,7 +162,7 @@
             "count": "[length(variables('vmNames').VMs)]"
         },
         "dependsOn": [
-            "encryptMGTLoop"
+            "[concat(parameters('mgtVMName'),'/MGTBaselineDSC')]"
         ],
         "properties": {
             "mode": "Incremental",

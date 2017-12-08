@@ -196,7 +196,7 @@
                 "count": "[parameters('numberOfWebInstances')]"
             },
             "dependsOn": [
-                "encryptWebLoop"
+                "vmLoopBaseline"
             ],
             "properties": {
                 "mode": "Incremental",

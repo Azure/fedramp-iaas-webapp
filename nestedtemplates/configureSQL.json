@@ -491,7 +491,7 @@
                 "count": "[length(variables('vmNames').VMs)]"
             },
             "dependsOn": [
-                "encryptSQLLoop"
+                "ConfiguringAlwaysOn"
             ],
             "properties": {
                 "mode": "Incremental",
