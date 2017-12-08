@@ -46,6 +46,7 @@
         }
     },
     "variables": {
+      "keyVaultSecretUrl": "[reference(resourceId('Microsoft.Compute/virtualMachines/extensions',  parameters('vmName'), parameters('vmEncryptionSettings').diskEncryptionExtensionName)).instanceView.statuses[0].message]",
     },
     "resources": [{
             "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -88,7 +89,7 @@
                                 "sourceVault": {
                                     "id": "[parameters('vmEncryptionSettings').keyVaultId]"
                                 },
-                                "secretUrl": "[parameters('vmEncryptionSettings').keyVaultSecretUrl]"
+                                "secretUrl": "[variables('keyVaultSecretUrl')]"
                             },
                             "keyEncryptionKey": {
                                 "sourceVault": {
