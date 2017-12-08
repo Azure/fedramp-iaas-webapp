@@ -477,7 +477,12 @@ try{
 
 
 
-            ##################################
+            #PART 5: disable inactive Accounts
+            $principal = New-ScheduledTaskPrincipal -UserId "$($env:USERDOMAIN)\$($env:USERNAME)" -LogonType S4U -RunLevel Highest
+            $Action = New-ScheduledTaskAction  -Execute 'C:WindowsSystem32WindowsPowerShellv1.0powershell.exe' -Argument "-NonInteractive -NoLogo -NoProfile -File .\accountmanagementprincipals.ps1'"
+            $Trigger = New-ScheduledTaskTrigger -Daily -At '4AM'
+            $Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Principal $principal -Settings (New-ScheduledTaskSettingsSet)
+            $Task | Register-ScheduledTask -TaskName ‘Inactive accounts script'
 
 
 
