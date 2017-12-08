@@ -2096,7 +2096,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[parameters('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
+                    "uri": "[variables('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -2171,7 +2171,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[parameters('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
+                    "uri": "[variables('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -2246,7 +2246,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[parameters('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
+                    "uri": "[variables('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
