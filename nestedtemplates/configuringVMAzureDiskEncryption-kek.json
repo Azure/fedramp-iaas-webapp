@@ -73,6 +73,33 @@
                     "AADClientSecret": "[parameters('aadClientSecret')]"
                 }
             }
+        },
+        {
+            "apiVersion": "2017-12-01",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('vmName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": "[resourceId('Microsoft.Compute/virtualMachines/extensions',  parameters('vmName'), variables('vmEncryptionSettings').diskEncryptionExtensionName)]",
+            "properties": {
+                "storageProfile": {
+                    "osDisk": {
+                        "encryptionSettings": {
+                            "diskEncryptionKey": {
+                                "sourceVault": {
+                                    "id": "[parameters('vmEncryptionSettings').keyVaultId]"
+                                },
+                                "secretUrl": "[parameters('vmEncryptionSettings').keyVaultSecretUrl]"
+                            },
+                            "keyEncryptionKey": {
+                                "sourceVault": {
+                                    "id": "[resourceId(subscription().subscriptionId,  parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+                                },
+                                "keyUrl": "[parameters('keyEncryptionKeyURL')]"
+                            }
+                        }
+                    }
+                }
+            }
         }
     ],
     "outputs": {

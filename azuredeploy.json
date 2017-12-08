@@ -623,6 +623,7 @@
             "diskEncryptionExtensionVersion": "1.1",
             "encryptionOperation": "EnableEncryption",
             "keyEncryptionAlgorithm": "RSA-OAEP",
+            "keyVaultSecretUrl": "[reference(resourceId('Microsoft.Compute/virtualMachines/extensions',  parameters('vmName'), variables('vmEncryptionSettings').diskEncryptionExtensionName)).instanceView.statuses[0].message]",
             "keyVaultURL": "[concat('https://', parameters('keyVaultName'), '.vault.usgovcloudapi.net/')]",
             "provisioningVMAzureDiskEncryptionUrl": "[concat(parameters('templatesBaseUrl'),'/configuringVMAzureDiskEncryption-', parameters('useExistingKek'),'.json')]",
             "keyVaultId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('keyVaultResourceGroupName'), '/providers/Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]",
