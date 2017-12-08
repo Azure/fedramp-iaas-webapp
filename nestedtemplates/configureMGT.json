@@ -162,7 +162,7 @@
             "count": "[length(variables('vmNames').VMs)]"
         },
         "dependsOn": [
-            "[concat(parameters('mgtVMName'),'/MGTBaselineDSC')]"
+              "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('mgtVMName'), 'MGTBaselineDSC')]"
         ],
         "properties": {
             "mode": "Incremental",
