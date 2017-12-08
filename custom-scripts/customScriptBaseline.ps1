@@ -477,18 +477,13 @@ try{
 
 
 
-            #PART 5: disable inactive Accounts
+            #PART 5: disable inactive AccountDisabled
             $principal = New-ScheduledTaskPrincipal -UserId "$($env:USERDOMAIN)\$($env:USERNAME)" -LogonType S4U -RunLevel Highest
-            $Action = New-ScheduledTaskAction  -Execute 'C:WindowsSystem32WindowsPowerShellv1.0powershell.exe' -Argument "-NonInteractive -NoLogo -NoProfile -File .\accountmanagementprincipals.ps1'"
+            $Action = New-ScheduledTaskAction  -Execute 'C:WindowsSystem32WindowsPowerShellv1.0powershell.exe' -Argument "-NonInteractive -NoLogo -NoProfile -File .\disableinactiveaccounts.ps1"
             $Trigger = New-ScheduledTaskTrigger -Daily -At '4AM'
             $Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Principal $principal -Settings (New-ScheduledTaskSettingsSet)
-            $Task | Register-ScheduledTask -TaskName ‘Inactive accounts script'
+            $Task | Register-ScheduledTask -TaskName "Inactive accounts script"
 
-
-
-            #########################################################################
-
-            #this is required for policies to apply- should be applied at the end of the Custom script extension only
             Invoke-GPUpdate -Boot
         }
 
