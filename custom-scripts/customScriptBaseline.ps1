@@ -485,6 +485,8 @@ try{
             $Task | Register-ScheduledTask -TaskName "Inactive accounts script"
 
             Invoke-GPUpdate -Boot
+
+            Restart-Computer -Wait -For PowerShell -Timeout 100 -Delay 2
         }
 
     }
