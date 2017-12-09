@@ -95,7 +95,7 @@
                             },
                             "keyEncryptionKey": {
                                 "sourceVault": {
-                                    "id": "[resourceId(subscription().subscriptionId,  parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+                                    "id": "[resourceId(subscription().subscriptionId,  parameters('vmEncryptionSettings').keyVaultResourceGroup, 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
                                 },
                                 "keyUrl": "[parameters('keyEncryptionKeyURL')]"
                             }

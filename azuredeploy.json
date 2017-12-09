@@ -618,6 +618,7 @@
         "vmEncryptionSettings": {
             "sequenceVersion": "1.0",
             "volumeType": "All",
+            "keyVaultResourceGroup": "[parameters('keyVaultResourceGroupName')]",
             "diskEncryptionExtensionName": "AzureDiskEncryption",
             "diskEncryptionExtensionVersion": "1.1",
             "encryptionOperation": "EnableEncryption",
