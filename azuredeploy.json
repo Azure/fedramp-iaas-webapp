@@ -323,7 +323,6 @@
             "metadata": {
                 "description": "DSC Scripts base url"
             },
-
             "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/custom-scripts"
         },
         "sqlServerVersion": {
@@ -618,6 +617,7 @@
         "vmEncryptionSettings": {
             "sequenceVersion": "1.0",
             "volumeType": "All",
+            "keyVaultResourceGroup": "[parameters('keyVaultResourceGroupName')]",
             "diskEncryptionExtensionName": "AzureDiskEncryption",
             "diskEncryptionExtensionVersion": "1.1",
             "encryptionOperation": "EnableEncryption",

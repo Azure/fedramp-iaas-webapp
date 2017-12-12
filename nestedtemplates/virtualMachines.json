@@ -161,7 +161,7 @@
   "resources": [
 
     {
-        "apiVersion": "2016-03-30",
+        "apiVersion": "2017-12-01",
         "type": "Microsoft.Compute/virtualMachines",
         "name": "[parameters('sql0VMName')]",
         "location": "[parameters('location')]",
@@ -235,7 +235,7 @@
         "resources": []
     },
     {
-        "apiVersion": "2016-03-30",
+        "apiVersion": "2017-12-01",
         "type": "Microsoft.Compute/virtualMachines",
         "name": "[parameters('sql1VMName')]",
         "location": "[parameters('location')]",
@@ -309,7 +309,7 @@
         "resources": []
     },
     {
-        "apiVersion": "2016-03-30",
+        "apiVersion": "2017-12-01",
         "type": "Microsoft.Compute/virtualMachines",
         "name": "[parameters('sqlwVMName')]",
         "location": "[parameters('location')]",
@@ -372,7 +372,7 @@
         "resources": []
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2017-12-01",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[parameters('mgtVMName')]",
       "location": "[parameters('location')]",
@@ -431,7 +431,7 @@
       }
     },
     {
-        "apiVersion": "2015-06-15",
+        "apiVersion": "2017-12-01",
         "type": "Microsoft.Compute/virtualMachines",
         "name": "[concat(parameters('WebVMName'), copyindex())]",
         "location": "[parameters('location')]",

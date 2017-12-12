@@ -46,11 +46,12 @@
         }
     },
     "variables": {
+
     },
     "resources": [{
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('vmName'),'/', parameters('vmEncryptionSettings').diskEncryptionExtensionName)]",
-            "apiVersion": "2016-04-30-preview",
+            "apiVersion": "2017-12-01",
             "tags": {
                 "Project": "Blueprint"
             },
@@ -71,6 +72,35 @@
                 },
                 "protectedSettings": {
                     "AADClientSecret": "[parameters('aadClientSecret')]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-12-01",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('vmName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+              "[resourceId('Microsoft.Compute/virtualMachines/extensions',  parameters('vmName'), parameters('vmEncryptionSettings').diskEncryptionExtensionName)]"
+            ],
+            "properties": {
+                "storageProfile": {
+                    "osDisk": {
+                        "encryptionSettings": {
+                            "diskEncryptionKey": {
+                                "sourceVault": {
+                                    "id": "[parameters('vmEncryptionSettings').keyVaultId]"
+                                },
+                                "secretUrl": "[reference(resourceId('Microsoft.Compute/virtualMachines/extensions',  parameters('vmName'), parameters('vmEncryptionSettings').diskEncryptionExtensionName)).instanceView.statuses[0].message]"
+                            },
+                            "keyEncryptionKey": {
+                                "sourceVault": {
+                                    "id": "[resourceId(subscription().subscriptionId,  parameters('vmEncryptionSettings').keyVaultResourceGroup, 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+                                },
+                                "keyUrl": "[parameters('keyEncryptionKeyURL')]"
+                            }
+                        }
+                    }
                 }
             }
         }
