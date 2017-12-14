@@ -11,9 +11,6 @@
         "keyVaultResourceGroupName": {
             "value": ""
         },
-        "domainName": {
-            "value": "contoso.local"
-        },
         "configureSQLAO": {
             "value": "yes"
         },
