@@ -25,8 +25,8 @@ Example: contoso.local
 
 #>
 
-Write-Host "`n `nAZURE IAAS WEB APPLICATION BLUEPRINT AUTOMATION FOR FEDRAMP: Pre-Deployment Script `n" -foregroundcolor green
-Write-Host "This script can be used for creating the necessary preliminary resources to deploy a multi-tier web application architecture with pre-configured security controls to help customers achieve compliance with FedRAMP requirements. See https://github.com/Azure/fedramp-iaas-webapp for more information. `n " -foregroundcolor yellow
+Write-Host "`n `nAzure Blueprint Automation: Web Applications for FedRAMP - Pre-Deployment Script `n" -foregroundcolor green
+Write-Host "This script can be used for creating the necessary preliminary resources to deploy a multi-tier web application architecture with pre-configured security controls to help customers achieve compliance with FedRAMP requirements. See https://aka.ms/fedrampblueprint for more information. `n " -foregroundcolor yellow
 
 Write-Host "`n LOGIN TO AZURE `n" -foregroundcolor green
 $global:azureUsername = $null
