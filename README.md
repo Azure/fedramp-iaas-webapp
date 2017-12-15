@@ -77,9 +77,10 @@ After clicking the Deploy to Azure Gov button, the Azure portal will open and pr
 * **Location**: Select 'USGovVirginia' ***Note: This solution must be deployed in the USGovVirginia region due to service availability.***
 
 **Settings**
+* **Azure username**: Your Azure username (e.g., someuser@contoso.onmicrosoft.com)
+* **Azure password**: Password for the Azure account above
 * **Key Vault Name**: Name of the Key Vault created during pre-deployment
 * **Key Vault Resource Group Name**: Name of the resource group created during pre-deployment
-* **Domain Name**: Name of the domain used to generate the self-signed SSL certificate
 
 All other settings contain default values that may be optionally adjusted by the user.
 
