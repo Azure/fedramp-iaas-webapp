@@ -276,9 +276,10 @@ function orchestration
 					$now = [System.DateTime]::Now;
 					$oneYearFromNow = $now.AddYears(1);
 					$aadClientSecret = [Guid]::NewGuid();
+					$aadClientSecretSecureStr = ConvertTo-SecureString -String $aadClientSecret -AsPlainText -Force
 
 					Write-Host "Creating new AAD application ($aadAppName)";
-					$ADApp = New-AzureRmADApplication -DisplayName $aadAppName -HomePage $defaultHomePage -IdentifierUris $identifierUri  -StartDate $now -EndDate $oneYearFromNow -Password $aadClientSecret;
+					$ADApp = New-AzureRmADApplication -DisplayName $aadAppName -HomePage $defaultHomePage -IdentifierUris $identifierUri  -StartDate $now -EndDate $oneYearFromNow -Password $aadClientSecretSecureStr;
 					$servicePrincipal = New-AzureRmADServicePrincipal -ApplicationId $ADApp.ApplicationId;
 					$SvcPrincipals = (Get-AzureRmADServicePrincipal -SearchString $aadAppName);
 					if(-not $SvcPrincipals)
