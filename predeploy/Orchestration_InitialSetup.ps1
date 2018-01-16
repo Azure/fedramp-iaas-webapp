@@ -1,7 +1,19 @@
-#requires -RunAsAdministrator
+﻿#requires -RunAsAdministrator
 #requires -Modules AzureRM
 
+################################################################################################################
+### Verify Environment ###
+################################################################################################################
 
+# Verify AzureRM Module is installed
+if (Get-Module -ListAvailable -Name AzureRM) {
+    Write-Host "AzureRM Module exists... Importing into session"
+    Import-Module AzureRM
+    } 
+    else {
+        Write-Host "AzureRM Module will be installed from the PowerShell Gallery"
+        Install-Module -Name AzureRM -Force
+    }
 
 <#
 .Description
@@ -36,12 +48,11 @@ $global:azurePassword = $null
 ########################################################################################################################
 # LOGIN TO AZURE FUNCTION
 ########################################################################################################################
-function loginToAzure
-{
+function loginToAzure {
 	Param(
 			[Parameter(Mandatory=$true)]
 			[int]$lginCount
-		)
+	)
 
 	$global:azureUsername = Read-Host "Enter your Azure username"
 	$global:azurePassword = Read-Host -assecurestring "Enter your Azure password"
@@ -53,17 +64,15 @@ function loginToAzure
 
 	if($?) {
 		Write-Host "Login successful!"
-	} else {
-		if($lginCount -lt 3){
+	} 
+    else {
+		if($lginCount -lt 3) {
 			$lginCount = $lginCount + 1
-
 			Write-Host "Invalid Credentials! Try Logging in again"
-
 			loginToAzure -lginCount $lginCount
-		} else{
-
+		} 
+        else {
 			Throw "Your credentials are incorrect or invalid exceeding maximum retries. Make sure you are using your Azure Government account information"
-
 		}
 	}
 }
@@ -71,16 +80,13 @@ function loginToAzure
 ########################################################################################################################
 # KEY VAULT NAME VALIDATION FUNCTION
 ########################################################################################################################
-function checkKeyVaultName
-{
+function checkKeyVaultName {
     Param(
 		[Parameter(Mandatory=$true)]
 		[string]$keyVaultName
 	)
-   
     $firstchar = $keyVaultName[0]
-    if ($firstchar -match '^[0-9]+$')
-    {
+    if ($firstchar -match '^[0-9]+$') {
         $keyVaultNew = Read-Host "KeyVault name can't start with numeric value, Enter keyVaultName"
         checkKeyVaultName -keyVaultName $keyVaultNew
         return;
@@ -91,12 +97,9 @@ function checkKeyVaultName
 ########################################################################################################################
 # ADMIN USERNAME VALIDATION FUNCTION
 ########################################################################################################################
-function checkAdminUserName
-{
+function checkAdminUserName {
     $username = Read-Host "Enter an admin username"
-
-    if ($username.ToLower() -eq "admin")
-    {
+    if ($username.ToLower() -eq "admin") {
         Write-Host "Not a valid Admin username, please select another"  
         checkAdminUserName
         return
@@ -107,73 +110,75 @@ function checkAdminUserName
 ########################################################################################################################
 # PASSWORD VALIDATION FUNCTION
 ########################################################################################################################
-function checkPasswords
-{
+function checkPasswords {
 	Param(
 		[Parameter(Mandatory=$true)]
 		[string]$name
 	)
-
 	$password = Read-Host -assecurestring "Enter $($name)"
-  $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemUnicode($password)
-  $pw2test = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($Ptr)
-  [System.Runtime.InteropServices.Marshal]::ZeroFreeCoTaskMemUnicode($Ptr)
-
+    $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemUnicode($password)
+    $pw2test = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($Ptr)
+    [System.Runtime.InteropServices.Marshal]::ZeroFreeCoTaskMemUnicode($Ptr)
 	$passLength = 14
 	$isGood = 0
 	if ($pw2test.Length -ge $passLength) {
 		$isGood = 1
-    If ($pw2test -match " "){
-      "Password does not meet complexity requirements. Password cannot contain spaces"
-      checkPasswords -name $name
-      return
-    } Else {
-      $isGood = 2
-    }
-		If ($pw2test -match "[^a-zA-Z0-9]"){
-			$isGood = 3
-    } Else {
-        "Password does not meet complexity requirements. Password must contain a special character"
-        checkPasswords -name $name
-        return
-    }
-		If ($pw2test -match "[0-9]") {
-			$isGood = 4
-    } Else {
-        "Password does not meet complexity requirements. Password must contain a numerical character"
-        checkPasswords -name $name
-        return
-    }
-		If ($pw2test -cmatch "[a-z]") {
-			$isGood = 5
-    } Else {
-      "Password must contain a lowercase letter"
-        "Password does not meet complexity requirements"
-        checkPasswords -name $name
-        return
-    }
-		If ($pw2test -cmatch "[A-Z]"){
-			$isGood = 6
-    } Else {
-      "Password must contain an uppercase character"
-        "Password does not meet complexity requirements"
-        checkPasswords -name $name
-    }
-		If ($isGood -ge 6) {
-      $passwords | Add-Member -MemberType NoteProperty -Name $name -Value $password
-      return
-    } Else {
-      "Password does not meet complexity requirements"
-      checkPasswords -name $name
-      return
-    }
-  } Else {
-
+        if ($pw2test -match " ") {
+          "Password does not meet complexity requirements. Password cannot contain spaces"
+          checkPasswords -name $name
+          return
+        } 
+        else {
+          $isGood = 2
+        }
+        if ($pw2test -match "[^a-zA-Z0-9]") {
+			    $isGood = 3
+        } 
+        else {
+            "Password does not meet complexity requirements. Password must contain a special character"
+            checkPasswords -name $name
+            return
+        }
+	    if ($pw2test -match "[0-9]") {
+			    $isGood = 4
+        } 
+        else {
+            "Password does not meet complexity requirements. Password must contain a numerical character"
+            checkPasswords -name $name
+            return
+        }
+	    if ($pw2test -cmatch "[a-z]") {
+	        $isGood = 5
+        } 
+        else {
+            "Password must contain a lowercase letter"
+            "Password does not meet complexity requirements"
+            checkPasswords -name $name
+            return
+        }
+	    if ($pw2test -cmatch "[A-Z]") {
+	        $isGood = 6
+        } 
+        else {
+            "Password must contain an uppercase character"
+            "Password does not meet complexity requirements"
+            checkPasswords -name $name
+        }
+	    if ($isGood -ge 6) {
+            $passwords | Add-Member -MemberType NoteProperty -Name $name -Value $password
+            return
+        } 
+        else {
+            "Password does not meet complexity requirements"
+            checkPasswords -name $name
+            return
+        }
+    } 
+    else {
     "Password is not long enough - Passwords must be at least " + $passLength + " characters long"
     checkPasswords -name $name
     return
-
-  }
+    }
 }
 
 ########################################################################################################################
@@ -184,24 +189,21 @@ Function New-RandomPassword() {
     param(
         [int]$Length = 14
     )
-    $ascii=$NULL;For ($a=33;$a -le 126;$a++) {$ascii+=,[char][byte]$a }
-    For ($loop=1; $loop -le $length; $loop++) {
+    $ascii=$NULL;For ($a=33;$a -le 126;$a++) {$ascii+=,[char][byte]$a}
+    for ($loop=1; $loop -le $length; $loop++) {
         $RandomPassword+=($ascii | GET-RANDOM)
     }
     return $RandomPassword
 }
 
 function Generate-Cert() {
-		[CmdletBinding()]
-		param(
-        [securestring]$certPassword,
-				[string]$domain
+	[CmdletBinding()]
+	param(
+    [securestring]$certPassword,
+	[string]$domain
     )
-
 		## This script generates a self-signed certificate
-
 		$filePath = ".\"
-
 		$cert = New-SelfSignedCertificate -certstorelocation cert:\localmachine\my -dnsname $domain
 		$path = 'cert:\localMachine\my\' + $cert.thumbprint
 		$certPath = $filePath + '\cert.pfx'
@@ -209,13 +211,12 @@ function Generate-Cert() {
 		Export-PfxCertificate -cert $path -FilePath $certPath -Password $certPassword
 		$fileContentBytes = get-content $certPath -Encoding Byte
 		[System.Convert]::ToBase64String($fileContentBytes) | Out-File $outFilePath
-
 }
+
 ########################################################################################################################
 # Create KeyVault or setup existing keyVault
 ########################################################################################################################
-function orchestration
-{
+function orchestration {
 	Param(
 		[string]$environmentName = "AzureUSGovernment",
 		[string]$location = "USGov Virginia",
@@ -238,77 +239,59 @@ function orchestration
 		[Parameter(Mandatory=$true)]
 		[string]$domain
 	)
-
 	$errorActionPreference = 'stop'
-
     $keyVaultName = checkKeyVaultName -keyVaultName $keyVaultName;
-    
-	try
-	{
+	try {
 		$Exists = Get-AzureRmSubscription  -SubscriptionId $SubscriptionId
 		Write-Host "Using existing authentication"
 	}
-	catch {
-
-	}
-
-	if (-not $Exists)
-	{
+	catch {}
+	if (-not $Exists) {
 		Write-Host "Authenticate to Azure subscription"
 		Add-AzureRmAccount -EnvironmentName $EnvironmentName | Out-String | Write-Verbose
 	}
-
 	Write-Host "Selecting subscription as default"
 	Select-AzureRmSubscription -SubscriptionId $SubscriptionId | Out-String | Write-Verbose
 
-	# Create AAD app . Fill in $aadClientSecret variable if AAD app was already created
+	    # Create AAD app . Fill in $aadClientSecret variable if AAD app was already created
+        $guid = [Guid]::NewGuid().toString();
+        $aadAppName = "Blueprint" + $guid ;
+		# Check if AAD app with $aadAppName was already created
+		$SvcPrincipals = (Get-AzureRmADServicePrincipal -SearchString $aadAppName);
+		if(-not $SvcPrincipals) {
+			# Create a new AD application if not created before
+			$identifierUri = [string]::Format("http://localhost:8080/{0}",[Guid]::NewGuid().ToString("N"));
+			$defaultHomePage = 'http://contoso.com';
+			$now = [System.DateTime]::Now;
+			$oneYearFromNow = $now.AddYears(1);
+			$aadClientSecret = [Guid]::NewGuid() | ConvertTo-SecureString -AsPlainText -force;
 
-            $guid = [Guid]::NewGuid().toString();
-
-            $aadAppName = "Blueprint" + $guid ;
-			# Check if AAD app with $aadAppName was already created
+			Write-Host "Creating new AAD application ($aadAppName)";
+			$ADApp = New-AzureRmADApplication -DisplayName $aadAppName -HomePage $defaultHomePage -IdentifierUris $identifierUri  -StartDate $now -EndDate $oneYearFromNow -Password $aadClientSecret;
+			$servicePrincipal = New-AzureRmADServicePrincipal -ApplicationId $ADApp.ApplicationId;
 			$SvcPrincipals = (Get-AzureRmADServicePrincipal -SearchString $aadAppName);
 			if(-not $SvcPrincipals)
 			{
-					# Create a new AD application if not created before
-					$identifierUri = [string]::Format("http://localhost:8080/{0}",[Guid]::NewGuid().ToString("N"));
-					$defaultHomePage = 'http://contoso.com';
-					$now = [System.DateTime]::Now;
-					$oneYearFromNow = $now.AddYears(1);
-					$aadClientSecret = [Guid]::NewGuid();
-
-					Write-Host "Creating new AAD application ($aadAppName)";
-					$ADApp = New-AzureRmADApplication -DisplayName $aadAppName -HomePage $defaultHomePage -IdentifierUris $identifierUri  -StartDate $now -EndDate $oneYearFromNow -Password $aadClientSecret;
-					$servicePrincipal = New-AzureRmADServicePrincipal -ApplicationId $ADApp.ApplicationId;
-					$SvcPrincipals = (Get-AzureRmADServicePrincipal -SearchString $aadAppName);
-					if(-not $SvcPrincipals)
-					{
-							# AAD app wasn't created
-							Write-Error "Failed to create AAD app $aadAppName. Please log-in to Azure using Login-AzureRmAccount  and try again";
-							return;
-					}
-					$aadClientID = $servicePrincipal.ApplicationId;
-					Write-Host "Created a new AAD Application ($aadAppName) with ID: $aadClientID ";
+					# AAD app wasn't created
+					Write-Error "Failed to create AAD app $aadAppName. Please log-in to Azure using Login-AzureRmAccount  and try again";
+					return;
 			}
-			else
-			{
-					if(-not $aadClientSecret)
-					{
-							$aadClientSecret = Read-Host -Prompt "Aad application ($aadAppName) was already created, input corresponding aadClientSecret and hit ENTER. It can be retrieved from https://manage.windowsazure.com portal" ;
-					}
-					if(-not $aadClientSecret)
-					{
-							Write-Error "Aad application ($aadAppName) was already created. Re-run the script by supplying aadClientSecret parameter with corresponding secret from https://manage.windowsazure.com portal";
-							return;
-					}
-					$aadClientID = $SvcPrincipals[0].ApplicationId;
+			$aadClientID = $servicePrincipal.ApplicationId;
+			Write-Host "Created a new AAD Application ($aadAppName) with ID: $aadClientID ";
+		}
+		else {
+			if(-not $aadClientSecret) {
+				$aadClientSecret = Read-Host -Prompt "Aad application ($aadAppName) was already created, input corresponding aadClientSecret and hit ENTER. It can be retrieved from https://manage.windowsazure.com portal" ;
 			}
-
+			if(-not $aadClientSecret) {
+				Write-Error "Aad application ($aadAppName) was already created. Re-run the script by supplying aadClientSecret parameter with corresponding secret from https://manage.windowsazure.com portal";
+				return;
+			}
+			$aadClientID = $SvcPrincipals[0].ApplicationId;
+		}
 
 	# Create KeyVault or setup existing keyVault
-
 	Write-Host "Creating resource group '$($resourceGroupName)' to hold key vault"
-
 	if (-not (Get-AzureRmResourceGroup -Name $resourceGroupName -Location $location -ErrorAction SilentlyContinue)) {
 		New-AzureRmResourceGroup -Name $resourceGroupName -Location $location  | Out-String | Write-Verbose
 	}
@@ -327,26 +310,20 @@ function orchestration
 		Set-AzureRmKeyVaultAccessPolicy -VaultName $keyVaultName -EnabledForDiskEncryption;
         $keyEncryptionKeyName = $keyVaultName + "kek"
 
-		if($keyEncryptionKeyName)
-		{
-				try
-				{
-						$kek = Get-AzureKeyVaultKey -VaultName $keyVaultName -Name $keyEncryptionKeyName -ErrorAction SilentlyContinue;
-				}
-				catch [Microsoft.Azure.KeyVault.KeyVaultClientException]
-				{
-						Write-Host "Couldn't find key encryption key named : $keyEncryptionKeyName in Key Vault: $keyVaultName";
-						$kek = $null;
-				}
-
-				if(-not $kek)
-				{
-						Write-Host "Creating new key encryption key named:$keyEncryptionKeyName in Key Vault: $keyVaultName";
-						$kek = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name $keyEncryptionKeyName -Destination Software -ErrorAction SilentlyContinue;
-						Write-Host "Created  key encryption key named:$keyEncryptionKeyName in Key Vault: $keyVaultName";
-				}
-
-				$keyEncryptionKeyUrl = $kek.Key.Kid;
+		if($keyEncryptionKeyName) {
+			try {
+			    $kek = Get-AzureKeyVaultKey -VaultName $keyVaultName -Name $keyEncryptionKeyName -ErrorAction SilentlyContinue;
+			}
+			catch [Microsoft.Azure.KeyVault.KeyVaultClientException] {
+				Write-Host "Couldn't find key encryption key named : $keyEncryptionKeyName in Key Vault: $keyVaultName";
+				$kek = $null;
+			}
+			if(-not $kek) {
+				Write-Host "Creating new key encryption key named:$keyEncryptionKeyName in Key Vault: $keyVaultName";
+				$kek = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name $keyEncryptionKeyName -Destination Software -ErrorAction SilentlyContinue;
+				Write-Host "Created  key encryption key named:$keyEncryptionKeyName in Key Vault: $keyVaultName";
+			}
+			$keyEncryptionKeyUrl = $kek.Key.Kid;
 		}
 
 		$certPassword = New-RandomPassword
@@ -405,30 +382,26 @@ function orchestration
 
 }
 
+########################################################################################################################
+# Run Pre-Deployment and Orchestration
+########################################################################################################################
 
-
-try{
-
+try {
 	loginToAzure -lginCount 1
-
 	Write-Host "You will now be asked to create credentials for the administrator and sql service accounts. `n"
-
 	Write-Host "`n CREATE CREDENTIALS `n" -foregroundcolor green
     $adminUsername = checkAdminUserName
-
 	$passwordNames = @("adminPassword","sqlServerServiceAccountPassword")
 	$passwords = New-Object -TypeName PSObject
-
-
-	for($i=0;$i -lt $passwordNames.Length;$i++){
+	for ($i=0;$i -lt $passwordNames.Length;$i++) {
 	   checkPasswords -name $passwordNames[$i]
 	}
-
-
 	orchestration -azureUsername $global:azureUsername -adminUsername $adminUsername -azurePassword $global:azurePassword -adminPassword $passwords.adminPassword -sqlServerServiceAccountPassword $passwords.sqlServerServiceAccountPassword
-
+    Write-Host "`n ORCHESTRATION COMPLETE `n" -foregroundcolor green
+    Write-Host "Initial Pre-Deployment and Orchestration operations for this blueprint template are complete. Please proceed with finishing the deployment through the portal link in the Quickstart section at https://aka.ms/fedrampblueprint" -foregroundcolor Yellow
 }
-catch{
+
+catch {
 	Write-Host $PSItem.Exception.Message
-	Write-Host "Thank You"
+	Write-Host "An error has occurred in the pre-deployment orchestration setup. Please review any error messages before attempting a re-deployment. Thank You"
 }
