@@ -2082,11 +2082,87 @@
             }
         },
         {
-            "name": "[concat('ConfigurationVMEncryption-', variables('resourceNames').vms.web, copyindex())]",
+            "name": "[concat('ConfigurationVMEncryption-', variables('vmNamesArrayAD').VMs[copyIndex()].Name)]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
                   "ConfigureAutomationSchedules"
+            ],
+            "copy": {
+                "name": "encryptionSQLMGTLoop",
+                "count": "[length(variables('vmNamesArrayAD').VMs)]"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vmName": {
+                        "value": "[variables('vmNamesArrayAD').VMs[copyIndex()].Name]"
+                    },
+                    "keyVaultName": {
+                        "value": "[parameters('keyVaultName')]"
+                    },
+                    "vmEncryptionSettings": {
+                        "value": "[variables('vmEncryptionSettings')]"
+                    },
+                    "aadClientID": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('vmEncryptionSettings').keyVaultId]"
+                            },
+                            "secretName": "aadClientID"
+                        }
+                    },
+                    "aadClientSecret": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('vmEncryptionSettings').keyVaultId]"
+                            },
+                            "secretName": "aadClientSecret"
+                        }
+                    },
+                    "keyEncryptionKeyURL": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[variables('vmEncryptionSettings').keyVaultId]"
+                            },
+                            "secretName": "keyEncryptionKeyURL"
+                        }
+                    },
+                    "workspaceName": {
+                        "value": "[variables('resourceNames').omsWorkspace]"
+                    },
+                    "AutomationAccountName": {
+                        "value": "[variables('resourceNames').automationAccount]"
+                    },
+                    "EnvironmentName": {
+                        "value": "[parameters('EnvironmentName')]"
+                    },
+                    "ResourceGroupName": {
+                        "value": "[resourceGroup().name]"
+                    },
+                    "AzureUserName": {
+                        "value": "[parameters('AzureUserName')]"
+                    },
+                    "AzurePassword": {
+                        "value": "[parameters('AzurePassword')]"
+                    },
+                    "SubscriptionId": {
+                        "value": "[subscription().subscriptionId]"
+                    }
+                }
+            }
+        },
+	{
+            "name": "[concat('ConfigurationVMEncryption-', variables('resourceNames').vms.web, copyindex())]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                  "ConfigureAutomationSchedules",
+		  "[concat('ConfigurationVMEncryption-', variables('vmNamesArrayAD').VMs[copyIndex()].Name)]"
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",
@@ -2157,87 +2233,12 @@
             }
         },
         {
-            "name": "[concat('ConfigurationVMEncryption-', variables('vmNamesArrayAD').VMs[copyIndex()].Name)]",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2015-01-01",
-            "dependsOn": [
-                  "ConfigureAutomationSchedules",
-                  "[concat('ConfigurationVMEncryption-', variables('resourceNames').vms.web, copyindex())]"
-            ],
-            "copy": {
-                "name": "encryptionSQLMGTLoop",
-                "count": "[length(variables('vmNamesArrayAD').VMs)]"
-            },
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('vmEncryptionSettings').provisioningVMAzureDiskEncryptionUrl]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "vmName": {
-                        "value": "[variables('vmNamesArrayAD').VMs[copyIndex()].Name]"
-                    },
-                    "keyVaultName": {
-                        "value": "[parameters('keyVaultName')]"
-                    },
-                    "vmEncryptionSettings": {
-                        "value": "[variables('vmEncryptionSettings')]"
-                    },
-                    "aadClientID": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('vmEncryptionSettings').keyVaultId]"
-                            },
-                            "secretName": "aadClientID"
-                        }
-                    },
-                    "aadClientSecret": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('vmEncryptionSettings').keyVaultId]"
-                            },
-                            "secretName": "aadClientSecret"
-                        }
-                    },
-                    "keyEncryptionKeyURL": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[variables('vmEncryptionSettings').keyVaultId]"
-                            },
-                            "secretName": "keyEncryptionKeyURL"
-                        }
-                    },
-                    "workspaceName": {
-                        "value": "[variables('resourceNames').omsWorkspace]"
-                    },
-                    "AutomationAccountName": {
-                        "value": "[variables('resourceNames').automationAccount]"
-                    },
-                    "EnvironmentName": {
-                        "value": "[parameters('EnvironmentName')]"
-                    },
-                    "ResourceGroupName": {
-                        "value": "[resourceGroup().name]"
-                    },
-                    "AzureUserName": {
-                        "value": "[parameters('AzureUserName')]"
-                    },
-                    "AzurePassword": {
-                        "value": "[parameters('AzurePassword')]"
-                    },
-                    "SubscriptionId": {
-                        "value": "[subscription().subscriptionId]"
-                    }
-                }
-            }
-        },
-        {
             "name": "[concat('ConfigurationVMEncryption-', variables('vmNamesArraySQLMGT').VMs[copyIndex()].Name)]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                  "ConfigureAutomationSchedules"
+                  "ConfigureAutomationSchedules",
+		  "[concat('ConfigurationVMEncryption-', variables('vmNamesArrayAD').VMs[copyIndex()].Name)]"
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",
@@ -2307,6 +2308,5 @@
                 }
             }
         }
-
     ]
 }
