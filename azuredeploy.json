@@ -2087,7 +2087,6 @@
             "apiVersion": "2015-01-01",
             "dependsOn": [
                   "ConfigureAutomationSchedules",
-		  "[concat('ConfigurationVMEncryption-', variables('vmNamesArrayAD').VMs[copyIndex()].Name)]"
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",
@@ -2162,7 +2161,8 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                  "ConfigureAutomationSchedules"
+                  "ConfigureAutomationSchedules",
+		  "[concat('ConfigurationVMEncryption-', variables('resourceNames').vms.web, copyindex())]"
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",
