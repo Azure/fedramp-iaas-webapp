@@ -2238,7 +2238,7 @@
             "apiVersion": "2015-01-01",
             "dependsOn": [
                   "ConfigureAutomationSchedules",
-		  "[concat('ConfigurationVMEncryption-', variables('vmNamesArrayAD').VMs.adpdc, copyindex())]"
+		  "[concat('ConfigurationVMEncryption-', variables('vmNamesArrayAD').VMs.adpdc)]"
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",
