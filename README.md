@@ -7,15 +7,6 @@ Azure Blueprint Automation: Web Applications for FedRAMP](https://aka.ms/fedramp
 
 This Azure Blueprint solution is comprised of JSON configuration files and PowerShell scripts that are handled by Azure Resource Manager's API service to deploy resources within Azure. ***Note: This solution deploys to Azure Government.***
 
-#### Quickstart
-1. Clone or download this repository to your local workstation.
-
-2. Run the pre-deployment PowerShell script: azure-blueprint/predeploy/Orchestration_InitialSetup.ps1. [Read more about pre-deployment.](#pre-deployment)
-
-3. Click the button below, sign into the Azure portal, enter the required ARM template parameters, and click **Purchase**. [Read more about deployment.](#deployment)
-
-	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2Fdev%2Fazuredeploy.json)
-
 ### PRE-DEPLOYMENT
 
 During pre-deployment, you will confirm that your Azure subscription and local workstation are prepared to deploy the solution. The final pre-deployment step will run a PowerShell script that verifies the setup requirements, gathers parameters and credentials, and creates resources in Azure to prepare for deployment.
@@ -132,6 +123,33 @@ Please feel free to open and submit a GitHub issue pertaining to the error you a
 #### How to delete deployed resources
 
 To help with deleting protected resources, use custom-scripts/deleteProtectedItems.ps1 -- this PowerShell script will removing the delete lock on the resources inside your Recovery Services vault. Note, you will first need to edit the script to include your subscription ID and Recovery Service vault name.
+
+#### Deployment Reference Guide (for more guidance, scroll down)
+1. Start PowerShell as an administrator on local machine (search for "PowerShell", right click, select run as administrator)
+
+2. Configure local machine
+	a. Check PowerShellGet
+		`Get-Module PowerShellGet -list | Select-Object Name,Version,Path`
+		You should see something similar to the following output:
+		Name          Version Path
+		----          ------- ----
+		PowerShellGet 1.0.0.1 C:\Program Files\WindowsPowerShell\Modules\PowerShellGet\1.0.0.1\PowerShellGet.psd
+	b.
+	c. Install PowerShell verison associated with template (allow untrusted repository)
+		`Install-Module -Name AzureRM -RequiredVersion 5.0.0`
+	d. Run required PowerShell verison
+		`Import-Module AzureRM -RequiredVersion 5.0.0` 
+3. Clone or download the FedRAMP IaaS Webapp solution from Git (respository folder will be located in directory command is initiated)
+	`git clone https://github.com/Azure/fedramp-iaas-webapp.git`
+
+3. Run the pre-deployment PowerShell script 
+	a. Change home directory to location of FedRamp IaaS Webapp repository
+	fedramp-iaas-webapp/predeploy/Orchestration_InitialSetup.ps1. [Read more about pre-deployment.](#pre-deployment) 
+
+2. 
+3. Click the button below, sign into the Azure portal, enter the required ARM template parameters, and click **Purchase**. [Read more about deployment.](#deployment)
+
+	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2Fdev%2Fazuredeploy.json)
 
 ## Disclaimer
 
