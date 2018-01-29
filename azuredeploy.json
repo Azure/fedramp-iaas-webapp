@@ -2238,7 +2238,8 @@
             "apiVersion": "2015-01-01",
             "dependsOn": [
                   "ConfigureAutomationSchedules",
-		  "ConfigurationVMEncryption-AZ-PDC-VM"
+		  "ConfigurationVMEncryption-AZ-PDC-VM",
+		  "ConfigurationVMEncryption-AZ-BDC-VM"
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",
