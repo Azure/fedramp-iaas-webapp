@@ -28,7 +28,7 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted
 ``` 
 Install PowerShell version associated with template (allow untrusted repository) <br />
 ```powershell
-Install-Module -Name AzureRM -RequiredVersion 5.1.1` 
+Install-Module -Name AzureRM -RequiredVersion 5.1.1 
 ```
 Run required PowerShell verison <br />
 ```powershell
