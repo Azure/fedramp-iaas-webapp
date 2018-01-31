@@ -124,30 +124,47 @@ Please feel free to open and submit a GitHub issue pertaining to the error you a
 
 To help with deleting protected resources, use custom-scripts/deleteProtectedItems.ps1 -- this PowerShell script will removing the delete lock on the resources inside your Recovery Services vault. Note, you will first need to edit the script to include your subscription ID and Recovery Service vault name.
 
-#### Deployment Reference Guide (for more guidance, scroll down)
+#### Deployment Quick Reference Guide 
 1. Start PowerShell as an administrator on local machine (search for "PowerShell", right click, select run as administrator)
 
-2. Configure local machine
-	a. Check PowerShellGet
-		`Get-Module PowerShellGet -list | Select-Object Name,Version,Path`
-		You should see something similar to the following output:
-		Name          Version Path
-		----          ------- ----
-		PowerShellGet 1.0.0.1 C:\Program Files\WindowsPowerShell\Modules\PowerShellGet\1.0.0.1\PowerShellGet.psd
-	b.
-	c. Install PowerShell verison associated with template (allow untrusted repository)
-		`Install-Module -Name AzureRM -RequiredVersion 5.0.0`
-	d. Run required PowerShell verison
-		`Import-Module AzureRM -RequiredVersion 5.0.0` 
+2. Configure local machine <br />
+ 
+```powershell
+Get-Module PowerShellGet -list | Select-Object Name,Version,Path
+```       
+You should see something similar to the following output:
+
+```Output
+Name          Version Path
+----          ------- ----
+PowerShellGet 1.0.0.1 C:\Program Files\WindowsPowerShell\Modules\PowerShellGet\1.0.0.1\PowerShellGet.psd1
+``` 
+Set Exception Policy to unrestricted <br />
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted
+``` 
+Install PowerShell version associated with template (allow untrusted repository) <br />
+```powershell
+Install-Module -Name AzureRM -RequiredVersion 5.1.1` 
+```
+
+Run required PowerShell verison <br />
+```powershell
+Import-Module AzureRM -RequiredVersion 5.1.1
+```
 3. Clone or download the FedRAMP IaaS Webapp solution from Git (respository folder will be located in directory command is initiated)
-	`git clone https://github.com/Azure/fedramp-iaas-webapp.git`
+```powershell
+git clone https://github.com/Azure/fedramp-iaas-webapp.git
+```
+4. Run the pre-deployment PowerShell script 
+   Change PowerShell home directory to location of FedRamp IaaS Webapp folder
+   ```powershell
+   fedramp-iaas-webapp/predeploy/Orchestration_InitialSetup.ps1.
+   ```
+   
+   [Read more about pre-deployment.](#pre-deployment) 
 
-3. Run the pre-deployment PowerShell script 
-	a. Change home directory to location of FedRamp IaaS Webapp repository
-	fedramp-iaas-webapp/predeploy/Orchestration_InitialSetup.ps1. [Read more about pre-deployment.](#pre-deployment) 
-
-2. 
-3. Click the button below, sign into the Azure portal, enter the required ARM template parameters, and click **Purchase**. [Read more about deployment.](#deployment)
+5. Click the button below, sign into the Azure portal, enter the required ARM template parameters, and click **Purchase**. [Read more about deployment.](#deployment)
 
 	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2Fdev%2Fazuredeploy.json)
 
