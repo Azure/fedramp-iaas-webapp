@@ -105,8 +105,8 @@
             "properties": {
                 "publisher": "Microsoft.Powershell",
                 "type": "DSC",
-                "typeHandlerVersion": "2.19",
-                "autoUpgradeMinorVersion": false,
+                "typeHandlerVersion": "2.20",
+                "autoUpgradeMinorVersion": true,
                 "settings": {
                     "modulesURL": "[parameters('sql1ModulesURL')]",
                     "configurationFunction": "[parameters('sql1ConfigurationFunction')]",
@@ -149,7 +149,6 @@
                         "adminPassword": "[parameters('adminPassword')]",
                         "sqlServerServiceAccountPassword": "[parameters('sqlServerServiceAccountPassword')]",
                         "sqlAuthPassword": "[parameters('sqlServerServiceAccountPassword')]",
-                        "AzurePassword": "[parameters('AzurePassword')]"
                     }
                 }
             }
@@ -189,6 +188,5 @@
         }
     ],
     "outputs": {
-
     }
 }
