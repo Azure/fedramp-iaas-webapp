@@ -22,7 +22,7 @@ Name          Version Path
 ----          ------- ----
 PowerShellGet 1.0.0.1 C:\Program Files\WindowsPowerShell\Modules\PowerShellGet\1.0.0.1\PowerShellGet.psd1
 ``` 
-Set Exception Policy to unrestricted <br />
+Set Execution Policy to unrestricted <br />
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted
 ``` 
