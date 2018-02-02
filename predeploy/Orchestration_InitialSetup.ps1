@@ -184,15 +184,19 @@ function checkPasswords {
 ########################################################################################################################
 # GENERATE RANDOM PASSWORD FOR CERT FUNCTION
 ########################################################################################################################
-Function New-RandomPassword() {
+Function New-AlphaNumericPassword () {
     [CmdletBinding()]
     param(
         [int]$Length = 14
     )
-    $ascii=$NULL;For ($a=33;$a -le 126;$a++) {$ascii+=,[char][byte]$a}
-    for ($loop=1; $loop -le $length; $loop++) {
-        $RandomPassword+=($ascii | GET-RANDOM)
-    }
+        $ascii=$NULL
+        $AlphaNumeric = @(48..57;65..90;97..122)
+        Foreach ($Alpha in $AlphaNumeric) {
+            $ascii+=,[char][byte]$Alpha
+            }
+        for ($loop=1; $loop -le $length; $loop++) {
+            $RandomPassword+=($ascii | GET-RANDOM)
+        }
     return $RandomPassword
 }
 
@@ -326,7 +330,7 @@ function orchestration {
 			$keyEncryptionKeyUrl = $kek.Key.Kid;
 		}
 
-		$certPassword = New-RandomPassword
+		$certPassword = New-AlphaNumericPassword
 		$secureCertPassword = ConvertTo-SecureString $certPassword -AsPlainText -Force
 		Generate-Cert -certPassword $secureCertPassword -domain $domain
 		$certificate = Get-Content -Path ".\cert.txt" | Out-String
