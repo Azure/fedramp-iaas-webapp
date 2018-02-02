@@ -7,12 +7,48 @@ Azure Blueprint Automation: Web Applications for FedRAMP](https://aka.ms/fedramp
 
 This Azure Blueprint solution is comprised of JSON configuration files and PowerShell scripts that are handled by Azure Resource Manager's API service to deploy resources within Azure. ***Note: This solution deploys to Azure Government.***
 
-#### Quickstart
-1. Clone or download this repository to your local workstation.
+#### Quick Start (See guidance below for more detailed information)
+1. Start PowerShell as an administrator on local machine (search for "PowerShell", right click, select run as administrator)
 
-2. Run the pre-deployment PowerShell script: azure-blueprint/predeploy/Orchestration_InitialSetup.ps1. [Read more about pre-deployment.](#pre-deployment)
+2. Configure local machine <br />
+ 
+```powershell
+Get-Module PowerShellGet -list | Select-Object Name,Version,Path
+```       
+You should see something similar to the following output:
 
-3. Click the button below, sign into the Azure portal, enter the required ARM template parameters, and click **Purchase**. [Read more about deployment.](#deployment)
+```Output
+Name          Version Path
+----          ------- ----
+PowerShellGet 1.0.0.1 C:\Program Files\WindowsPowerShell\Modules\PowerShellGet\1.0.0.1\PowerShellGet.psd1
+``` 
+Set Exception Policy to unrestricted <br />
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted
+``` 
+Install PowerShell version associated with template (allow untrusted repository) <br />
+```powershell
+Install-Module -Name AzureRM -RequiredVersion 5.1.1 
+```
+Run required PowerShell verison <br />
+```powershell
+Import-Module AzureRM -RequiredVersion 5.1.1
+```
+Install [Git client](https://git-scm.com/downloads) on your workstation.<br />
+
+3. Clone or download the FedRAMP IaaS Webapp solution from Git (respository folder will be located in directory command is initiated)
+```powershell
+git clone https://github.com/Azure/fedramp-iaas-webapp.git
+```
+4. Run the pre-deployment PowerShell script <br />
+   - Change PowerShell home directory to location of FedRamp IaaS Webapp folder and run commmand below
+   ```powershell
+   fedramp-iaas-webapp/predeploy/Orchestration_InitialSetup.ps1
+   ```
+   
+   [Read more about pre-deployment.](#pre-deployment) 
+
+5. Click the button below, sign into the Azure portal, enter the required ARM template parameters, and click **Purchase**. [Read more about deployment.](#deployment)
 
 	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2Fmaster%2Fazuredeploy.json)
 
