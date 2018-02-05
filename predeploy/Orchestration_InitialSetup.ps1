@@ -1,4 +1,4 @@
-﻿#requires -RunAsAdministrator
+#requires -RunAsAdministrator
 #requires -Modules AzureRM
 
 ################################################################################################################
@@ -16,24 +16,23 @@ if (Get-Module -ListAvailable -Name AzureRM) {
     }
 
 <#
+
 .Description
-This script will create a Key Vault with a Key Encryption Key for VM DIsk Encryption and Azure AD Application Service Principal inside a specified Azure subscription
+This script will create a Key Vault with a Key Encryption Key for VM DIsk Encryption and Azure AD Application Service Principal inside a specified Azure subscription. A self-signed SSL Cert is utilized in administering the Key Vault for this deployment.
 
 .Parameter adminUsername
-Name of the local admin credentials for all VM's to be created.
-(This value cannot be 'admin')
+Name of the local admin credentials for all VM's to be created. Validation exists in the script to limit the creation of incompatible admin user names. 
 
 .Parameter adminPassword
 Must meet complexity requirements
-14+ characters, 2 numbers, 2 upper and lower case, and 2 special chars
+14+ characters, 2 numbers, 2 upper and lower case, and 2 special chars. Validation exists in the script to ensure compatibility.
 
 .Parameter sqlServerServiceAccountPassword
 Must meet complexity requirements
-14+ characters, 2 numbers, 2 upper and lower case, and 2 special chars
+14+ characters, 2 numbers, 2 upper and lower case, and 2 special chars. Validation exists in the script to ensure compatibility.
 
 .Parameter domain
-Must be the Domain name to be created 
-Example: contoso.local
+Must be the Domain name to be created. Validation exists in the script to ensure compatibility.
 
 #>
 
@@ -50,29 +49,28 @@ $global:azurePassword = $null
 ########################################################################################################################
 function loginToAzure {
 	Param(
-			[Parameter(Mandatory=$true)]
-			[int]$lginCount
+		[Parameter(Mandatory=$true)]
+		[int]$lginCount
 	)
 
 	$global:azureUsername = Read-Host "Enter your Azure username"
 	$global:azurePassword = Read-Host -assecurestring "Enter your Azure password"
-
 
 	$AzureAuthCreds = New-Object System.Management.Automation.PSCredential -ArgumentList @($global:azureUsername,$global:azurePassword)
 	$azureEnv = Get-AzureRmEnvironment -Name $EnvironmentName
 	Login-AzureRmAccount -EnvironmentName "AzureUSGovernment" -Credential $AzureAuthCreds
 
 	if($?) {
-		Write-Host "Login successful!"
+		Write-Host "Login Successful!" -ForegroundColor Green
 	} 
     else {
 		if($lginCount -lt 3) {
 			$lginCount = $lginCount + 1
-			Write-Host "Invalid Credentials! Try Logging in again"
+			Write-Host "Invalid Credentials! Please try logging in again."
 			loginToAzure -lginCount $lginCount
 		} 
         else {
-			Throw "Your credentials are incorrect or invalid exceeding maximum retries. Make sure you are using your Azure Government account information"
+			Write-Host "Your credentials are incorrect or invalid exceeding maximum retries. Make sure you are using your Azure Government account information." -ForegroundColor Magenta
 		}
 	}
 }
@@ -87,7 +85,7 @@ function checkKeyVaultName {
 	)
     $firstchar = $keyVaultName[0]
     if ($firstchar -match '^[0-9]+$') {
-        $keyVaultNew = Read-Host "KeyVault name can't start with numeric value, Enter keyVaultName"
+        $keyVaultNew = Read-Host "Key Vault name can't start with numeric value. Please enter a new Key Vault Name" 
         checkKeyVaultName -keyVaultName $keyVaultNew
         return;
     }
@@ -100,11 +98,37 @@ function checkKeyVaultName {
 function checkAdminUserName {
     $username = Read-Host "Enter an admin username"
     if ($username.ToLower() -eq "admin") {
-        Write-Host "Not a valid Admin username, please select another"  
+        Write-Host "Not a valid Admin username, please select another." -ForegroundColor Magenta  
         checkAdminUserName
         return
     }
     return $username
+}
+
+########################################################################################################################
+# DOMAIN NAME VALIDATION FUNCTION
+########################################################################################################################
+function CheckDomainName {
+    [CmdletBinding()]
+    Param(
+		[Parameter(Mandatory=$true)]
+		[string]$domain
+	)
+    if ($domain.length -gt "15") {
+        Write-Host "Domain Name is too long. Must be less than 15 characters." -ForegroundColor Magenta 
+        $domain = Read-Host "New Domain Name?"
+        CheckDomainName $domain
+    }
+    if ($domain -notmatch "^[a-zA-Z0-9.-]*$") {
+        Write-Host "Invalid character set utilized. Please verify domain name contains only alphanumeric, hyphens, and at least one period." -ForegroundColor Magenta  
+        $domain = Read-Host "New Domain Name?"
+        CheckDomainName $domain
+    }
+    if ($domain -notmatch "[.]") {
+        Write-Host "Invalid Domain Name specified. Please verify domain name contains only alphanumeric, hyphens, and at least one period." -ForegroundColor Magenta  
+        $domain = Read-Host "New Domain Name?"
+        CheckDomainName $domain
+    }
 }
 
 ########################################################################################################################
@@ -124,7 +148,7 @@ function checkPasswords {
 	if ($pw2test.Length -ge $passLength) {
 		$isGood = 1
         if ($pw2test -match " ") {
-          "Password does not meet complexity requirements. Password cannot contain spaces"
+          Write-Host "Password does not meet complexity requirements. Password cannot contain spaces." -ForegroundColor Magenta
           checkPasswords -name $name
           return
         } 
@@ -135,7 +159,7 @@ function checkPasswords {
 			    $isGood = 3
         } 
         else {
-            "Password does not meet complexity requirements. Password must contain a special character"
+            Write-Host "Password does not meet complexity requirements. Password must contain a special character." -ForegroundColor Magenta
             checkPasswords -name $name
             return
         }
@@ -143,7 +167,7 @@ function checkPasswords {
 			    $isGood = 4
         } 
         else {
-            "Password does not meet complexity requirements. Password must contain a numerical character"
+            Write-Host "Password does not meet complexity requirements. Password must contain a numerical character." -ForegroundColor Magenta
             checkPasswords -name $name
             return
         }
@@ -151,8 +175,8 @@ function checkPasswords {
 	        $isGood = 5
         } 
         else {
-            "Password must contain a lowercase letter"
-            "Password does not meet complexity requirements"
+            Write-Host "Password must contain a lowercase letter." -ForegroundColor Magenta
+            Write-Host "Password does not meet complexity requirements." -ForegroundColor Magenta
             checkPasswords -name $name
             return
         }
@@ -160,8 +184,8 @@ function checkPasswords {
 	        $isGood = 6
         } 
         else {
-            "Password must contain an uppercase character"
-            "Password does not meet complexity requirements"
+            Write-Host "Password must contain an uppercase character." -ForegroundColor Magenta
+            Write-Host "Password does not meet complexity requirements." -ForegroundColor Magenta
             checkPasswords -name $name
         }
 	    if ($isGood -ge 6) {
@@ -169,15 +193,15 @@ function checkPasswords {
             return
         } 
         else {
-            "Password does not meet complexity requirements"
+            Write-Host "Password does not meet complexity requirements." -ForegroundColor Magenta
             checkPasswords -name $name
             return
         }
     } 
     else {
-    "Password is not long enough - Passwords must be at least " + $passLength + " characters long"
-    checkPasswords -name $name
-    return
+        Write-Host "Password is not long enough - Passwords must be at least " + $passLength + " characters long." -ForegroundColor Magenta
+        checkPasswords -name $name
+        return
     }
 }
 
@@ -243,6 +267,9 @@ function orchestration {
 		[Parameter(Mandatory=$true)]
 		[string]$domain
 	)
+    ## Domain Name Validation
+    CheckDomainName $Domain
+
 	$errorActionPreference = 'stop'
     $keyVaultName = checkKeyVaultName -keyVaultName $keyVaultName;
 	try {
@@ -325,7 +352,7 @@ function orchestration {
 			if(-not $kek) {
 				Write-Host "Creating new key encryption key named:$keyEncryptionKeyName in Key Vault: $keyVaultName";
 				$kek = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name $keyEncryptionKeyName -Destination Software -ErrorAction SilentlyContinue;
-				Write-Host "Created  key encryption key named:$keyEncryptionKeyName in Key Vault: $keyVaultName";
+				Write-Host "Created key encryption key named: $keyEncryptionKeyName in Key Vault: $keyVaultName";
 			}
 			$keyEncryptionKeyUrl = $kek.Key.Kid;
 		}
@@ -335,54 +362,56 @@ function orchestration {
 		Generate-Cert -certPassword $secureCertPassword -domain $domain
 		$certificate = Get-Content -Path ".\cert.txt" | Out-String
 
-		Write-Host "Set Azure Key Vault Access Policy. Set adminUsername in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'adminUsername' -Destination 'Software'
-		$adminUsernameSecureString = ConvertTo-SecureString $adminUsername -AsPlainText -Force
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'adminUsername' -SecretValue $adminUsernameSecureString
+        try {
+		    Write-Host "Set Azure Key Vault Access Policy. Set adminUsername in Key Vault: $keyVaultName";
+		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'adminUsername' -Destination 'Software'
+		    $adminUsernameSecureString = ConvertTo-SecureString $adminUsername -AsPlainText -Force
+		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'adminUsername' -SecretValue $adminUsernameSecureString
 
-		Write-Host "Set Azure Key Vault Access Policy. Set AdminPassword in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'adminPassword' -Destination 'Software'
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'adminPassword' -SecretValue $adminPassword
+		    Write-Host "Set Azure Key Vault Access Policy. Set AdminPassword in Key Vault: $keyVaultName";
+		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'adminPassword' -Destination 'Software'
+		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'adminPassword' -SecretValue $adminPassword
 
-		Write-Host "Set Azure Key Vault Access Policy. Set SqlServerServiceAccountPassword in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'sqlServerServiceAccountPassword' -Destination 'Software'
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'sqlServerServiceAccountPassword' -SecretValue $sqlServerServiceAccountPassword
+		    Write-Host "Set Azure Key Vault Access Policy. Set SqlServerServiceAccountPassword in Key Vault: $keyVaultName";
+		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'sqlServerServiceAccountPassword' -Destination 'Software'
+		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'sqlServerServiceAccountPassword' -SecretValue $sqlServerServiceAccountPassword
 
-		Write-Host "Set Azure Key Vault Access Policy. Set sslCert in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'sslCert' -Destination 'Software'
-		$sslCertSecureString = ConvertTo-SecureString "$certificate" -AsPlainText -Force
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'sslCert' -SecretValue $sslCertSecureString
+		    Write-Host "Set Azure Key Vault Access Policy. Set sslCert in Key Vault: $keyVaultName";
+		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'sslCert' -Destination 'Software'
+		    $sslCertSecureString = ConvertTo-SecureString "$certificate" -AsPlainText -Force
+		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'sslCert' -SecretValue $sslCertSecureString
 
-		Write-Host "Set Azure Key Vault Access Policy. Set sslCertPassword in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'sslPassword' -Destination 'Software'
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'sslPassword' -SecretValue $secureCertPassword
+		    Write-Host "Set Azure Key Vault Access Policy. Set sslCertPassword in Key Vault: $keyVaultName";
+		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'sslPassword' -Destination 'Software'
+		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'sslPassword' -SecretValue $secureCertPassword
 
-		Write-Host "Set Azure Key Vault Access Policy. Set domain in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'domain' -Destination 'Software'
-		$domainSecureString = ConvertTo-SecureString $domain -AsPlainText -Force
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'domain' -SecretValue $domainSecureString
+		    Write-Host "Set Azure Key Vault Access Policy. Set domain in Key Vault: $keyVaultName";
+		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'domain' -Destination 'Software'
+		    $domainSecureString = ConvertTo-SecureString $domain -AsPlainText -Force
+		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'domain' -SecretValue $domainSecureString
 
-		Write-Host "Set Azure Key Vault Access Policy. Set guid in Key Vault: $keyVaultName";
-		$guid = new-guid
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'guid' -Destination 'Software'
-		$guidSecureString = ConvertTo-SecureString $guid -AsPlainText -Force
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'guid' -SecretValue $guidSecureString
+		    Write-Host "Set Azure Key Vault Access Policy. Set guid in Key Vault: $keyVaultName";
+		    $guid = new-guid
+		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'guid' -Destination 'Software'
+		    $guidSecureString = ConvertTo-SecureString $guid -AsPlainText -Force
+		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'guid' -SecretValue $guidSecureString
 
-		Write-Host "Set Azure Key Vault Access Policy. Set Application Client ID in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'aadClientID' -Destination 'Software'
-		$aadClientIDSecureString = ConvertTo-SecureString $aadClientID -AsPlainText -Force
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'aadClientID' -SecretValue $aadClientIDSecureString
+		    Write-Host "Set Azure Key Vault Access Policy. Set Application Client ID in Key Vault: $keyVaultName";
+		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'aadClientID' -Destination 'Software'
+		    $aadClientIDSecureString = ConvertTo-SecureString $aadClientID -AsPlainText -Force
+		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'aadClientID' -SecretValue $aadClientIDSecureString
 
-		Write-Host "Set Azure Key Vault Access Policy. Set Application Client Secret in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'aadClientSecret' -Destination 'Software'
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'aadClientSecret' -SecretValue $aadClientSecret
+		    Write-Host "Set Azure Key Vault Access Policy. Set Application Client Secret in Key Vault: $keyVaultName";
+		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'aadClientSecret' -Destination 'Software'
+		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'aadClientSecret' -SecretValue $aadClientSecret
 
-		Write-Host "Set Azure Key Vault Access Policy. Set Key Encryption URL in Key Vault: $keyVaultName";
-		$key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'keyEncryptionKeyURL' -Destination 'Software'
-		$keyEncryptionKeyUrlSecureString = ConvertTo-SecureString $keyEncryptionKeyUrl -AsPlainText -Force
-		$secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'keyEncryptionKeyURL' -SecretValue $keyEncryptionKeyUrlSecureString
+		    Write-Host "Set Azure Key Vault Access Policy. Set Key Encryption URL in Key Vault: $keyVaultName";
+		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'keyEncryptionKeyURL' -Destination 'Software'
+		    $keyEncryptionKeyUrlSecureString = ConvertTo-SecureString $keyEncryptionKeyUrl -AsPlainText -Force
+		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'keyEncryptionKeyURL' -SecretValue $keyEncryptionKeyUrlSecureString
+        }
+        catch {Write-Host "An error occurred while setting Key Vault resources. Please review any associated error messages, clean up previously created assets, and attempt to re-deploy."}
 	}
-
 }
 
 ########################################################################################################################
