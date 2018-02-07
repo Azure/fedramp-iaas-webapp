@@ -39,7 +39,7 @@ Must be the Domain name to be created. Validation exists in the script to ensure
 Write-Host "`n `nAzure Blueprint Automation: Web Applications for FedRAMP - Pre-Deployment Script `n" -foregroundcolor green
 Write-Host "This script can be used for creating the necessary preliminary resources to deploy a multi-tier web application architecture with pre-configured security controls to help customers achieve compliance with FedRAMP requirements. See https://aka.ms/fedrampblueprint for more information. `n " -foregroundcolor yellow
 
-Write-Host "`n LOGIN TO AZURE `n" -foregroundcolor green
+Write-Host "`n DEFINE YOUR DOMAIN `n" -foregroundcolor green
 $global:azureUsername = $null
 $global:azurePassword = $null
 
@@ -108,28 +108,34 @@ function checkAdminUserName {
 ########################################################################################################################
 # DOMAIN NAME VALIDATION FUNCTION
 ########################################################################################################################
-function CheckDomainName {
-    [CmdletBinding()]
-    Param(
-		[Parameter(Mandatory=$true)]
-		[string]$domain
-	)
+function CheckDomainName {  
+	[CmdletBinding()]
+	param(
+        [Parameter(Mandatory=$true)]
+	    [string]$domain
+    )
     if ($domain.length -gt "15") {
         Write-Host "Domain Name is too long. Must be less than 15 characters." -ForegroundColor Magenta 
-        $domain = Read-Host "New Domain Name?"
-        CheckDomainName $domain
+        CheckDomainName
+        Return
     }
     if ($domain -notmatch "^[a-zA-Z0-9.-]*$") {
-        Write-Host "Invalid character set utilized. Please verify domain name contains only alphanumeric, hyphens, and at least one period." -ForegroundColor Magenta  
-        $domain = Read-Host "New Domain Name?"
-        CheckDomainName $domain
+        Write-Host "Invalid character set utilized. Please verify domain name contains only alphanumeric, hyphens, and at least one period." -ForegroundColor Magenta 
+        CheckDomainName
+        Return
     }
     if ($domain -notmatch "[.]") {
         Write-Host "Invalid Domain Name specified. Please verify domain name contains only alphanumeric, hyphens, and at least one period." -ForegroundColor Magenta  
-        $domain = Read-Host "New Domain Name?"
-        CheckDomainName $domain
+        CheckDomainName
+        Return
     }
+    Return $domain
 }
+
+Write-Host "Please provide a domain name you would like to use with this deployment." -ForegroundColor Yellow
+$domainName = checkdomainname
+
+Write-Host "`n LOGIN TO AZURE `n" -foregroundcolor green
 
 ########################################################################################################################
 # PASSWORD VALIDATION FUNCTION
@@ -228,7 +234,7 @@ function Generate-Cert() {
 	[CmdletBinding()]
 	param(
     [securestring]$certPassword,
-	[string]$domain
+	[string]$domain = $domainName
     )
 		## This script generates a self-signed certificate
 		$filePath = ".\"
@@ -265,10 +271,8 @@ function orchestration {
 		[Parameter(Mandatory=$true)]
 		[SecureString]$sqlServerServiceAccountPassword,
 		[Parameter(Mandatory=$true)]
-		[string]$domain
+        [string]$domain = $domainName
 	)
-    ## Domain Name Validation
-    CheckDomainName $Domain
 
 	$errorActionPreference = 'stop'
     $keyVaultName = checkKeyVaultName -keyVaultName $keyVaultName;
