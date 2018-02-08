@@ -88,7 +88,7 @@ All other settings contain default values that may be optionally adjusted by the
 
 1. Click the button below.
 
-	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2Fmaster%2Fazuredeploy.json)
+	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmik-e-kim%2Ffedramp-iaas-webapp%2FDevTest%2Fazuredeploy.json)
 2. Enter the settings above.
 3. Review the terms and conditions and click **I agree to the terms and conditions stated above**.
 4. Click **Purchase**.
