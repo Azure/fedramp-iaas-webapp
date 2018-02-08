@@ -55,7 +55,6 @@
             "type": "string",
             "defaultValue": "kek",
             "allowedValues": [
-                "nokek",
                 "kek"
             ],
             "metadata": {
