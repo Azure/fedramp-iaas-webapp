@@ -7,11 +7,11 @@
 
 # Verify AzureRM Module is installed
 if (Get-Module -ListAvailable -Name AzureRM) {
-    Write-Host "AzureRM Module exists... Importing into session"
+    Write-Host "AzureRM Module exists... Importing into session." -ForegroundColor Yellow
     Import-Module AzureRM
     } 
     else {
-        Write-Host "AzureRM Module will be installed from the PowerShell Gallery"
+        Write-Host "AzureRM Module will be installed from the PowerShell Gallery..." -ForegroundColor Yellow
         Install-Module -Name AzureRM -Force
     }
 
@@ -53,6 +53,7 @@ function loginToAzure {
 		[int]$lginCount
 	)
 
+    Write-Host "Please provide your Azure Government login credentials." -ForegroundColor Yellow
 	$global:azureUsername = Read-Host "Enter your Azure username"
 	$global:azurePassword = Read-Host -assecurestring "Enter your Azure password"
 
@@ -131,11 +132,6 @@ function CheckDomainName {
     }
     Return $domain
 }
-
-Write-Host "Please provide a domain name you would like to use with this deployment." -ForegroundColor Yellow
-$domainName = checkdomainname
-
-Write-Host "`n LOGIN TO AZURE `n" -foregroundcolor green
 
 ########################################################################################################################
 # PASSWORD VALIDATION FUNCTION
@@ -230,11 +226,16 @@ Function New-AlphaNumericPassword () {
     return $RandomPassword
 }
 
+Write-Host "Please provide a domain name you would like to use with this deployment." -ForegroundColor Yellow
+$DomainName = Read-Host "Domain Name" 
+Write-Host "`n"
+$domainused = checkdomainname $domainname
+
 function Generate-Cert() {
 	[CmdletBinding()]
 	param(
     [securestring]$certPassword,
-	[string]$domain = $domainName
+	[string]$domain = $domainused
     )
 		## This script generates a self-signed certificate
 		$filePath = ".\"
@@ -250,6 +251,8 @@ function Generate-Cert() {
 ########################################################################################################################
 # Create KeyVault or setup existing keyVault
 ########################################################################################################################
+Write-Host "`n LOGIN TO AZURE `n" -foregroundcolor green
+
 function orchestration {
 	Param(
 		[string]$environmentName = "AzureUSGovernment",
@@ -270,22 +273,21 @@ function orchestration {
 		[SecureString]$adminPassword,
 		[Parameter(Mandatory=$true)]
 		[SecureString]$sqlServerServiceAccountPassword,
-		[Parameter(Mandatory=$true)]
-        [string]$domain = $domainName
+        [string]$domain = $domainused
 	)
 
 	$errorActionPreference = 'stop'
     $keyVaultName = checkKeyVaultName -keyVaultName $keyVaultName;
 	try {
 		$Exists = Get-AzureRmSubscription  -SubscriptionId $SubscriptionId
-		Write-Host "Using existing authentication"
+		Write-Host "Using existing authentication" -ForegroundColor Yellow
 	}
 	catch {}
 	if (-not $Exists) {
-		Write-Host "Authenticate to Azure subscription"
+		Write-Host "Authenticate to Azure subscription" -ForegroundColor Yellow
 		Add-AzureRmAccount -EnvironmentName $EnvironmentName | Out-String | Write-Verbose
 	}
-	Write-Host "Selecting subscription as default"
+	Write-Host "Selecting subscription as default" -ForegroundColor Yellow
 	Select-AzureRmSubscription -SubscriptionId $SubscriptionId | Out-String | Write-Verbose
 
 	    # Create AAD app . Fill in $aadClientSecret variable if AAD app was already created
@@ -301,45 +303,45 @@ function orchestration {
 			$oneYearFromNow = $now.AddYears(1);
 			$aadClientSecret = [Guid]::NewGuid() | ConvertTo-SecureString -AsPlainText -force;
 
-			Write-Host "Creating new AAD application ($aadAppName)";
+			Write-Host "Creating new AAD application ($aadAppName)" -ForegroundColor Yellow;
 			$ADApp = New-AzureRmADApplication -DisplayName $aadAppName -HomePage $defaultHomePage -IdentifierUris $identifierUri  -StartDate $now -EndDate $oneYearFromNow -Password $aadClientSecret;
 			$servicePrincipal = New-AzureRmADServicePrincipal -ApplicationId $ADApp.ApplicationId;
 			$SvcPrincipals = (Get-AzureRmADServicePrincipal -SearchString $aadAppName);
 			if(-not $SvcPrincipals)
 			{
 					# AAD app wasn't created
-					Write-Error "Failed to create AAD app $aadAppName. Please log-in to Azure using Login-AzureRmAccount  and try again";
+					Write-Error "Failed to create AAD app $aadAppName. Please log-in to Azure using Login-AzureRmAccount and try again." -ForegroundColor Magenta;
 					return;
 			}
 			$aadClientID = $servicePrincipal.ApplicationId;
-			Write-Host "Created a new AAD Application ($aadAppName) with ID: $aadClientID ";
+			Write-Host "Created a new AAD Application ($aadAppName) with ID: $aadClientID." -ForegroundColor Yellow;
 		}
 		else {
 			if(-not $aadClientSecret) {
-				$aadClientSecret = Read-Host -Prompt "Aad application ($aadAppName) was already created, input corresponding aadClientSecret and hit ENTER. It can be retrieved from https://manage.windowsazure.com portal" ;
+				$aadClientSecret = Read-Host -Prompt "Aad application ($aadAppName) was already created, input corresponding aadClientSecret and hit ENTER. It can be retrieved from https://manage.windowsazure.com portal." ;
 			}
 			if(-not $aadClientSecret) {
-				Write-Error "Aad application ($aadAppName) was already created. Re-run the script by supplying aadClientSecret parameter with corresponding secret from https://manage.windowsazure.com portal";
+				Write-Error "Aad application ($aadAppName) was already created. Re-run the script by supplying aadClientSecret parameter with corresponding secret from https://manage.windowsazure.com portal.";
 				return;
 			}
 			$aadClientID = $SvcPrincipals[0].ApplicationId;
 		}
 
 	# Create KeyVault or setup existing keyVault
-	Write-Host "Creating resource group '$($resourceGroupName)' to hold key vault"
+	Write-Host "Creating resource group '$($resourceGroupName)' to hold key vault." -ForegroundColor Yellow
 	if (-not (Get-AzureRmResourceGroup -Name $resourceGroupName -Location $location -ErrorAction SilentlyContinue)) {
 		New-AzureRmResourceGroup -Name $resourceGroupName -Location $location  | Out-String | Write-Verbose
 	}
 
 	#Create a new vault if vault doesn't exist
 	if (-not (Get-AzureRMKeyVault -VaultName $keyVaultName -ResourceGroupName $resourceGroupName -ErrorAction SilentlyContinue )) {
-		Write-Host "Create a keyVault '$($keyVaultName)' to store the service principal ids and passwords"
+		Write-Host "Create a keyVault '$($keyVaultName)' to store the service principal ids and passwords." -ForegroundColor Yellow
 		New-AzureRMKeyVault -VaultName $keyVaultName -ResourceGroupName $resourceGroupName -EnabledForTemplateDeployment -Location $location | Out-String | Write-Verbose
-		Write-Host "Created a new KeyVault named $keyVaultName to store encryption keys";
+		Write-Host "Created a new KeyVault named $keyVaultName to store encryption keys" -ForegroundColor Yellow;
 
 		# Specify privileges to the vault for the AAD application - https://msdn.microsoft.com/en-us/library/mt603625.aspx
-		Write-Host "Set Azure Key Vault Access Policy."
-		Write-Host "Set ServicePrincipalName: $aadClientID in Key Vault: $keyVaultName";
+		Write-Host "Set Azure Key Vault Access Policy." -ForegroundColor Yellow
+		Write-Host "Set ServicePrincipalName: $aadClientID in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 		Set-AzureRmKeyVaultAccessPolicy -VaultName $keyVaultName -ServicePrincipalName $aadClientID -PermissionsToKeys wrapKey -PermissionsToSecrets set;
 		Set-AzureRmKeyVaultAccessPolicy -VaultName $keyVaultName -ResourceGroupName $resourceGroupName -ServicePrincipalName $aadClientID -PermissionsToKeys backup,get,list,wrapKey -PermissionsToSecrets get,list,set;
 		Set-AzureRmKeyVaultAccessPolicy -VaultName $keyVaultName -EnabledForDiskEncryption;
@@ -350,13 +352,13 @@ function orchestration {
 			    $kek = Get-AzureKeyVaultKey -VaultName $keyVaultName -Name $keyEncryptionKeyName -ErrorAction SilentlyContinue;
 			}
 			catch [Microsoft.Azure.KeyVault.KeyVaultClientException] {
-				Write-Host "Couldn't find key encryption key named : $keyEncryptionKeyName in Key Vault: $keyVaultName";
+				Write-Host "Couldn't find key encryption key named : $keyEncryptionKeyName in Key Vault: $keyVaultName" -ForegroundColor Magenta;
 				$kek = $null;
 			}
 			if(-not $kek) {
-				Write-Host "Creating new key encryption key named:$keyEncryptionKeyName in Key Vault: $keyVaultName";
+				Write-Host "Creating new key encryption key named: $keyEncryptionKeyName in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 				$kek = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name $keyEncryptionKeyName -Destination Software -ErrorAction SilentlyContinue;
-				Write-Host "Created key encryption key named: $keyEncryptionKeyName in Key Vault: $keyVaultName";
+				Write-Host "Created key encryption key named: $keyEncryptionKeyName in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 			}
 			$keyEncryptionKeyUrl = $kek.Key.Kid;
 		}
@@ -367,54 +369,54 @@ function orchestration {
 		$certificate = Get-Content -Path ".\cert.txt" | Out-String
 
         try {
-		    Write-Host "Set Azure Key Vault Access Policy. Set adminUsername in Key Vault: $keyVaultName";
+		    Write-Host "Set Azure Key Vault Access Policy. Set adminUsername in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'adminUsername' -Destination 'Software'
 		    $adminUsernameSecureString = ConvertTo-SecureString $adminUsername -AsPlainText -Force
 		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'adminUsername' -SecretValue $adminUsernameSecureString
 
-		    Write-Host "Set Azure Key Vault Access Policy. Set AdminPassword in Key Vault: $keyVaultName";
+		    Write-Host "Set Azure Key Vault Access Policy. Set AdminPassword in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'adminPassword' -Destination 'Software'
 		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'adminPassword' -SecretValue $adminPassword
 
-		    Write-Host "Set Azure Key Vault Access Policy. Set SqlServerServiceAccountPassword in Key Vault: $keyVaultName";
+		    Write-Host "Set Azure Key Vault Access Policy. Set SqlServerServiceAccountPassword in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'sqlServerServiceAccountPassword' -Destination 'Software'
 		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'sqlServerServiceAccountPassword' -SecretValue $sqlServerServiceAccountPassword
 
-		    Write-Host "Set Azure Key Vault Access Policy. Set sslCert in Key Vault: $keyVaultName";
+		    Write-Host "Set Azure Key Vault Access Policy. Set sslCert in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'sslCert' -Destination 'Software'
 		    $sslCertSecureString = ConvertTo-SecureString "$certificate" -AsPlainText -Force
 		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'sslCert' -SecretValue $sslCertSecureString
 
-		    Write-Host "Set Azure Key Vault Access Policy. Set sslCertPassword in Key Vault: $keyVaultName";
+		    Write-Host "Set Azure Key Vault Access Policy. Set sslCertPassword in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'sslPassword' -Destination 'Software'
 		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'sslPassword' -SecretValue $secureCertPassword
 
-		    Write-Host "Set Azure Key Vault Access Policy. Set domain in Key Vault: $keyVaultName";
+		    Write-Host "Set Azure Key Vault Access Policy. Set domain in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'domain' -Destination 'Software'
 		    $domainSecureString = ConvertTo-SecureString $domain -AsPlainText -Force
 		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'domain' -SecretValue $domainSecureString
 
-		    Write-Host "Set Azure Key Vault Access Policy. Set guid in Key Vault: $keyVaultName";
+		    Write-Host "Set Azure Key Vault Access Policy. Set guid in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 		    $guid = new-guid
 		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'guid' -Destination 'Software'
 		    $guidSecureString = ConvertTo-SecureString $guid -AsPlainText -Force
 		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'guid' -SecretValue $guidSecureString
 
-		    Write-Host "Set Azure Key Vault Access Policy. Set Application Client ID in Key Vault: $keyVaultName";
+		    Write-Host "Set Azure Key Vault Access Policy. Set Application Client ID in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'aadClientID' -Destination 'Software'
 		    $aadClientIDSecureString = ConvertTo-SecureString $aadClientID -AsPlainText -Force
 		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'aadClientID' -SecretValue $aadClientIDSecureString
 
-		    Write-Host "Set Azure Key Vault Access Policy. Set Application Client Secret in Key Vault: $keyVaultName";
+		    Write-Host "Set Azure Key Vault Access Policy. Set Application Client Secret in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'aadClientSecret' -Destination 'Software'
 		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'aadClientSecret' -SecretValue $aadClientSecret
 
-		    Write-Host "Set Azure Key Vault Access Policy. Set Key Encryption URL in Key Vault: $keyVaultName";
+		    Write-Host "Set Azure Key Vault Access Policy. Set Key Encryption URL in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'keyEncryptionKeyURL' -Destination 'Software'
 		    $keyEncryptionKeyUrlSecureString = ConvertTo-SecureString $keyEncryptionKeyUrl -AsPlainText -Force
 		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'keyEncryptionKeyURL' -SecretValue $keyEncryptionKeyUrlSecureString
         }
-        catch {Write-Host "An error occurred while setting Key Vault resources. Please review any associated error messages, clean up previously created assets, and attempt to re-deploy."}
+        catch {Write-Host "An error occurred while setting Key Vault resources. Please review any associated error messages, clean up previously created assets, and attempt to re-deploy." -ForegroundColor Magenta}
 	}
 }
 
@@ -424,7 +426,7 @@ function orchestration {
 
 try {
 	loginToAzure -lginCount 1
-	Write-Host "You will now be asked to create credentials for the administrator and sql service accounts. `n"
+	Write-Host "You will now be asked to create credentials for the administrator and sql service accounts. `n" -ForegroundColor Yellow
 	Write-Host "`n CREATE CREDENTIALS `n" -foregroundcolor green
     $adminUsername = checkAdminUserName
 	$passwordNames = @("adminPassword","sqlServerServiceAccountPassword")
@@ -434,10 +436,10 @@ try {
 	}
 	orchestration -azureUsername $global:azureUsername -adminUsername $adminUsername -azurePassword $global:azurePassword -adminPassword $passwords.adminPassword -sqlServerServiceAccountPassword $passwords.sqlServerServiceAccountPassword
     Write-Host "`n ORCHESTRATION COMPLETE `n" -foregroundcolor green
-    Write-Host "Initial Pre-Deployment and Orchestration operations for this blueprint template are complete. Please proceed with finishing the deployment through the portal link in the Quickstart section at https://aka.ms/fedrampblueprint" -foregroundcolor Yellow
+    Write-Host "Initial Pre-Deployment and Orchestration operations for this blueprint template are complete. Please proceed with finishing the deployment through the portal link in the Quickstart section at https://aka.ms/fedrampblueprint." -foregroundcolor Yellow
 }
 
 catch {
 	Write-Host $PSItem.Exception.Message
-	Write-Host "An error has occurred in the pre-deployment orchestration setup. Please review any error messages before attempting a re-deployment. Thank You"
+	Write-Host "An error has occurred in the pre-deployment orchestration setup. Please review any error messages before attempting a re-deployment. Thank You." -ForegroundColor Magenta
 }
