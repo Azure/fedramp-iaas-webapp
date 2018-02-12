@@ -36,12 +36,10 @@ Must be the Domain name to be created. Validation exists in the script to ensure
 
 #>
 
-Write-Host "`n `nAzure Blueprint Automation: Web Applications for FedRAMP - Pre-Deployment Script `n" -foregroundcolor green
+Write-Host "`n `nAzure Security and Compliance Blueprint - FedRAMP Web Applications Automation - Pre-Deployment Script `n" -foregroundcolor green
 Write-Host "This script can be used for creating the necessary preliminary resources to deploy a multi-tier web application architecture with pre-configured security controls to help customers achieve compliance with FedRAMP requirements. See https://aka.ms/fedrampblueprint for more information. `n " -foregroundcolor yellow
 
 Write-Host "`n DEFINE YOUR DOMAIN `n" -foregroundcolor green
-$global:azureUsername = $null
-$global:azurePassword = $null
 
 
 ########################################################################################################################
@@ -53,13 +51,9 @@ function loginToAzure {
 		[int]$lginCount
 	)
 
-    Write-Host "Please provide your Azure Government login credentials." -ForegroundColor Yellow
-	$global:azureUsername = Read-Host "Enter your Azure username"
-	$global:azurePassword = Read-Host -assecurestring "Enter your Azure password"
-
-	$AzureAuthCreds = New-Object System.Management.Automation.PSCredential -ArgumentList @($global:azureUsername,$global:azurePassword)
-	$azureEnv = Get-AzureRmEnvironment -Name $EnvironmentName
-	Login-AzureRmAccount -EnvironmentName "AzureUSGovernment" -Credential $AzureAuthCreds
+	Write-Host "Please login with your Azure Government credentials." -ForegroundColor Yellow
+	
+	Login-AzureRmAccount -EnvironmentName "AzureUSGovernment" -ErrorAction SilentlyContinue 	
 
 	if($?) {
 		Write-Host "Login Successful!" -ForegroundColor Green
@@ -67,11 +61,14 @@ function loginToAzure {
     else {
 		if($lginCount -lt 3) {
 			$lginCount = $lginCount + 1
-			Write-Host "Invalid Credentials! Please try logging in again."
+			Write-Host "Invalid Credentials! Please try logging in again." -ForegroundColor Magenta
 			loginToAzure -lginCount $lginCount
 		} 
         else {
 			Write-Host "Your credentials are incorrect or invalid exceeding maximum retries. Make sure you are using your Azure Government account information." -ForegroundColor Magenta
+			Write-Host "Press any key to exit..." -ForegroundColor Yellow
+			$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+			Exit
 		}
 	}
 }
@@ -86,7 +83,7 @@ function checkKeyVaultName {
 	)
     $firstchar = $keyVaultName[0]
     if ($firstchar -match '^[0-9]+$') {
-        $keyVaultNew = Read-Host "Key Vault name can't start with numeric value. Please enter a new Key Vault Name" 
+        $keyVaultNew = Read-Host "Key Vault name can't start with numeric value. Please enter a new Key Vault Name." 
         checkKeyVaultName -keyVaultName $keyVaultNew
         return;
     }
@@ -260,10 +257,6 @@ function orchestration {
 		[Parameter(Mandatory=$true)]
 		[string]$subscriptionId,
 		[Parameter(Mandatory=$true)]
-		[string]$azureUsername,
-		[Parameter(Mandatory=$true)]
-		[SecureString]$azurePassword,
-		[Parameter(Mandatory=$true)]
 		[string]$resourceGroupName,
 		[Parameter(Mandatory=$true)]
 		[string]$keyVaultName,
@@ -416,7 +409,12 @@ function orchestration {
 		    $keyEncryptionKeyUrlSecureString = ConvertTo-SecureString $keyEncryptionKeyUrl -AsPlainText -Force
 		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'keyEncryptionKeyURL' -SecretValue $keyEncryptionKeyUrlSecureString
         }
-        catch {Write-Host "An error occurred while setting Key Vault resources. Please review any associated error messages, clean up previously created assets, and attempt to re-deploy." -ForegroundColor Magenta}
+        catch {
+			Write-Host "An error occurred while setting Key Vault resources. Please review any associated error messages, clean up previously created assets, and attempt to re-deploy." -ForegroundColor Magenta
+			Write-Host "Press any key to exit..." -ForegroundColor Yellow
+			$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+			Exit
+		}
 	}
 }
 
@@ -434,7 +432,7 @@ try {
 	for ($i=0;$i -lt $passwordNames.Length;$i++) {
 	   checkPasswords -name $passwordNames[$i]
 	}
-	orchestration -azureUsername $global:azureUsername -adminUsername $adminUsername -azurePassword $global:azurePassword -adminPassword $passwords.adminPassword -sqlServerServiceAccountPassword $passwords.sqlServerServiceAccountPassword
+	orchestration -adminUsername $adminUsername -adminPassword $passwords.adminPassword -sqlServerServiceAccountPassword $passwords.sqlServerServiceAccountPassword
     Write-Host "`n ORCHESTRATION COMPLETE `n" -foregroundcolor green
     Write-Host "Initial Pre-Deployment and Orchestration operations for this blueprint template are complete. Please proceed with finishing the deployment through the portal link in the Quickstart section at https://aka.ms/fedrampblueprint." -foregroundcolor Yellow
 }
@@ -442,4 +440,7 @@ try {
 catch {
 	Write-Host $PSItem.Exception.Message
 	Write-Host "An error has occurred in the pre-deployment orchestration setup. Please review any error messages before attempting a re-deployment. Thank You." -ForegroundColor Magenta
+	Write-Host "Press any key to exit..." -ForegroundColor Yellow
+	$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+	Exit
 }
