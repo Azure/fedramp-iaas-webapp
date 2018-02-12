@@ -1,7 +1,7 @@
 ## Solution overview
 
 For more information about this solution, see [
-Azure Blueprint Automation: Web Applications for FedRAMP](https://aka.ms/fedrampblueprint).
+Azure Security and Compliance Blueprint - FedRAMP Web Applications Automation](https://aka.ms/fedrampblueprint).
 
 ## Deploy the solution
 
