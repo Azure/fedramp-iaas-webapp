@@ -116,12 +116,6 @@
     "ResourceGroupName": {
       "type": "string"
     },
-    "AzureUserName": {
-      "type": "string"
-    },
-    "AzurePassword": {
-      "type": "securestring"
-    },
     "SubscriptionId": {
       "type": "string"
     },
@@ -483,12 +477,6 @@
                 },
                 "AutomationAccountName": {
                   "value": "[parameters('AutomationAccountName')]"
-                },
-                "AzureUserName": {
-                  "value": "[parameters('AzureUserName')]"
-                },
-                "AzurePassword": {
-                  "value": "[parameters('AzurePassword')]"
                 },
                 "SubscriptionId": {
                   "value": "[parameters('SubscriptionId')]"

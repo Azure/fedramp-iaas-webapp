@@ -17,12 +17,6 @@
         "AutomationAccountName": {
             "type": "string"
         },
-        "AzureUserName": {
-            "type": "string"
-        },
-        "AzurePassword": {
-            "type": "securestring"
-        },
         "SubscriptionId": {
             "type": "string"
         },
@@ -57,7 +51,7 @@
     "variables": {
         "scriptFolder": ".",
         "scriptFileName": "customScriptBaseline.ps1",
-        "scriptParameters": "[concat('-MachineName \"', parameters('vmName'), '\" -ResourceGroupName \"', parameters('ResourceGroupName'), '\" -AutomationAccountName \"', parameters('AutomationAccountName'), '\" -WorkspaceName \"', parameters('workspaceName'), '\" -AzureUserName \"', parameters('AzureUserName'), '\" -AzurePassword \"', parameters('AzurePassword'),'\" -SubscriptionId \"', parameters('SubscriptionId'), '\" -EnvironmentName \"', parameters('EnvironmentName'), '\" -MachinesToSetPasswordPolicy \"', parameters('MachinesToSetPasswordPolicy'), '\" -SQLPrimaryName \"', parameters('SQLPrimaryName'), '\"  -SQLSecondaryName \"', parameters('SQLSecondaryName'), '\" -domainName \"', parameters('domainName'), '\"  -AlwaysOnAvailabilityGroupName \"', parameters('AlwaysOnAvailabilityGroupName'), '\"' )]"
+        "scriptParameters": "[concat('-MachineName \"', parameters('vmName'), '\" -ResourceGroupName \"', parameters('ResourceGroupName'), '\" -AutomationAccountName \"', parameters('AutomationAccountName'), '\" -WorkspaceName \"', parameters('workspaceName'),'\" -SubscriptionId \"', parameters('SubscriptionId'), '\" -EnvironmentName \"', parameters('EnvironmentName'), '\" -MachinesToSetPasswordPolicy \"', parameters('MachinesToSetPasswordPolicy'), '\" -SQLPrimaryName \"', parameters('SQLPrimaryName'), '\"  -SQLSecondaryName \"', parameters('SQLSecondaryName'), '\" -domainName \"', parameters('domainName'), '\"  -AlwaysOnAvailabilityGroupName \"', parameters('AlwaysOnAvailabilityGroupName'), '\"' )]"
     },
     "resources": [
       {

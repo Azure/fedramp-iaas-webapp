@@ -9,18 +9,6 @@
                 "description": "Assign the environment for Azure (Azure Commercial or Gov)"
             }
         },
-		"azureUsername": {
-          "type": "string",
-          "metadata": {
-            "description": "User name of the Azure account."
-          }
-        },
-        "azurePassword": {
-          "type": "secureString",
-          "metadata": {
-            "description": "Password of the Azure account."
-          }
-        },
         "keyVaultName": {
             "type": "string",
             "metadata": {
@@ -1074,12 +1062,6 @@
                 "ResourceGroupName": {
                   "value": "[resourceGroup().name]"
                 },
-                "AzureUserName": {
-                  "value": "[parameters('azureUsername')]"
-                },
-                "AzurePassword": {
-                  "value": "[parameters('azurePassword')]"
-                },
                 "SubscriptionId": {
                   "value": "[subscription().subscriptionId]"
                 },
@@ -1119,12 +1101,6 @@
                     },
                     "EnvironmentName": {
                         "value": "[parameters('EnvironmentName')]"
-                    },
-                    "AzureUserName": {
-                        "value": "[parameters('azureUsername')]"
-                    },
-                    "AzurePassword": {
-                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1573,9 +1549,6 @@
                         "secretName": "adminPassword"
                     }
                   },
-     			        "AzurePassword": {
-                     "value": "[parameters('azurePassword')]"
-                  },
                   "mgtModulesURL": {
                       "value": "[variables('artifacts').mgtModulesURL]"
                   },
@@ -1602,9 +1575,6 @@
                   },
                   "ResourceGroupName": {
                       "value": "[resourceGroup().name]"
-                  },
-                  "AzureUserName": {
-                     "value": "[parameters('azureUsername')]"
                   },
                   "SubscriptionId": {
                       "value": "[subscription().subscriptionId]"
@@ -1720,12 +1690,6 @@
                     },
                     "ResourceGroupName": {
                         "value": "[resourceGroup().name]"
-                    },
-                    "AzureUserName": {
-                        "value": "[parameters('azureUsername')]"
-                    },
-                    "AzurePassword": {
-                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1864,12 +1828,6 @@
                     "EnvironmentName": {
                         "value": "[parameters('EnvironmentName')]"
                     },
-                    "AzureUserName": {
-                        "value": "[parameters('azureUsername')]"
-                    },
-                    "AzurePassword": {
-                        "value": "[parameters('azurePassword')]"
-                    },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
                     },
@@ -1917,12 +1875,6 @@
                     },
                     "EnvironmentName": {
                         "value": "[parameters('EnvironmentName')]"
-                    },
-                    "AzureUserName": {
-                        "value": "[parameters('azureUsername')]"
-                    },
-                    "AzurePassword": {
-                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -1996,12 +1948,6 @@
                     },
                     "EnvironmentName": {
                         "value": "[parameters('EnvironmentName')]"
-                    },
-                    "AzureUserName": {
-                        "value": "[parameters('azureUsername')]"
-                    },
-                    "AzurePassword": {
-                        "value": "[parameters('azurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -2143,12 +2089,6 @@
                     "ResourceGroupName": {
                         "value": "[resourceGroup().name]"
                     },
-                    "AzureUserName": {
-                        "value": "[parameters('AzureUserName')]"
-                    },
-                    "AzurePassword": {
-                        "value": "[parameters('AzurePassword')]"
-                    },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
                     }
@@ -2218,12 +2158,6 @@
                     },
                     "ResourceGroupName": {
                         "value": "[resourceGroup().name]"
-                    },
-                    "AzureUserName": {
-                        "value": "[parameters('AzureUserName')]"
-                    },
-                    "AzurePassword": {
-                        "value": "[parameters('AzurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"
@@ -2295,12 +2229,6 @@
                     },
                     "ResourceGroupName": {
                         "value": "[resourceGroup().name]"
-                    },
-                    "AzureUserName": {
-                        "value": "[parameters('AzureUserName')]"
-                    },
-                    "AzurePassword": {
-                        "value": "[parameters('AzurePassword')]"
                     },
                     "SubscriptionId": {
                         "value": "[subscription().subscriptionId]"

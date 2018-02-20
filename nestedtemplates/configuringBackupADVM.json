@@ -38,12 +38,6 @@
     "AutomationAccountName": {
       "type": "string"
     },
-    "AzureUserName": {
-      "type": "string"
-    },
-    "AzurePassword": {
-      "type": "securestring"
-    },
     "SubscriptionId": {
       "type": "string"
     },
@@ -78,8 +72,7 @@
         },
         "protectedSettings": {
          "items": {
-            "adminPassword": "[parameters('adminPassword')]",
-            "AzurePassword": "[parameters('AzurePassword')]"
+            "adminPassword": "[parameters('adminPassword')]"
           }
         }
       }

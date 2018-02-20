@@ -38,9 +38,6 @@
     "mgtConfigurationFunction": {
         "type": "string"
     },
-    "azurePassword": {
-        "type": "securestring"
-    },
     "vmEncryptionSettings": {
         "type": "object"
     },
@@ -58,12 +55,6 @@
     },
     "ResourceGroupName": {
         "type": "string"
-    },
-    "AzureUserName": {
-        "type": "string"
-    },
-    "AzurePassword": {
-        "type": "securestring"
     },
     "SubscriptionId": {
         "type": "string"
