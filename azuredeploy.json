@@ -535,10 +535,8 @@
         "provisioningStorageAccountsUrl": "[concat(parameters('templatesBaseUrl'),'/storageAccounts.json')]",
         "provisioningVirtualMachinesUrl": "[concat(parameters('templatesBaseUrl'),'/virtualMachines.json')]",
         "provisioningAvailabilitySetsUrl": "[concat(parameters('templatesBaseUrl'),'/availabilitySets.json')]",
-        "customScriptBaselineUrl": "[concat(parameters('scriptsBaseUrl'),'/customScriptBaseline.ps1')]",
         "accountManagementPrincipalsUrl": "[concat(parameters('scriptsBaseUrl'),'/accountmanagementprincipals.ps1')]",
         "secondarySqlCustomCMDUrl": "[concat(parameters('scriptsBaseUrl'),'/SQL0CustomCMD.sql')]",
-        "provisioningCustomScriptExtensionUrl": "[concat(parameters('templatesBaseUrl'),'/customScriptExtension.json')]",
         "provisioningOMSWorkspaceUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutoAccOMSWorkspace.json')]",
         "provisioningOMSAutomationScheduleUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutomationSchedule.json')]",
         "vnetwithDNSTemplateURL": "[concat(parameters('templatesBaseUrl'),'/updateVnetWithDNS.json')]",
@@ -1107,9 +1105,6 @@
                     },
                     "ResourceGroupName": {
                         "value": "[resourceGroup().name]"
-                    },
-                    "customScriptBaselineUrl": {
-                        "value": "[variables('artifacts').customScriptBaselineUrl]"
                     },
                     "accountManagementPrincipalsUrl": {
                         "value": "[variables('artifacts').accountManagementPrincipalsUrl]"
@@ -1882,9 +1877,6 @@
                     "ResourceGroupName": {
                         "value": "[resourceGroup().name]"
                     },
-                    "customScriptBaselineUrl": {
-                        "value": "[variables('artifacts').customScriptBaselineUrl]"
-                    },
                     "accountManagementPrincipalsUrl": {
                         "value": "[variables('artifacts').accountManagementPrincipalsUrl]"
                     },
@@ -1954,9 +1946,6 @@
                     },
                     "ResourceGroupName": {
                         "value": "[resourceGroup().name]"
-                    },
-                    "customScriptBaselineUrl": {
-                        "value": "[variables('artifacts').customScriptBaselineUrl]"
                     },
                     "accountManagementPrincipalsUrl": {
                         "value": "[variables('artifacts').accountManagementPrincipalsUrl]"
