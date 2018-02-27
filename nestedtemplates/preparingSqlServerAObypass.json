@@ -80,12 +80,6 @@
         "ResourceGroupName": {
             "type": "string"
         },
-        "AzureUserName": {
-            "type": "string"
-        },
-        "AzurePassword": {
-            "type": "securestring"
-        },
         "SubscriptionId": {
             "type": "string"
         }
@@ -123,8 +117,8 @@
             "properties": {
                 "publisher": "Microsoft.Powershell",
                 "type": "DSC",
-                "typeHandlerVersion": "2.19",
-                "autoUpgradeMinorVersion": false,
+                "typeHandlerVersion": "2.20",
+                "autoUpgradeMinorVersion": true,
                 "settings": {
                     "modulesURL": "[parameters('sqlwModulesURL')]",
                     "configurationFunction": "[parameters('sqlwConfigurationFunction')]",
@@ -146,8 +140,7 @@
                 },
                 "protectedSettings": {
                     "items": {
-                        "adminPassword": "[parameters('adminPassword')]",
-                        "AzurePassword": "[parameters('AzurePassword')]"
+                        "adminPassword": "[parameters('adminPassword')]"
                     }
                 }
             }
