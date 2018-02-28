@@ -116,12 +116,6 @@
     "ResourceGroupName": {
       "type": "string"
     },
-    "AzureUserName": {
-      "type": "string"
-    },
-    "AzurePassword": {
-      "type": "securestring"
-    },
     "SubscriptionId": {
       "type": "string"
     },
@@ -335,7 +329,7 @@
             "properties": {
               "publisher": "Microsoft.Powershell",
               "type": "DSC",
-              "typeHandlerVersion": "2.19",
+              "typeHandlerVersion": "2.20",
               "autoUpgradeMinorVersion": true,
               "settings": {
                 "modulesURL": "[parameters('bdcModulesURL')]",
@@ -351,13 +345,11 @@
                   "DisableRealtimeMonitoring": "[parameters('antimalwareInfo').disableRealtimeMonitoring]"
                 },
                 "protectedSettings": {
-                  "items": {
-                    "AzurePassword": "[parameters('AzurePassword')]"
                   }
                 }
               }
             }
-          }
+          
         ]
       },
         {
@@ -374,8 +366,8 @@
             "properties": {
                 "publisher": "Microsoft.Powershell",
                 "type": "DSC",
-                "typeHandlerVersion": "2.19",
-                "autoUpgradeMinorVersion": false,
+                "typeHandlerVersion": "2.20",
+                "autoUpgradeMinorVersion": true,
                 "settings": {
                     "modulesURL": "[parameters('pdcModulesURL')]",
                     "configurationFunction": "[parameters('pdcConfigurationFunction')]",
@@ -396,8 +388,7 @@
                 },
                 "protectedSettings": {
                   "items": {
-                    "adminPassword": "[parameters('adminPassword')]",
-                    "AzurePassword": "[parameters('AzurePassword')]"
+                    "adminPassword": "[parameters('adminPassword')]"
                   }
                 }
             }
@@ -486,12 +477,6 @@
                 },
                 "AutomationAccountName": {
                   "value": "[parameters('AutomationAccountName')]"
-                },
-                "AzureUserName": {
-                  "value": "[parameters('AzureUserName')]"
-                },
-                "AzurePassword": {
-                  "value": "[parameters('AzurePassword')]"
                 },
                 "SubscriptionId": {
                   "value": "[parameters('SubscriptionId')]"
