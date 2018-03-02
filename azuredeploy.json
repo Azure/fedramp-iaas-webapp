@@ -296,21 +296,21 @@
             "metadata": {
                 "description": "Linked Templates base url"
             },
-            "defaultValue": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/DevTest/nestedtemplates"
+            "defaultValue": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQLTest/nestedtemplates"
         },
         "dscBaseUrl": {
             "type": "string",
             "metadata": {
                 "description": "DSC Scripts base url"
             },
-            "defaultValue": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/DevTest/DSC"
+            "defaultValue": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQLTest/DSC"
         },
         "scriptsBaseUrl": {
             "type": "string",
             "metadata": {
                 "description": "DSC Scripts base url"
             },
-            "defaultValue": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/DevTest/custom-scripts"
+            "defaultValue": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQLTest/custom-scripts"
         },
         "sqlServerVersion": {
             "type": "string",
