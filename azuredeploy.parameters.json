@@ -54,13 +54,13 @@
             "value": "Standard_GRS"
         },
         "templatesBaseUrl": {
-            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/DevTest/nestedtemplates"
+            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQLTest/nestedtemplates"
         },
         "dscBaseUrl": {
-            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/DevTest/DSC"
+            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQLTest/DSC"
         },
         "scriptsBaseUrl": {
-            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/DevTest/custom-scripts"
+            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQLTest/custom-scripts"
         },
         "sqlServerVersion": {
             "value": "SQL2016-WS2012R2"
