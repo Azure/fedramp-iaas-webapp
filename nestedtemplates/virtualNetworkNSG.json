@@ -32,36 +32,6 @@
   },
   "resources": [
     {
-      "comments": "Load Balancer NSG",
-      "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "[parameters('lbNSGName')]",
-      "apiVersion": "2016-03-30",
-      "tags": {
-        "Project": "Blueprint"
-      },
-      "location": "[parameters('location')]",
-      "properties": {
-        "securityRules": [
-
-          {
-            "name": "HTTPS",
-            "properties": {
-              "protocol": "TCP",
-              "sourcePortRange": "*",
-              "destinationPortRange": "443",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 101,
-              "direction": "Inbound"
-            }
-          }
-        ]
-      },
-      "resources": [],
-      "dependsOn": []
-    },
-    {
       "comments": "MGT NSG",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[parameters('mgtNSGName')]",
