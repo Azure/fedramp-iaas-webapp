@@ -21,17 +21,6 @@
                 "description": "Name of the resource group that holds the key vault above"
             }
         },
-        "configureSQLAO": {
-          "type": "string",
-          "defaultValue": "yes",
-          "allowedValues": [
-            "yes",
-            "no"
-          ],
-          "metadata": {
-              "description": "Choose to skip SQL Always On configuration"
-          }
-        },
         "environmentPrefix": {
             "type": "string",
             "metadata": {
@@ -104,40 +93,6 @@
             },
             "defaultValue": "Standard_D1_v2"
         },
-        "sqlVMSize": {
-            "type": "string",
-            "allowedValues": [
-                "Standard_DS1",
-                "Standard_DS2",
-                "Standard_D2_v2",
-                "Standard_DS3",
-                "Standard_DS4",
-                "Standard_DS11",
-                "Standard_DS12",
-                "Standard_DS13",
-                "Standard_DS14",
-                "Standard_DS1_v2",
-                "Standard_DS2_v2",
-                "Standard_DS3_v2",
-                "Standard_DS4_v2",
-                "Standard_DS5_v2",
-                "Standard_DS11_v2",
-                "Standard_DS12_v2",
-                "Standard_DS13_v2",
-                "Standard_DS14_v2",
-                "Standard_DS15_v2",
-                "Standard_GS1",
-                "Standard_GS2",
-                "Standard_GS3",
-                "Standard_GS4",
-                "Standard_GS4",
-                "Standard_GS5"
-            ],
-            "metadata": {
-                "description": "The size of the SQL VMs Created"
-            },
-            "defaultValue": "Standard_D2_v2"
-        },
         "webVMSize": {
             "type": "string",
             "allowedValues": [
@@ -206,52 +161,6 @@
             },
             "defaultValue": "Standard_D1_v2"
         },
-        "witnessVMSize": {
-            "type": "string",
-            "allowedValues": [
-                "Standard_DS1",
-                "Standard_DS2",
-                "Standard_D1_v2",
-                "Standard_DS3",
-                "Standard_DS4",
-                "Standard_DS11",
-                "Standard_DS12",
-                "Standard_DS13",
-                "Standard_DS14",
-                "Standard_DS1_v2",
-                "Standard_DS2_v2",
-                "Standard_DS3_v2",
-                "Standard_DS4_v2",
-                "Standard_DS5_v2",
-                "Standard_DS11_v2",
-                "Standard_DS12_v2",
-                "Standard_DS13_v2",
-                "Standard_DS14_v2",
-                "Standard_DS15_v2",
-                "Standard_GS1",
-                "Standard_GS2",
-                "Standard_GS3",
-                "Standard_GS4",
-                "Standard_GS4",
-                "Standard_GS5"
-            ],
-            "metadata": {
-                "description": "The size of the SQL Witness VM Created"
-            },
-            "defaultValue": "Standard_D1_v2"
-        },
-        "sqlStorageAccountType": {
-            "type": "string",
-            "allowedValues": [
-                "Premium_LRS",
-                "Standard_LRS",
-                "Standard_GRS"
-            ],
-            "metadata": {
-                "description": "The type of the Sql Server Storage Account created"
-            },
-            "defaultValue": "Standard_GRS"
-        },
         "dcStorageAccountType": {
             "type": "string",
             "allowedValues": [
@@ -312,16 +221,6 @@
             },
             "defaultValue": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQLTest/custom-scripts"
         },
-        "sqlServerVersion": {
-            "type": "string",
-            "allowedValues": [
-                "SQL2016-WS2012R2"
-            ],
-            "metadata": {
-                "description": "The Sql Server Version"
-            },
-            "defaultValue": "SQL2016-WS2012R2"
-        },
         "gatewaySkuName": {
             "type": "string",
             "defaultValue": "WAF_Medium",
@@ -337,11 +236,8 @@
         "appSecret": "aadClientSecret",
         "lbSettings": {
             "rdpLBFEName": "rdpLBFE",
-            "sqlLBFEName": "sqlLBFE",
             "adLBBEName": "adLBBE",
-            "sqlLBBEName": "sqlLBBE",
             "rdpLBName": "rdpLoadBalancer",
-            "sqlLBName": "sqlLoadBalancer",
             "ipAddress": "10.200.1.5"
         },
         "wafSettings": {
@@ -353,7 +249,6 @@
         "numberOfWebInstances": "[length(variables('vmSettings').web.ipAddresses)]",
         "staticIPWEBStart": 5,
         "RDPNAT": "RDP",
-        "SQLAOProbe": "SQLAlwaysOnEndPointProbe",
         "omsSettings": {
           "workspaceRegion": "USGov Virginia",
           "serviceTier": "PerNode",
@@ -367,32 +262,6 @@
                 "imageSKU": "2016-Datacenter",
                 "ipAddressPDC": "10.200.0.5",
                 "ipAddressBDC": "10.200.0.6"
-            },
-            "sql": {
-                "imagePublisher": "MicrosoftSQLServer",
-                "imageOffer": "[parameters('sqlServerVersion')]",
-                "imageSKU": "Enterprise",
-                "autoPatchingEnable": true,
-                "autoPatchingDay": "Sunday",
-                "autoPatchingStartHour": "2",
-                "sqlAOListenerPort": "1433",
-                "sqlAOAGName": "alwayson-ag",
-                "workloadType": "GENERAL",
-                "sqlAOListenerName": "alwayson-ag-listener",
-                "sqlAOEPName": "[concat(variables('resourceNames').alwaysOnDnsPrefix,'-hadr')]",
-                "sharePath": "[concat(variables('resourceNames').alwaysOnDnsPrefix,'-fsw')]",
-                "clusterName": "[concat(variables('resourceNames').alwaysOnDnsPrefix,'-fc')]",
-                "sqlAutobackupRetentionPeriod": "2",
-                "numberOfDisks": "2",
-                "ipAddressSql0": "10.200.1.6",
-                "ipAddressSql1": "10.200.1.7",
-                "serviceAccountUsername": "sqlservice"
-            },
-            "sqlw": {
-                "imagePublisher": "MicrosoftWindowsServer",
-                "imageOffer": "WindowsServer",
-                "imageSKU": "2016-Datacenter",
-                "ipAddress": "10.200.1.8"
             },
             "web": {
                 "imagePublisher": "MicrosoftWindowsServer",
@@ -417,29 +286,18 @@
             "keyVaultUrl": "[concat('https://', parameters('keyVaultName') ,'.vault.usgovcloudapi.net/')]",
             "keyVaultId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('keyVaultResourceGroupName'), '/providers/Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]",
             "dcSubnet": "[concat(variables('VnetID'),'/subnets/', variables('subnets').dc.name)]",
-            "sqlSubnet": "[concat(variables('VnetID'),'/subnets/', variables('subnets').sql.name)]",
             "webSubnet": "[concat(variables('VnetID'),'/subnets/', variables('subnets').web.name)]",
             "mgtSubnet": "[concat(variables('VnetID'),'/subnets/', variables('subnets').mgt.name)]",
             "dcNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.dc)]",
-            "sqlNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.sql)]",
             "webNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.web)]",
             "lbNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.lb)]",
             "mgtNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.mgt)]",
             "adIPConfigID": "[concat(resourceId('Microsoft.Network/networkInterfaces',variables('resourceNames').nics.adpdc),'/ipConfigurations/ipconfig1')]",
             "rdplbFEConfigID": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').rdpLBName),'/frontendIPConfigurations/',variables('lbSettings').rdpLBFEName)]",
             "adRDPNATRuleID": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').rdpLBName),'/inboundNatRules/',variables('RDPNAT'))]",
-            "adBEAddressPoolID": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').rdpLBName),'/backendAddressPools/',variables('lbSettings').adLBBEName)]",
-            "sqlBEAddressPoolID": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').sqlLBName),'/backendAddressPools/',variables('lbSettings').sqlLBBEName)]",
-            "sqllbFEConfigID": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').sqlLBName),'/frontendIPConfigurations/',variables('lbSettings').sqlLBFEName)]",
-            "sqllbProbeID": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').sqlLBName),'/probes/',variables('SQLAOProbe'))]"
+            "adBEAddressPoolID": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').rdpLBName),'/backendAddressPools/',variables('lbSettings').adLBBEName)]"
         },
         "subnets":{
-          "sql": {
-              "name": "sql",
-              "properties": {
-                  "addressPrefix": "10.200.1.0/24"
-              }
-          },
           "dc": {
               "name": "dc",
               "properties": {
@@ -466,7 +324,6 @@
           }
         },
         "subnetArray": [
-            "[variables('subnets').sql]",
             "[variables('subnets').dc]",
             "[variables('subnets').web]",
             "[variables('subnets').mgt]",
@@ -475,7 +332,6 @@
         "virtualNetworkAddressRange": "10.200.0.0/16",
         "virtualNetworkNameWithSuffix": "[concat('autohav2VNET', uniqueString(resourceGroup().id))]",
         "resourceNames": {
-            "alwaysOnDnsPrefix": "aodns",
             "gatewaySkuName": "WAF_Medium",
             "omsWorkspace": "[substring(concat(uniqueString(resourceGroup().id), 'ws', parameters('environmentPrefix')), 5)]",
             "automationAccount": "[substring(concat(uniqueString(resourceGroup().id), 'aa', parameters('environmentPrefix')), 5)]",
@@ -486,11 +342,9 @@
                 "mgt": "[concat('MGTNSG', parameters('environmentPrefix'))]",
                 "dc": "[concat('DCNSG', parameters('environmentPrefix'))]",
                 "web": "[concat('WEBNSG', parameters('environmentPrefix'))]",
-                "sql": "[concat('SQLNSG', parameters('environmentPrefix'))]",
                 "lb": "[concat('LBNSG', parameters('environmentPrefix'))]"
             },
             "storageAccounts": {
-                "sql": "[concat(uniqueString(resourceGroup().id), 'sql', parameters('environmentPrefix'))]",
                 "dc": "[concat(uniqueString(resourceGroup().id), 'dc', parameters('environmentPrefix'))]",
                 "web": "[concat(uniqueString(resourceGroup().id), 'web', parameters('environmentPrefix'))]",
                 "mgt": "[concat(uniqueString(resourceGroup().id), 'mgt', parameters('environmentPrefix'))]"
@@ -498,31 +352,21 @@
             "vms": {
                 "adpdc": "[concat('AZ-PDC-VM', parameters('environmentPrefix'))]",
                 "adbdc": "[concat('AZ-BDC-VM', parameters('environmentPrefix'))]",
-                "sql0": "[concat('sqlserver0', parameters('environmentPrefix'))]",
-                "sql1": "[concat('sqlserver1', parameters('environmentPrefix'))]",
-                "sqlw": "[concat('cluster-fsw', parameters('environmentPrefix'))]",
                 "web": "[concat('AZ-WEB-VM', parameters('environmentPrefix'))]",
                 "mgt": "[concat('AZ-MGT-VM', parameters('environmentPrefix'))]"
             },
             "nics": {
                 "adpdc": "[concat('adPDC-nic', parameters('environmentPrefix'))]",
                 "adbdc": "[concat('adBDC-nic', parameters('environmentPrefix'))]",
-                "sqlw": "[concat('sqlw-nic', parameters('environmentPrefix'))]",
-                "sql0": "[concat('sql0-nic', parameters('environmentPrefix'))]",
-                "sql1": "[concat('sql1-nic', parameters('environmentPrefix'))]",
                 "web": "[concat('WEB-nic', parameters('environmentPrefix'))]",
                 "mgt": "[concat('MGT-nic', parameters('environmentPrefix'))]"
             },
             "loadBalancers": {
                 "rdpLBFEName": "rdpLBFE",
-                "sqlLBFEName": "sqlLBFE",
                 "adLBBEName": "adLBBE",
-                "sqlLBBEName": "sqlLBBE",
                 "rdpLBName": "rdpLoadBalancer",
-                "sqlLBName": "sqlLoadBalancer"
             },
             "availabilitySets": {
-                "sql": "[concat('sqlAvailabilitySet', parameters('environmentPrefix'))]",
                 "ad": "[concat('adAvailabilitySet', parameters('environmentPrefix'))]",
                 "web": "[concat('webAvailabilitySet', parameters('environmentPrefix'))]"
             },
@@ -536,56 +380,31 @@
         "provisioningVirtualMachinesUrl": "[concat(parameters('templatesBaseUrl'),'/virtualMachines.json')]",
         "provisioningAvailabilitySetsUrl": "[concat(parameters('templatesBaseUrl'),'/availabilitySets.json')]",
         "accountManagementPrincipalsUrl": "[concat(parameters('scriptsBaseUrl'),'/accountmanagementprincipals.ps1')]",
-        "secondarySqlCustomCMDUrl": "[concat(parameters('scriptsBaseUrl'),'/SQL0CustomCMD.sql')]",
         "provisioningOMSWorkspaceUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutoAccOMSWorkspace.json')]",
         "provisioningOMSAutomationScheduleUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutomationSchedule.json')]",
         "vnetwithDNSTemplateURL": "[concat(parameters('templatesBaseUrl'),'/updateVnetWithDNS.json')]",
         "nicTemplateURL": "[concat(parameters('templatesBaseUrl'),'/updateNic.json')]",
-        "sqlLoadBalancerURL": "[concat(parameters('templatesBaseUrl'),'/sqlLoadBalancer.json')]",
         "applicationGatewayURL": "[concat(parameters('templatesBaseUrl'),'/provisioningApplicationGateway.json')]",
         "provisioningNetworkInterfacesUrl": "[concat(parameters('templatesBaseUrl'),'/networkInterfaces.json')]",
         "virtualNetworkNSGURL": "[concat(parameters('templatesBaseUrl'),'/virtualNetworkNSG.json')]",
         "provisionAndConfigureADUrl": "[concat(parameters('templatesBaseUrl'),'/provisionAndConfigureAD.json')]",
         "configureMGTUrl": "[concat(parameters('templatesBaseUrl'),'/configureMGT.json')]",
         "configureWEBUrl": "[concat(parameters('templatesBaseUrl'),'/configureWEB.json')]",
-        "configureSQLUrl": "[concat(parameters('templatesBaseUrl'),'/configureSQL.json')]",
         "provisioningRCV": "[concat(parameters('templatesBaseUrl'),'/recoveryServicesVault.json')]",
         "backupVMProtectedItem": "[concat(parameters('templatesBaseUrl'),'/backupProtectedItems.json')]",
         "backupPolicy": "[concat(parameters('templatesBaseUrl'),'/recoveryServicesBackupPolicy.json')]",
         "configuringBackupADVMURL": "[concat(parameters('templatesBaseUrl'),'/configuringBackupADVM.json')]",
-        "preparingSQLAOUrl": "[concat(parameters('templatesBaseUrl'),'/preparingSQLAO.json')]",
-        "preparingAlwaysOnSqlServerURLAObypass": "[concat(parameters('templatesBaseUrl'),'/preparingSqlServerAObypass.json')]",
-        "configuringAlwaysOnURL": "[concat(parameters('templatesBaseUrl'),'/configuringAlwaysOn.json')]",
-        "configuringAlwaysOnURLAObypass": "[concat(parameters('templatesBaseUrl'),'/configuringAlwaysOnAObypass.json')]",
         "provisioningOMSMonitoringUrl": "[concat(parameters('templatesBaseUrl'), '/provisioningOMSMonitoring.json') ]",
         "pdcModulesURL": "[concat(parameters('dscBaseUrl'),'/PDCBaselineDSC.ps1.zip')]",
         "pdcConfigurationFunction": "PDCBaselineDSC.ps1\\PDCBaselineDSC",
         "bdcModulesURL": "[concat(parameters('dscBaseUrl'),'/BDCBaselineDSC.ps1.zip')]",
         "bdcCreateConfigurationFunction": "BDCBaselineDSC.ps1\\BDCBaselineDSC",
         "bdcConfigureConfigurationFunction": "BDCBaselineDSC.ps1\\BDCConfigureBaselineDSC",
-        "sqlwModulesURL": "[concat(parameters('dscBaseUrl'),'/SQLWBaselineDSC.ps1.zip')]",
-        "sqlwConfigurationFunction": "SQLWBaselineDSC.ps1\\SQLWBaselineDSC",
-        "sql0ModulesURL": "[concat(parameters('dscBaseUrl'),'/SQL0BaselineDSC.ps1.zip')]",
-        "sql0ConfigurationFunction": "SQL0BaselineDSC.ps1\\SQL0BaselineDSC",
-        "sql1ModulesURL": "[concat(parameters('dscBaseUrl'),'/SQL1BaselineDSC.ps1.zip')]",
-        "sql1ConfigurationFunction": "SQL1BaselineDSC.ps1\\SQL1BaselineDSC",
         "webModulesURL": "[concat(parameters('dscBaseUrl'),'/WEBBaselineDSC.ps1.zip')]",
         "webConfigurationFunction": "WEBBaselineDSC.ps1\\WEBBaselineDSC",
         "mgtModulesURL": "[concat(parameters('dscBaseUrl'),'/MGTBaselineDSC.ps1.zip')]",
         "mgtConfigurationFunction": "MGTBaselineDSC.ps1\\MGTBaselineDSC"
       },
-        "prepareAlwaysOnSQLInfo": {
-            "artifacts": "[variables('artifacts')]",
-            "resourceNames": "[variables('resourceNames')]",
-            "derivedIds": "[variables('derivedIds')]",
-            "vmSettings": "[variables('vmSettings')]",
-            "sqlServerServiceAccountUserName": "[variables('vmSettings').sql.serviceAccountUsername]",
-            "numberOfSqlVMDisks": "[variables('vmSettings').sql.numberOfDisks]"
-        },
-        "configuringAlwaysOnInfo": {
-            "lbSettings": "[variables('lbSettings')]",
-            "sqlLBIPAddress": "[variables('lbSettings').ipAddress]"
-        },
         "backupInfo": {
             "rcVaultName": "[variables('resourceNames').recoveryServicesVault]",
             "backupPolicy": "CustomPolicy",
@@ -615,22 +434,16 @@
         "antimalwareInfo": {
             "exclusionPath": {
                 "web": ["c:\\Users"],
-                "sql": ["c:\\Users"],
-                "sqlWS2012": "c:\\Users",
                 "ad": ["c:\\Users"],
                 "mgt": ["c:\\Users\\adminuser"]
             },
             "exclusionExtension": {
                 "web": [".txt", ".ps1"],
-                "sql": [".txt", ".ps1"],
-                "sqlWS2012": ".txt;.ps1",
                 "ad": [".txt", ".ps1"],
                 "mgt": [".txt"]
             },
             "exclusionProcess": {
                 "web": ["w3wp.exe", "explorer.exe"],
-                "sql": ["w3wp.exe", "explorer.exe"],
-                "sqlWS2012": "w3wp.exe;explorer.exe",
                 "ad": ["w3wp.exe", "explorer.exe"],
                 "mgt": ["explorer.exe"]
             },
@@ -643,15 +456,6 @@
             "VMs": [
                 {
                     "Name": "[variables('resourceNames').vms.mgt]"
-                },
-                {
-                    "Name": "[variables('resourceNames').vms.sqlw]"
-                },
-                {
-                    "Name": "[variables('resourceNames').vms.sql0]"
-                },
-                {
-                    "Name": "[variables('resourceNames').vms.sql1]"
                 }
             ]
         },
@@ -771,9 +575,6 @@
                     "dcNSGName": {
                         "value": "[variables('resourceNames').nsgs.dc]"
                     },
-                    "sqlNSGName": {
-                        "value": "[variables('resourceNames').nsgs.sql]"
-                    },
                     "webNSGName": {
                         "value": "[variables('resourceNames').nsgs.web]"
                     },
@@ -790,60 +591,11 @@
             }
         },
         {
-            "name": "ProvisionSQLLoadBalancer",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2015-01-01",
-            "comments": "Create Load Balancers for SQL",
-            "dependsOn": [
-                "Microsoft.Resources/deployments/ProvisionVirtualNetworkNSG"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('artifacts').sqlLoadBalancerURL]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "location": {
-                        "value": "[variables('vmSettings').location]"
-                    },
-                    "sqlLBName": {
-                        "value": "[variables('lbSettings').sqlLBName]"
-                    },
-                    "sqlLBFEName": {
-                        "value": "[variables('lbSettings').sqlLBFEName]"
-                    },
-                    "sqlLBIPAddress": {
-                        "value": "[variables('lbSettings').ipAddress]"
-                    },
-                    "sqlSubnetRef": {
-                        "value": "[variables('derivedIds').sqlSubnet]"
-                    },
-                    "sqlLBBEName": {
-                        "value": "[variables('lbSettings').sqlLBBEName]"
-                    },
-                    "sqlLBBEID": {
-                        "value": "[variables('derivedIds').sqlBEAddressPoolID]"
-                    },
-                    "sqllbFEConfigID": {
-                        "value": "[variables('derivedIds').sqllbFEConfigID]"
-                    },
-                    "sqllbProbeID": {
-                        "value": "[variables('derivedIds').sqllbProbeID]"
-                    },
-                    "SQLAOProbe": {
-                        "value": "[variables('SQLAOProbe')]"
-                    }
-                }
-            }
-        },
-        {
             "name": "ProvisionStorageAccounts",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "comments": "Creates storage accounts for Active Directory, MGT, WEB, SQL Servers, File Share Witness and Diagnostics.",
             "dependsOn": [
-                "Microsoft.Resources/deployments/ProvisionSQLLoadBalancer"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -861,14 +613,8 @@
                     "webStorageAccountType": {
                         "value": "[parameters('webStorageAccountType')]"
                     },
-                    "sqlStorageAccountName": {
-                        "value": "[variables('resourceNames').storageAccounts.sql]"
-                    },
                     "dcStorageAccountName": {
                         "value": "[variables('resourceNames').storageAccounts.dc]"
-                    },
-                    "sqlStorageAccountType": {
-                        "value": "[parameters('sqlStorageAccountType')]"
                     },
                     "dcStorageAccountType": {
                         "value": "[parameters('dcStorageAccountType')]"
@@ -905,9 +651,6 @@
                     },
                     "adAvailabilitySetName": {
                         "value": "[variables('resourceNames').availabilitySets.ad]"
-                    },
-                    "sqlAvailabilitySetName": {
-                        "value": "[variables('resourceNames').availabilitySets.sql]"
                     },
                     "webAvailabilitySetName": {
                         "value": "[variables('resourceNames').availabilitySets.web]"
@@ -1115,12 +858,6 @@
                     "location": {
                         "value": "[variables('vmSettings').location]"
                     },
-                    "SQLPrimaryName": {
-                        "value": "[variables('resourceNames').vms.sql1]"
-                    },
-                    "SQLSecondaryName": {
-                        "value": "[variables('resourceNames').vms.sql0]"
-                    },
                     "domainName": {
                       "reference": {
                         "keyVault": {
@@ -1128,12 +865,6 @@
                         },
                         "secretName": "domain"
                       }
-                    },
-                    "AlwaysOnAvailabilityGroupName": {
-                        "value": "[variables('vmSettings').sql.sqlAOAGName]"
-                    },
-                    "secondarySqlCustomCMDUrl": {
-                        "value": "[variables('artifacts').secondarySqlCustomCMDUrl]"
                     }
                 }
             }
@@ -1162,9 +893,6 @@
                     "adPDCNICIPAddress": {
                         "value": "[variables('vmSettings').dc.ipAddressPDC]"
                     },
-                    "sqlSubnetRef": {
-                        "value": "[variables('derivedIds').sqlSubnet]"
-                    },
                     "dcSubnetRef": {
                         "value": "[variables('derivedIds').dcSubnet]"
                     },
@@ -1183,30 +911,6 @@
                     },
                     "adBDCNICIPAddress": {
                         "value": "[variables('vmSettings').dc.ipAddressBDC]"
-                    },
-                    "sqlBEAddressPoolID": {
-                        "value": "[variables('derivedIds').sqlBEAddressPoolID]"
-                    },
-                    "sqlwNicName": {
-                        "value": "[variables('resourceNames').nics.sqlw]"
-                    },
-                    "sql0NicName": {
-                        "value": "[variables('resourceNames').nics.sql0]"
-                    },
-                    "sql1NicName": {
-                        "value": "[variables('resourceNames').nics.sql1]"
-                    },
-                    "sql0IPAddress": {
-                        "value": "[variables('vmSettings').sql.ipAddressSql0]"
-                    },
-                    "sql1IPAddress": {
-                        "value": "[variables('vmSettings').sql.ipAddressSql1]"
-                    },
-                    "sqlwIPAddress": {
-                        "value": "[variables('vmSettings').sqlw.ipAddress]"
-                    },
-                    "sqlNSGid": {
-                        "value": "[variables('derivedIds').sqlNSG]"
                     },
                     "dcNSGid": {
                         "value": "[variables('derivedIds').dcNSG]"
@@ -1368,9 +1072,6 @@
                   "adAvailabilitySetName": {
                       "value": "[variables('resourceNames').availabilitySets.ad]"
                   },
-                  "sqlAvailabilitySetName": {
-                      "value": "[variables('resourceNames').availabilitySets.sql]"
-                  },
                   "adPDCVMName": {
                       "value": "[variables('resourceNames').vms.adpdc]"
                   },
@@ -1414,44 +1115,14 @@
                   "adBDCNicName": {
                       "value": "[variables('resourceNames').nics.adbdc]"
                   },
-                  "sql0VMName": {
-                      "value": "[variables('resourceNames').vms.sql0]"
-                  },
-                  "sql1VMName": {
-                      "value": "[variables('resourceNames').vms.sql1]"
-                  },
-                  "sqlStorageAccountName": {
-                      "value": "[variables('resourceNames').storageAccounts.sql]"
-                  },
                   "dcStorageAccountName": {
                       "value": "[variables('resourceNames').storageAccounts.dc]"
                   },
                   "mgtStorageAccountName": {
                       "value": "[variables('resourceNames').storageAccounts.mgt]"
                   },
-                  "sqlVMSize": {
-                      "value": "[parameters('sqlVMSize')]"
-                  },
-                  "fswImagePublisher": {
-                      "value": "[variables('vmSettings').sqlw.imagePublisher]"
-                  },
-                  "fswImageOffer": {
-                      "value": "[variables('vmSettings').sqlw.imageOffer]"
-                  },
-                  "fswImageSKU": {
-                      "value": "[variables('vmSettings').sqlw.imageSKU]"
-                  },
                   "vmContainerName": {
                       "value": "[variables('vmSettings').vmContainerName]"
-                  },
-                  "sqlImagePublisher": {
-                      "value": "[variables('vmSettings').sql.imagePublisher]"
-                  },
-                  "sqlImageOffer": {
-                      "value": "[variables('vmSettings').sql.imageOffer]"
-                  },
-                  "sqlImageSKU": {
-                      "value": "[variables('vmSettings').sql.imageSKU]"
                   },
                   "mgtImagePublisher": {
                       "value": "[variables('vmSettings').mgt.imagePublisher]"
@@ -1472,18 +1143,6 @@
                   },
                   "witnessVMSize": {
                       "value": "[parameters('witnessVMSize')]"
-                  },
-                  "sqlwVMName": {
-                      "value": "[variables('resourceNames').vms.sqlw]"
-                  },
-                  "sqlwNicName": {
-                      "value": "[variables('resourceNames').nics.sqlw]"
-                  },
-                  "sql0NicName": {
-                      "value": "[variables('resourceNames').nics.sql0]"
-                  },
-                  "sql1NicName": {
-                      "value": "[variables('resourceNames').nics.sql1]"
                   },
                   "mgtVMName": {
                       "value": "[variables('resourceNames').vms.mgt]"
@@ -1580,131 +1239,6 @@
                   "provisioningHybridworkersUrl": {
                       "value": "[variables('artifacts').provisioningHybridworkerUrl]"
                   }
-                }
-            }
-        },
-        {
-            "name": "ConfigureSQL",
-            "comments": "Configures SQL VM with custom settings including SQL Always On Availability Groups",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2015-01-01",
-            "dependsOn": [
-                "Microsoft.Resources/deployments/ProvisionVirtualMachines",
-                "monitorVMLoopAD"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('artifacts').configureSQLUrl]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "adPDCVMName": {
-                        "value": "[variables('resourceNames').vms.adpdc]"
-                    },
-                    "adminUsername": {
-                      "reference": {
-                        "keyVault": {
-                          "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "adminUsername"
-                      }
-                    },
-                    "adminPassword": {
-                      "reference": {
-                        "keyVault": {
-                          "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "adminPassword"
-                      }
-                    },
-                    "adBDCVMName": {
-                        "value": "[variables('resourceNames').vms.adbdc]"
-                    },
-                    "sql0VMName": {
-                        "value": "[variables('resourceNames').vms.sql0]"
-                    },
-                    "sql1VMName": {
-                        "value": "[variables('resourceNames').vms.sql1]"
-                    },
-                    "location": {
-                      "value": "[variables('vmSettings').location]"
-                    },
-                    "domainName": {
-                      "reference": {
-                        "keyVault": {
-                          "id": "[variables('derivedIds').keyVaultId]"
-                        },
-                        "secretName": "domain"
-                      }
-                    },
-                    "sqlwVMName": {
-                        "value": "[variables('resourceNames').vms.sqlw]"
-                    },
-                    "sqlwNicName": {
-                        "value": "[variables('resourceNames').nics.sqlw]"
-                    },
-                    "sql0NicName": {
-                        "value": "[variables('resourceNames').nics.sql0]"
-                    },
-                    "sql1NicName": {
-                        "value": "[variables('resourceNames').nics.sql1]"
-                    },
-                    "adPDCNICIPAddress": {
-                        "value": "[variables('vmSettings').dc.ipAddressPDC]"
-                    },
-                    "adBDCNICIPAddress": {
-                        "value": "[variables('vmSettings').dc.ipAddressBDC]"
-                    },
-                    "updateNicTemplateURL": {
-                        "value": "[variables('artifacts').nicTemplateURL]"
-                    },
-                    "sqlSubnetRef": {
-                        "value": "[variables('derivedIds').sqlSubnet]"
-                    },
-                    "sqlBEAddressPoolID": {
-                        "value": "[variables('derivedIds').sqlBEAddressPoolID]"
-                    },
-                    "prepareAlwaysOnSQLInfo": {
-                        "value": "[variables('prepareAlwaysOnSQLInfo')]"
-                    },
-                    "configuringAlwaysOnInfo": {
-                        "value": "[variables('configuringAlwaysOnInfo')]"
-                    },
-                    "backupInfo": {
-                        "value": "[variables('backupInfo')]"
-                    },
-                    "antimalwareInfo": {
-                        "value": "[variables('antimalwareInfo')]"
-                    },
-                    "AutomationAccountName": {
-                        "value": "[variables('resourceNames').automationAccount]"
-                    },
-                    "EnvironmentName": {
-                        "value": "[parameters('EnvironmentName')]"
-                    },
-                    "ResourceGroupName": {
-                        "value": "[resourceGroup().name]"
-                    },
-                    "SubscriptionId": {
-                        "value": "[subscription().subscriptionId]"
-                    },
-                    "vmEncryptionSettings": {
-                        "value": "[variables('vmEncryptionSettings')]"
-                    },
-                    "keyVaultName": {
-                        "value": "[parameters('keyVaultName')]"
-                    },
-                    "provisioningHybridworkersUrl": {
-                        "value": "[variables('artifacts').provisioningHybridworkerUrl]"
-                    },
-                    "configureSQLAO": {
-                        "value": "[parameters('configureSQLAO')]"
-                    },
-                    "workspaceName": {
-                        "value": "[variables('resourceNames').omsWorkspace]"
-                    }
-
                 }
             }
         },
@@ -1845,8 +1379,7 @@
             "apiVersion": "2015-01-01",
             "dependsOn": [
                 "monitorVMLoopAD",
-                "ConfigureMGT",
-                "ConfigureSQL"
+                "ConfigureMGT"
             ],
             "copy": {
                 "name": "monitorVMLoopSQLAD",
@@ -1886,12 +1419,6 @@
                     "location": {
                         "value": "[variables('vmSettings').location]"
                     },
-                    "SQLPrimaryName": {
-                        "value": "[variables('resourceNames').vms.sql1]"
-                    },
-                    "SQLSecondaryName": {
-                        "value": "[variables('resourceNames').vms.sql0]"
-                    },
                     "domainName": {
                       "reference": {
                         "keyVault": {
@@ -1899,12 +1426,6 @@
                         },
                         "secretName": "domain"
                       }
-                    },
-                    "AlwaysOnAvailabilityGroupName": {
-                        "value": "[variables('vmSettings').sql.sqlAOAGName]"
-                    },
-                    "secondarySqlCustomCMDUrl": {
-                        "value": "[variables('artifacts').secondarySqlCustomCMDUrl]"
                     }
                 }
             }
@@ -1956,12 +1477,6 @@
                     "location": {
                         "value": "[variables('vmSettings').location]"
                     },
-                    "SQLPrimaryName": {
-                        "value": "[variables('resourceNames').vms.sql1]"
-                    },
-                    "SQLSecondaryName": {
-                        "value": "[variables('resourceNames').vms.sql0]"
-                    },
                     "DomainName": {
                       "reference": {
                         "keyVault": {
@@ -1969,12 +1484,6 @@
                         },
                         "secretName": "domain"
                       }
-                    },
-                    "AlwaysOnAvailabilityGroupName": {
-                        "value": "[variables('vmSettings').sql.sqlAOAGName]"
-                    },
-                    "secondarySqlCustomCMDUrl": {
-                        "value": "[variables('artifacts').secondarySqlCustomCMDUrl]"
                     }
                 }
             }
@@ -2020,7 +1529,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                  "ConfigureAutomationSchedules",
+                  "ConfigureAutomationSchedules"
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",

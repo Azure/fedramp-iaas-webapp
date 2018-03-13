@@ -11,9 +11,6 @@
         "keyVaultResourceGroupName": {
             "value": ""
         },
-        "configureSQLAO": {
-            "value": "yes"
-        },
         "environmentPrefix": {
             "value": ""
         },
@@ -29,9 +26,6 @@
         "adVMSize": {
             "value": "Standard_D1_v2"
         },
-        "sqlVMSize": {
-            "value": "Standard_D2_v2"
-        },
         "webVMSize": {
             "value": "Standard_D2_v2"
         },
@@ -40,9 +34,6 @@
         },
         "witnessVMSize": {
             "value": "Standard_D1_v2"
-        },
-        "sqlStorageAccountType": {
-            "value": "Standard_GRS"
         },
         "dcStorageAccountType": {
             "value": "Standard_GRS"
@@ -61,9 +52,6 @@
         },
         "scriptsBaseUrl": {
             "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQLTest/custom-scripts"
-        },
-        "sqlServerVersion": {
-            "value": "SQL2016-WS2012R2"
         },
         "gatewaySkuName": {
             "value": "WAF_Medium"
