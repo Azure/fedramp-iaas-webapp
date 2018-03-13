@@ -23,9 +23,6 @@
     "mgtNSGName": {
       "type": "string"
     },
-    "lbNSGName": {
-      "type": "string"
-    },
     "appGatewayAddressRange": {
       "type": "string"
     }
@@ -457,26 +454,6 @@
       },
       "resources": [],
       "dependsOn": []
-    },
-    {
-      "name": "[parameters('virtualNetworkName')]",
-      "type": "Microsoft.Network/virtualNetworks",
-      "dependsOn": [
-        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('lbNSGName'))]"
-      ],
-      "location": "[parameters('location')]",
-      "apiVersion": "2015-06-15",
-      "tags": {
-        "Project": "Blueprint"
-      },
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('virtualNetworkAddressRange')]"
-          ]
-        },
-        "subnets": "[parameters('subnets')]"
-      }
     }
   ],
   "outputs": {}
