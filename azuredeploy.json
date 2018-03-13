@@ -290,7 +290,6 @@
             "mgtSubnet": "[concat(variables('VnetID'),'/subnets/', variables('subnets').mgt.name)]",
             "dcNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.dc)]",
             "webNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.web)]",
-            "lbNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.lb)]",
             "mgtNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.mgt)]",
             "adIPConfigID": "[concat(resourceId('Microsoft.Network/networkInterfaces',variables('resourceNames').nics.adpdc),'/ipConfigurations/ipconfig1')]",
             "rdplbFEConfigID": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').rdpLBName),'/frontendIPConfigurations/',variables('lbSettings').rdpLBFEName)]",
@@ -341,8 +340,7 @@
             "nsgs": {
                 "mgt": "[concat('MGTNSG', parameters('environmentPrefix'))]",
                 "dc": "[concat('DCNSG', parameters('environmentPrefix'))]",
-                "web": "[concat('WEBNSG', parameters('environmentPrefix'))]",
-                "lb": "[concat('LBNSG', parameters('environmentPrefix'))]"
+                "web": "[concat('WEBNSG', parameters('environmentPrefix'))]"
             },
             "storageAccounts": {
                 "dc": "[concat(uniqueString(resourceGroup().id), 'dc', parameters('environmentPrefix'))]",
