@@ -41,33 +41,6 @@
     "adBDCNICIPAddress": {
       "type": "string"
     },
-    "sql0NicName": {
-      "type": "string"
-    },
-    "sql1NicName": {
-      "type": "string"
-    },
-    "sqlSubnetRef": {
-      "type": "string"
-    },
-    "sqlBEAddressPoolID": {
-      "type": "string"
-    },
-    "sqlwNicName": {
-      "type": "string"
-    },
-    "sql0IPAddress": {
-      "type":"string"
-    },
-    "sql1IPAddress": {
-      "type":"string"
-    },
-    "sqlwIPAddress": {
-      "type":"string"
-    },
-    "sqlNSGid": {
-      "type": "string"
-    },
     "dcNSGid": {
       "type": "string"
     },
@@ -101,94 +74,6 @@
       },
       "properties": {
         "publicIPAllocationMethod": "Dynamic"
-      }
-    },
-    {
-      "name": "[parameters('sql0NicName')]",
-      "type": "Microsoft.Network/networkInterfaces",
-      "location": "[parameters('location')]",
-      "apiVersion": "2015-06-15",
-      "tags": {
-        "Project": "Blueprint"
-      },
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Static",
-              "subnet": {
-                "id": "[parameters('sqlSubnetRef')]"
-              },
-              "privateIPAddress": "[parameters('sql0IPAddress')]",
-              "loadBalancerBackendAddressPools": [
-                {
-                  "id": "[parameters('sqlBEAddressPoolID')]"
-                }
-              ]
-            }
-          }
-        ],
-        "networkSecurityGroup": {
-          "id": "[parameters('sqlNSGid')]"
-        }
-      }
-    },
-    {
-      "name": "[parameters('sql1NicName')]",
-      "type": "Microsoft.Network/networkInterfaces",
-      "location": "[parameters('location')]",
-      "apiVersion": "2015-06-15",
-      "tags": {
-        "Project": "Blueprint"
-      },
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Static",
-              "subnet": {
-                "id": "[parameters('sqlSubnetRef')]"
-              },
-              "privateIPAddress": "[parameters('sql1IPAddress')]",
-              "loadBalancerBackendAddressPools": [
-                {
-                  "id": "[parameters('sqlBEAddressPoolID')]"
-                }
-              ]
-            }
-          }
-        ],
-        "networkSecurityGroup": {
-          "id": "[parameters('sqlNSGid')]"
-        }
-      }
-    },
-    {
-      "name": "[parameters('sqlwNicName')]",
-      "type": "Microsoft.Network/networkInterfaces",
-      "location": "[parameters('location')]",
-      "apiVersion": "2015-06-15",
-      "tags": {
-        "Project": "Blueprint"
-      },
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[parameters('sqlwIPAddress')]",
-              "subnet": {
-                "id": "[parameters('sqlSubnetRef')]"
-              }
-            }
-          }
-        ],
-        "networkSecurityGroup": {
-          "id": "[parameters('sqlNSGid')]"
-        }
       }
     },
     {

@@ -29,25 +29,13 @@
         "MachinesToSetPasswordPolicy": {
             "type": "string"
         },
-        "SQLPrimaryName": {
-            "type": "string"
-        },
-        "SQLSecondaryName": {
-            "type": "string"
-        },
         "domainName": {
-            "type": "string"
-        },
-        "AlwaysOnAvailabilityGroupName": {
-            "type": "string"
-        },
-        "secondarySqlCustomCMDUrl": {
             "type": "string"
         }
     },
     "variables": {
         "scriptFolder": ".",
-        "scriptParameters": "[concat('-MachineName \"', parameters('vmName'), '\" -ResourceGroupName \"', parameters('ResourceGroupName'), '\" -AutomationAccountName \"', parameters('AutomationAccountName'), '\" -WorkspaceName \"', parameters('workspaceName'),'\" -SubscriptionId \"', parameters('SubscriptionId'), '\" -EnvironmentName \"', parameters('EnvironmentName'), '\" -MachinesToSetPasswordPolicy \"', parameters('MachinesToSetPasswordPolicy'), '\" -SQLPrimaryName \"', parameters('SQLPrimaryName'), '\"  -SQLSecondaryName \"', parameters('SQLSecondaryName'), '\" -domainName \"', parameters('domainName'), '\"  -AlwaysOnAvailabilityGroupName \"', parameters('AlwaysOnAvailabilityGroupName'), '\"' )]"
+        "scriptParameters": "[concat('-MachineName \"', parameters('vmName'), '\" -ResourceGroupName \"', parameters('ResourceGroupName'), '\" -AutomationAccountName \"', parameters('AutomationAccountName'), '\" -WorkspaceName \"', parameters('workspaceName'),'\" -SubscriptionId \"', parameters('SubscriptionId'), '\" -EnvironmentName \"', parameters('EnvironmentName'), '\" -MachinesToSetPasswordPolicy \"', parameters('MachinesToSetPasswordPolicy'), '\" -domainName \"', parameters('domainName'), '\"  -AlwaysOnAvailabilityGroupName \"', parameters('AlwaysOnAvailabilityGroupName'), '\"' )]"
     },
     "resources": [
       {

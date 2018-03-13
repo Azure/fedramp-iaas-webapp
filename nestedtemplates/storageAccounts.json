@@ -11,13 +11,7 @@
     "webStorageAccountType": {
       "type": "string"
     },
-    "sqlStorageAccountName": {
-        "type": "string"
-    },
     "dcStorageAccountName": {
-        "type": "string"
-    },
-    "sqlStorageAccountType": {
         "type": "string"
     },
     "dcStorageAccountType": {
@@ -34,11 +28,8 @@
     }
   },
   "variables": {
-    "sqlstorageName": "[parameters('sqlStorageAccountName')]",
     "dcstorageName": "[parameters('dcStorageAccountName')]",
-    "fswstorageName": "[concat(parameters('sqlStorageAccountName'), 'fsw')]",
-    "diagstorageNameSQL": "[concat(parameters('sqlStorageAccountName'), 'diag')]",
-    "diagstorageNameDC": "[concat(parameters('dcStorageAccountName'), 'diag')]",
+    "diagstorageNameDC": "[concat(parameters('dcStorageAccountName'), 'diag')]"
   },
   "resources": [
     {
@@ -79,47 +70,6 @@
         "storageAccount": {
           "id": "[resourceId('Microsoft.Storage/storageaccounts/', parameters('webStorageAccountName'))]",
           "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('webStorageAccountName')),'2015-06-15').key1]"
-        }
-      }
-    },
-    {
-        "name": "[parameters('sqlStorageAccountName')]",
-        "type": "Microsoft.Storage/storageAccounts",
-        "apiVersion": "2016-01-01",
-        "tags": {
-            "Project": "Blueprint"
-        },
-        "location": "[parameters('location')]",
-        "sku": {
-            "name": "[parameters('sqlStorageAccountType')]"
-        },
-        "kind": "Storage",
-        "properties": {
-            "encryption": {
-                "services": {
-                    "blob": {
-                        "enabled": true
-                    }
-                },
-                "keySource": "Microsoft.Storage"
-            }
-        }
-    },
-    {
-      "apiVersion": "2015-11-01-preview",
-      "name": "[concat(parameters('omsWorkspaceName'), '/', parameters('sqlStorageAccountName'))]",
-      "type": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs",
-      "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', parameters('sqlStorageAccountName'))]"
-      ],
-      "properties": {
-        "containers": [ ],
-        "tables": [
-
-        ],
-        "storageAccount": {
-          "id": "[resourceId('Microsoft.Storage/storageaccounts/', parameters('sqlStorageAccountName'))]",
-          "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('sqlStorageAccountName')),'2015-06-15').key1]"
         }
       }
     },
@@ -166,47 +116,6 @@
     },
     {
         "type": "Microsoft.Storage/storageAccounts",
-        "name": "[variables('fswstorageName')]",
-        "apiVersion": "2016-01-01",
-        "tags": {
-            "Project": "Blueprint"
-        },
-        "location": "[parameters('location')]",
-        "sku": {
-            "name": "Standard_GRS"
-        },
-        "kind": "Storage",
-        "properties": {
-            "encryption": {
-                "services": {
-                    "blob": {
-                        "enabled": true
-                    }
-                },
-                "keySource": "Microsoft.Storage"
-            }
-        }
-    },
-    {
-      "apiVersion": "2015-11-01-preview",
-      "name": "[concat(parameters('omsWorkspaceName'), '/', variables('fswstorageName'))]",
-      "type": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs",
-      "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('fswstorageName'))]"
-      ],
-      "properties": {
-        "containers": [ ],
-        "tables": [
-
-        ],
-        "storageAccount": {
-          "id": "[resourceId('Microsoft.Storage/storageaccounts/', variables('fswstorageName'))]",
-          "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('fswstorageName')),'2015-06-15').key1]"
-        }
-      }
-    },
-    {
-        "type": "Microsoft.Storage/storageAccounts",
         "name": "[parameters('mgtStorageAccountName')]",
         "apiVersion": "2016-01-01",
         "tags": {
@@ -243,47 +152,6 @@
         "storageAccount": {
           "id": "[resourceId('Microsoft.Storage/storageaccounts/', parameters('mgtStorageAccountName'))]",
           "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('mgtStorageAccountName')),'2015-06-15').key1]"
-        }
-      }
-    },
-    {
-        "type": "Microsoft.Storage/storageAccounts",
-        "name": "[variables('diagstorageNameSQL')]",
-        "apiVersion": "2016-01-01",
-        "tags": {
-            "Project": "Blueprint"
-        },
-        "location": "[parameters('location')]",
-        "sku": {
-            "name": "Standard_GRS"
-        },
-        "kind": "Storage",
-        "properties": {
-            "encryption": {
-                "services": {
-                    "blob": {
-                        "enabled": true
-                    }
-                },
-                "keySource": "Microsoft.Storage"
-            }
-        }
-    },
-    {
-      "apiVersion": "2015-11-01-preview",
-      "name": "[concat(parameters('omsWorkspaceName'), '/', variables('diagstorageNameSQL'))]",
-      "type": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs",
-      "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('diagstorageNameSQL'))]"
-      ],
-      "properties": {
-        "containers": [ ],
-        "tables": [
-
-        ],
-        "storageAccount": {
-          "id": "[resourceId('Microsoft.Storage/storageaccounts/', variables('diagstorageNameSQL'))]",
-          "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('diagstorageNameSQL')),'2015-06-15').key1]"
         }
       }
     },
