@@ -32,9 +32,6 @@
         "mgtVMSize": {
             "value": "Standard_D1_v2"
         },
-        "witnessVMSize": {
-            "value": "Standard_D1_v2"
-        },
         "dcStorageAccountType": {
             "value": "Standard_GRS"
         },
