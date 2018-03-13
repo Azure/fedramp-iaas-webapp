@@ -637,7 +637,6 @@
             "apiVersion": "2015-01-01",
             "comments": "Creates Availability Sets for AD, SQL, and WEB VMs",
             "dependsOn": [
-                "Microsoft.Resources/deployments/ProvisionSQLLoadBalancer"
             ],
             "properties": {
                 "mode": "Incremental",
