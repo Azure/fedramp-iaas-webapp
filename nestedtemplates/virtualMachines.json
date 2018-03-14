@@ -92,9 +92,6 @@
     "domainName": {
         "type": "string"
     },
-    "witnessVMSize": {
-        "type": "string"
-    },
     "mgtVMName": {
         "type": "string"
     },
