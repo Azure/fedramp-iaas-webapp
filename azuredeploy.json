@@ -123,7 +123,7 @@
                 "Standard_GS5"
             ],
             "metadata": {
-                "description": "The size of the SQL VMs Created"
+                "description": "The size of the Web VMs Created"
             },
             "defaultValue": "Standard_D2_v2"
         },
@@ -157,7 +157,7 @@
                 "Standard_GS5"
             ],
             "metadata": {
-                "description": "The size of the SQL VMs Created"
+                "description": "The size of the MGT VM Created"
             },
             "defaultValue": "Standard_D1_v2"
         },
@@ -183,7 +183,7 @@
                 "Premium_LRS"
             ],
             "metadata": {
-                "description": "The type of the DC Storage Account created"
+                "description": "The type of the Web Storage Account created"
             },
             "defaultValue": "Standard_GRS"
         },
@@ -196,7 +196,7 @@
                 "Premium_LRS"
             ],
             "metadata": {
-                "description": "The type of the DC Storage Account created"
+                "description": "The type of the MGT Storage Account created"
             },
             "defaultValue": "Standard_GRS"
         },
@@ -290,6 +290,7 @@
             "mgtSubnet": "[concat(variables('VnetID'),'/subnets/', variables('subnets').mgt.name)]",
             "dcNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.dc)]",
             "webNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.web)]",
+            "lbNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.lb)]",
             "mgtNSG": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('resourceNames').nsgs.mgt)]",
             "adIPConfigID": "[concat(resourceId('Microsoft.Network/networkInterfaces',variables('resourceNames').nics.adpdc),'/ipConfigurations/ipconfig1')]",
             "rdplbFEConfigID": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').rdpLBName),'/frontendIPConfigurations/',variables('lbSettings').rdpLBFEName)]",
@@ -331,6 +332,7 @@
         "virtualNetworkAddressRange": "10.200.0.0/16",
         "virtualNetworkNameWithSuffix": "[concat('autohav2VNET', uniqueString(resourceGroup().id))]",
         "resourceNames": {
+            "alwaysOnDnsPrefix": "aodns",
             "gatewaySkuName": "WAF_Medium",
             "omsWorkspace": "[substring(concat(uniqueString(resourceGroup().id), 'ws', parameters('environmentPrefix')), 5)]",
             "automationAccount": "[substring(concat(uniqueString(resourceGroup().id), 'aa', parameters('environmentPrefix')), 5)]",
@@ -340,7 +342,8 @@
             "nsgs": {
                 "mgt": "[concat('MGTNSG', parameters('environmentPrefix'))]",
                 "dc": "[concat('DCNSG', parameters('environmentPrefix'))]",
-                "web": "[concat('WEBNSG', parameters('environmentPrefix'))]"
+                "web": "[concat('WEBNSG', parameters('environmentPrefix'))]",
+                "lb": "[concat('LBNSG', parameters('environmentPrefix'))]"
             },
             "storageAccounts": {
                 "dc": "[concat(uniqueString(resourceGroup().id), 'dc', parameters('environmentPrefix'))]",
@@ -362,7 +365,7 @@
             "loadBalancers": {
                 "rdpLBFEName": "rdpLBFE",
                 "adLBBEName": "adLBBE",
-                "rdpLBName": "rdpLoadBalancer",
+                "rdpLBName": "rdpLoadBalancer"
             },
             "availabilitySets": {
                 "ad": "[concat('adAvailabilitySet', parameters('environmentPrefix'))]",
@@ -372,37 +375,37 @@
                 "mgt": "mgtpublicip"
             }
         },
-      "artifacts": {
-        "provisioningHybridworkerUrl": "[concat(parameters('scriptsBaseUrl'),'/provisioningHybridworkers.ps1')]",
-        "provisioningStorageAccountsUrl": "[concat(parameters('templatesBaseUrl'),'/storageAccounts.json')]",
-        "provisioningVirtualMachinesUrl": "[concat(parameters('templatesBaseUrl'),'/virtualMachines.json')]",
-        "provisioningAvailabilitySetsUrl": "[concat(parameters('templatesBaseUrl'),'/availabilitySets.json')]",
-        "accountManagementPrincipalsUrl": "[concat(parameters('scriptsBaseUrl'),'/accountmanagementprincipals.ps1')]",
-        "provisioningOMSWorkspaceUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutoAccOMSWorkspace.json')]",
-        "provisioningOMSAutomationScheduleUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutomationSchedule.json')]",
-        "vnetwithDNSTemplateURL": "[concat(parameters('templatesBaseUrl'),'/updateVnetWithDNS.json')]",
-        "nicTemplateURL": "[concat(parameters('templatesBaseUrl'),'/updateNic.json')]",
-        "applicationGatewayURL": "[concat(parameters('templatesBaseUrl'),'/provisioningApplicationGateway.json')]",
-        "provisioningNetworkInterfacesUrl": "[concat(parameters('templatesBaseUrl'),'/networkInterfaces.json')]",
-        "virtualNetworkNSGURL": "[concat(parameters('templatesBaseUrl'),'/virtualNetworkNSG.json')]",
-        "provisionAndConfigureADUrl": "[concat(parameters('templatesBaseUrl'),'/provisionAndConfigureAD.json')]",
-        "configureMGTUrl": "[concat(parameters('templatesBaseUrl'),'/configureMGT.json')]",
-        "configureWEBUrl": "[concat(parameters('templatesBaseUrl'),'/configureWEB.json')]",
-        "provisioningRCV": "[concat(parameters('templatesBaseUrl'),'/recoveryServicesVault.json')]",
-        "backupVMProtectedItem": "[concat(parameters('templatesBaseUrl'),'/backupProtectedItems.json')]",
-        "backupPolicy": "[concat(parameters('templatesBaseUrl'),'/recoveryServicesBackupPolicy.json')]",
-        "configuringBackupADVMURL": "[concat(parameters('templatesBaseUrl'),'/configuringBackupADVM.json')]",
-        "provisioningOMSMonitoringUrl": "[concat(parameters('templatesBaseUrl'), '/provisioningOMSMonitoring.json') ]",
-        "pdcModulesURL": "[concat(parameters('dscBaseUrl'),'/PDCBaselineDSC.ps1.zip')]",
-        "pdcConfigurationFunction": "PDCBaselineDSC.ps1\\PDCBaselineDSC",
-        "bdcModulesURL": "[concat(parameters('dscBaseUrl'),'/BDCBaselineDSC.ps1.zip')]",
-        "bdcCreateConfigurationFunction": "BDCBaselineDSC.ps1\\BDCBaselineDSC",
-        "bdcConfigureConfigurationFunction": "BDCBaselineDSC.ps1\\BDCConfigureBaselineDSC",
-        "webModulesURL": "[concat(parameters('dscBaseUrl'),'/WEBBaselineDSC.ps1.zip')]",
-        "webConfigurationFunction": "WEBBaselineDSC.ps1\\WEBBaselineDSC",
-        "mgtModulesURL": "[concat(parameters('dscBaseUrl'),'/MGTBaselineDSC.ps1.zip')]",
-        "mgtConfigurationFunction": "MGTBaselineDSC.ps1\\MGTBaselineDSC"
-      },
+        "artifacts": {
+            "provisioningHybridworkerUrl": "[concat(parameters('scriptsBaseUrl'),'/provisioningHybridworkers.ps1')]",
+            "provisioningStorageAccountsUrl": "[concat(parameters('templatesBaseUrl'),'/storageAccounts.json')]",
+            "provisioningVirtualMachinesUrl": "[concat(parameters('templatesBaseUrl'),'/virtualMachines.json')]",
+            "provisioningAvailabilitySetsUrl": "[concat(parameters('templatesBaseUrl'),'/availabilitySets.json')]",
+            "accountManagementPrincipalsUrl": "[concat(parameters('scriptsBaseUrl'),'/accountmanagementprincipals.ps1')]",
+            "provisioningOMSWorkspaceUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutoAccOMSWorkspace.json')]",
+            "provisioningOMSAutomationScheduleUrl": "[concat(parameters('templatesBaseUrl'),'/provisioningAutomationSchedule.json')]",
+            "vnetwithDNSTemplateURL": "[concat(parameters('templatesBaseUrl'),'/updateVnetWithDNS.json')]",
+            "nicTemplateURL": "[concat(parameters('templatesBaseUrl'),'/updateNic.json')]",
+            "applicationGatewayURL": "[concat(parameters('templatesBaseUrl'),'/provisioningApplicationGateway.json')]",
+            "provisioningNetworkInterfacesUrl": "[concat(parameters('templatesBaseUrl'),'/networkInterfaces.json')]",
+            "virtualNetworkNSGURL": "[concat(parameters('templatesBaseUrl'),'/virtualNetworkNSG.json')]",
+            "provisionAndConfigureADUrl": "[concat(parameters('templatesBaseUrl'),'/provisionAndConfigureAD.json')]",
+            "configureMGTUrl": "[concat(parameters('templatesBaseUrl'),'/configureMGT.json')]",
+            "configureWEBUrl": "[concat(parameters('templatesBaseUrl'),'/configureWEB.json')]",
+            "provisioningRCV": "[concat(parameters('templatesBaseUrl'),'/recoveryServicesVault.json')]",
+            "backupVMProtectedItem": "[concat(parameters('templatesBaseUrl'),'/backupProtectedItems.json')]",
+            "backupPolicy": "[concat(parameters('templatesBaseUrl'),'/recoveryServicesBackupPolicy.json')]",
+            "configuringBackupADVMURL": "[concat(parameters('templatesBaseUrl'),'/configuringBackupADVM.json')]",
+            "provisioningOMSMonitoringUrl": "[concat(parameters('templatesBaseUrl'), '/provisioningOMSMonitoring.json') ]",
+            "pdcModulesURL": "[concat(parameters('dscBaseUrl'),'/PDCBaselineDSC.ps1.zip')]",
+            "pdcConfigurationFunction": "PDCBaselineDSC.ps1\\PDCBaselineDSC",
+            "bdcModulesURL": "[concat(parameters('dscBaseUrl'),'/BDCBaselineDSC.ps1.zip')]",
+            "bdcCreateConfigurationFunction": "BDCBaselineDSC.ps1\\BDCBaselineDSC",
+            "bdcConfigureConfigurationFunction": "BDCBaselineDSC.ps1\\BDCConfigureBaselineDSC",
+            "webModulesURL": "[concat(parameters('dscBaseUrl'),'/WEBBaselineDSC.ps1.zip')]",
+            "webConfigurationFunction": "WEBBaselineDSC.ps1\\WEBBaselineDSC",
+            "mgtModulesURL": "[concat(parameters('dscBaseUrl'),'/MGTBaselineDSC.ps1.zip')]",
+            "mgtConfigurationFunction": "MGTBaselineDSC.ps1\\MGTBaselineDSC"
+        },
         "backupInfo": {
             "rcVaultName": "[variables('resourceNames').recoveryServicesVault]",
             "backupPolicy": "CustomPolicy",
@@ -469,7 +472,7 @@
         }
     },
     "resources": [
-      {
+        {
             "name": "ProvisionAutomationAccountAndOMSWorkspace",
             "comments": "Creates an Azure Automation Account and OMS Workspace",
             "type": "Microsoft.Resources/deployments",
@@ -592,7 +595,7 @@
             "name": "ProvisionStorageAccounts",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
-            "comments": "Creates storage accounts for Active Directory, MGT, WEB, SQL Servers, File Share Witness and Diagnostics.",
+            "comments": "Creates storage accounts for Active Directory, MGT, WEB, and Diagnostics.",
             "dependsOn": [
             ],
             "properties": {
@@ -633,7 +636,7 @@
             "name": "ProvisionAvailabilitySets",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
-            "comments": "Creates Availability Sets for AD, SQL, and WEB VMs",
+            "comments": "Creates Availability Sets for AD and WEB VMs",
             "dependsOn": [
             ],
             "properties": {
@@ -811,7 +814,7 @@
         },
         {
             "name": "[concat('ConfigureOMSMonitoringAD-', variables('vmNamesArrayAD').VMs[copyIndex()].Name)]",
-            "comments": "Creates OMS Monitoring Extension for SQL, AD, and MGT",
+            "comments": "Creates OMS Monitoring Extension for AD and MGT",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -868,7 +871,7 @@
         },
         {
             "name": "ProvisionNICs",
-            "comments": "Creates Network Interfaces for MGT, WEB, and SQL VMs",
+            "comments": "Creates Network Interfaces for MGT and WEB VMs",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -893,7 +896,6 @@
                     "dcSubnetRef": {
                         "value": "[variables('derivedIds').dcSubnet]"
                     },
-
                     "mgtSubnetRef": {
                         "value": "[variables('derivedIds').mgtSubnet]"
                     },
@@ -1022,7 +1024,7 @@
             "name": "ProvisionVirtualMachines",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
-            "comments": "Creates WEB, MGT, SQL VMs. The number of WEB VMs is determined by the numberOfWebInstances parameter.",
+            "comments": "Creates WEB and MGT VMs. The number of WEB VMs is determined by the numberOfWebInstances parameter.",
             "dependsOn": [
                 "Microsoft.Resources/deployments/ProvisionNICs",
                 "Microsoft.Resources/deployments/ProvisionStorageAccounts",
@@ -1138,9 +1140,6 @@
                       "secretName": "domain"
                     }
                   },
-                  "witnessVMSize": {
-                      "value": "[parameters('witnessVMSize')]"
-                  },
                   "mgtVMName": {
                       "value": "[variables('resourceNames').vms.mgt]"
                   },
@@ -1161,7 +1160,6 @@
             "dependsOn": [
                 "Microsoft.Resources/deployments/ProvisionVirtualMachines",
                 "monitorVMLoopAD"
-
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1371,7 +1369,7 @@
         },
         {
             "name": "[concat('ConfigureOMSMonitoringSQLMGT-', variables('vmNamesArraySQLMGT').VMs[copyIndex()].Name)]",
-            "comments": "Creates OMS Monitoring Extension for SQL, AD, and MGT",
+            "comments": "Creates OMS Monitoring Extension for AD and MGT",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -1595,8 +1593,8 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                  "ConfigureAutomationSchedules",
-		  "[concat('ConfigurationVMEncryption-', variables('resourceNames').vms.web, copyindex())]"
+                "ConfigureAutomationSchedules",
+		        "[concat('ConfigurationVMEncryption-', variables('resourceNames').vms.web, copyindex())]"
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",
@@ -1665,9 +1663,9 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                  "ConfigureAutomationSchedules",
-		  "ConfigurationVMEncryption-AZ-PDC-VM",
-		  "ConfigurationVMEncryption-AZ-BDC-VM"
+                "ConfigureAutomationSchedules",
+		        "ConfigurationVMEncryption-AZ-PDC-VM",
+		        "ConfigurationVMEncryption-AZ-BDC-VM"
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",
