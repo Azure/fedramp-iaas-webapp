@@ -332,7 +332,6 @@
         "virtualNetworkAddressRange": "10.200.0.0/16",
         "virtualNetworkNameWithSuffix": "[concat('autohav2VNET', uniqueString(resourceGroup().id))]",
         "resourceNames": {
-            "alwaysOnDnsPrefix": "aodns",
             "gatewaySkuName": "WAF_Medium",
             "omsWorkspace": "[substring(concat(uniqueString(resourceGroup().id), 'ws', parameters('environmentPrefix')), 5)]",
             "automationAccount": "[substring(concat(uniqueString(resourceGroup().id), 'aa', parameters('environmentPrefix')), 5)]",
@@ -376,7 +375,6 @@
             }
         },
         "artifacts": {
-            "provisioningHybridworkerUrl": "[concat(parameters('scriptsBaseUrl'),'/provisioningHybridworkers.ps1')]",
             "provisioningStorageAccountsUrl": "[concat(parameters('templatesBaseUrl'),'/storageAccounts.json')]",
             "provisioningVirtualMachinesUrl": "[concat(parameters('templatesBaseUrl'),'/virtualMachines.json')]",
             "provisioningAvailabilitySetsUrl": "[concat(parameters('templatesBaseUrl'),'/availabilitySets.json')]",
@@ -665,7 +663,8 @@
             "apiVersion": "2015-01-01",
             "dependsOn": [
                 "Microsoft.Resources/deployments/ProvisionAvailabilitySets",
-                "Microsoft.Resources/deployments/ProvisionStorageAccounts"
+                "Microsoft.Resources/deployments/ProvisionStorageAccounts",
+                "Microsoft.Resources/deployments/ProvisionVirtualNetworkNSG"
             ],
             "properties": {
                 "mode": "Incremental",
