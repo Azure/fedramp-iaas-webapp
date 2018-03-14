@@ -11,6 +11,9 @@
         "keyVaultResourceGroupName": {
             "value": ""
         },
+        "configureSQLAO": {
+            "value": "yes"
+        },
         "environmentPrefix": {
             "value": ""
         },
@@ -26,11 +29,20 @@
         "adVMSize": {
             "value": "Standard_D1_v2"
         },
+        "sqlVMSize": {
+            "value": "Standard_D2_v2"
+        },
         "webVMSize": {
             "value": "Standard_D2_v2"
         },
         "mgtVMSize": {
             "value": "Standard_D1_v2"
+        },
+        "witnessVMSize": {
+            "value": "Standard_D1_v2"
+        },
+        "sqlStorageAccountType": {
+            "value": "Standard_GRS"
         },
         "dcStorageAccountType": {
             "value": "Standard_GRS"
@@ -42,13 +54,16 @@
             "value": "Standard_GRS"
         },
         "templatesBaseUrl": {
-            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQLTest/nestedtemplates"
+            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/nestedtemplates"
         },
         "dscBaseUrl": {
-            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQLTest/DSC"
+            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/DSC"
         },
         "scriptsBaseUrl": {
-            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQLTest/custom-scripts"
+            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/custom-scripts"
+        },
+        "sqlServerVersion": {
+            "value": "SQL2016-WS2012R2"
         },
         "gatewaySkuName": {
             "value": "WAF_Medium"
