@@ -63,10 +63,8 @@
         "[concat('Microsoft.Storage/storageAccounts/', parameters('webStorageAccountName'))]"
       ],
       "properties": {
-        "containers": [ ],
-        "tables": [
-
-        ],
+        "containers": [],
+        "tables": [],
         "storageAccount": {
           "id": "[resourceId('Microsoft.Storage/storageaccounts/', parameters('webStorageAccountName'))]",
           "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('webStorageAccountName')),'2015-06-15').key1]"
@@ -145,10 +143,8 @@
         "[concat('Microsoft.Storage/storageAccounts/', parameters('mgtStorageAccountName'))]"
       ],
       "properties": {
-        "containers": [ ],
-        "tables": [
-
-        ],
+        "containers": [],
+        "tables": [],
         "storageAccount": {
           "id": "[resourceId('Microsoft.Storage/storageaccounts/', parameters('mgtStorageAccountName'))]",
           "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('mgtStorageAccountName')),'2015-06-15').key1]"
@@ -186,10 +182,8 @@
         "[concat('Microsoft.Storage/storageAccounts/', variables('diagstorageNameDC'))]"
       ],
       "properties": {
-        "containers": [ ],
-        "tables": [
-
-        ],
+        "containers": [],
+        "tables": [],
         "storageAccount": {
           "id": "[resourceId('Microsoft.Storage/storageaccounts/', variables('diagstorageNameDC'))]",
           "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('diagstorageNameDC')),'2015-06-15').key1]"

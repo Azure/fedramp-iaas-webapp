@@ -182,9 +182,7 @@
             "name": "vmLoopDEL",
             "count": "[parameters('numberOfWebInstances')]"
         },
-        "dependsOn": [
-
-        ],
+        "dependsOn": [],
         "properties": {
             "hardwareProfile": {
                 "vmSize": "[parameters('WebVMSize')]"

@@ -23,11 +23,43 @@
     "mgtNSGName": {
       "type": "string"
     },
+    "lbNSGName": {
+      "type": "string"
+    },
     "appGatewayAddressRange": {
       "type": "string"
     }
   },
   "resources": [
+    {
+      "comments": "Load Balancer NSG",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('lbNSGName')]",
+      "apiVersion": "2016-03-30",
+      "tags": {
+        "Project": "Blueprint"
+      },
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "HTTPS",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "443",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 101,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      },
+      "resources": [],
+      "dependsOn": []
+    },
     {
       "comments": "MGT NSG",
       "type": "Microsoft.Network/networkSecurityGroups",
@@ -39,7 +71,6 @@
       "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
-
           {
             "name": "RDP",
             "properties": {
@@ -69,7 +100,6 @@
       "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
-
           {
             "name": "SMB-tcp",
             "properties": {
@@ -214,7 +244,7 @@
             }
           },
           {
-            "name": "Kerberos-tcp",
+            "name": "Keberos-tcp",
             "properties": {
               "protocol": "TCP",
               "sourcePortRange": "*",
@@ -227,7 +257,7 @@
             }
           },
           {
-            "name": "Kerberos-udp",
+            "name": "Keberos-udp",
             "properties": {
               "protocol": "UDP",
               "sourcePortRange": "*",
@@ -305,7 +335,7 @@
             }
           },
           {
-            "name": "KerberosPWD-udp",
+            "name": "KeberosPWD-udp",
             "properties": {
               "protocol": "UDP",
               "sourcePortRange": "*",
@@ -449,11 +479,31 @@
               "priority": 105,
               "direction": "Inbound"
             }
-          },
+          }
         ]
       },
       "resources": [],
       "dependsOn": []
+    },
+    {
+      "name": "[parameters('virtualNetworkName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('lbNSGName'))]"
+      ],
+      "location": "[parameters('location')]",
+      "apiVersion": "2015-06-15",
+      "tags": {
+        "Project": "Blueprint"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('virtualNetworkAddressRange')]"
+          ]
+        },
+        "subnets": "[parameters('subnets')]"
+      }
     }
   ],
   "outputs": {}

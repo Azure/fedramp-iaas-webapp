@@ -10,7 +10,7 @@
     },
     "adAvailabilitySetName": {
         "type": "string"
-    },
+    }
   },
   "resources": [
     {
