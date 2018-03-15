@@ -95,9 +95,6 @@
         "SubscriptionId": {
             "type": "string"
         },
-        "provisioningHybridworkersUrl": {
-            "type": "string"
-        },
         "omsWorkspaceName": {
             "type": "string"
         }
