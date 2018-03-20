@@ -205,43 +205,21 @@
             "metadata": {
                 "description": "Linked Templates base url"
             },
-<<<<<<< HEAD
-            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/nestedtemplates"
-=======
             "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/NoSQL/nestedtemplates"
->>>>>>> 210c9e4b7e5f961f370ab24cdf6642b1767d1627
         },
         "dscBaseUrl": {
             "type": "string",
             "metadata": {
                 "description": "DSC Scripts base url"
             },
-<<<<<<< HEAD
-            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/DSC"
-=======
             "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/NoSQL/DSC"
->>>>>>> 210c9e4b7e5f961f370ab24cdf6642b1767d1627
         },
         "scriptsBaseUrl": {
             "type": "string",
             "metadata": {
                 "description": "DSC Scripts base url"
             },
-<<<<<<< HEAD
-            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/custom-scripts"
-        },
-        "sqlServerVersion": {
-            "type": "string",
-            "allowedValues": [
-                "SQL2016-WS2012R2"
-            ],
-            "metadata": {
-                "description": "The Sql Server Version"
-            },
-            "defaultValue": "SQL2016-WS2012R2"
-=======
             "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/NoSQL/custom-scripts"
->>>>>>> 210c9e4b7e5f961f370ab24cdf6642b1767d1627
         },
         "gatewaySkuName": {
             "type": "string",
@@ -1605,13 +1583,8 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-<<<<<<< HEAD
-                  "ConfigureAutomationSchedules",
-		  "[concat('ConfigurationVMEncryption-', variables('resourceNames').vms.web, copyindex())]"
-=======
                 "ConfigureAutomationSchedules",
 		        "[concat('ConfigurationVMEncryption-', variables('resourceNames').vms.web, copyindex())]"
->>>>>>> 210c9e4b7e5f961f370ab24cdf6642b1767d1627
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",
@@ -1680,15 +1653,9 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-<<<<<<< HEAD
-                  "ConfigureAutomationSchedules",
-		  "ConfigurationVMEncryption-AZ-PDC-VM",
-		  "ConfigurationVMEncryption-AZ-BDC-VM"
-=======
                 "ConfigureAutomationSchedules",
 		        "ConfigurationVMEncryption-AZ-PDC-VM",
 		        "ConfigurationVMEncryption-AZ-BDC-VM"
->>>>>>> 210c9e4b7e5f961f370ab24cdf6642b1767d1627
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",

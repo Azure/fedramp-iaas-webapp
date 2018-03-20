@@ -1,11 +1,7 @@
 ## Solution overview
 
-<<<<<<< HEAD
-For more information about this solution, see [Azure Security and Compliance Blueprint - FedRAMP Web Applications Automation](https://aka.ms/fedrampblueprint).
-=======
 For more information about this solution, see [
 Azure Security and Compliance Blueprint - FedRAMP Web Applications Automation](https://aka.ms/fedrampblueprint).
->>>>>>> 210c9e4b7e5f961f370ab24cdf6642b1767d1627
 
 ## Deploy the solution
 
@@ -18,11 +14,7 @@ This Azure Security and Compliance Blueprint Automation is comprised of JSON con
 
 3. Click the button below, sign into the Azure portal, enter the required parameters, and click **Purchase**. [Read more about deployment.](#deployment)
 
-<<<<<<< HEAD
-	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2Fmaster%2Fazuredeploy.json)
-=======
 	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2FNoSQL%2Fazuredeploy.json)
->>>>>>> 210c9e4b7e5f961f370ab24cdf6642b1767d1627
 
 ### PRE-DEPLOYMENT
 
@@ -51,12 +43,6 @@ This automation deploys an Application Gateway and requires an SSL certificate. 
 
 The pre-deployment PowerShell script will verify that the necessary Azure PowerShell modules are installed. Azure PowerShell modules provide cmdlets for managing Azure resources. After all the setup requirements are verified, the script will ask you to sign into Azure and will then prompt for parameters and credentials to use when the automation is deployed. The script will prompt for the following parameters, in this order:
 
-<<<<<<< HEAD
-* **domain**: Domain name for the self-signed SSL certificate (e.g., `contoso.local`).
-* **Azure username**: Your Azure username (e.g., someuser@contoso.onmicrosoft.com)
-* **Azure password**: Password for the Azure account above
-=======
->>>>>>> 210c9e4b7e5f961f370ab24cdf6642b1767d1627
 * **Admin username**: Administrator username you want to use for the administrator accounts on deployed virtual machines
 * **adminPassword**: Administrator password you want to use for the administrator accounts on deployed virtual machines (must meet the complexity requirements; see below)
 * **sqlServerServiceAccountPassword**: SQL service account password you want to use (must meet the complexity requirements; see below)
@@ -99,11 +85,7 @@ All other settings contain default values that may be optionally adjusted by the
 
 1. Click the button below.
 
-<<<<<<< HEAD
-	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2Fmaster%2Fazuredeploy.json)
-=======
 	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2FNoSQL%2Fazuredeploy.json)
->>>>>>> 210c9e4b7e5f961f370ab24cdf6642b1767d1627
 2. Enter the settings above.
 3. Review the terms and conditions and click **I agree to the terms and conditions stated above**.
 4. Click **Purchase**.
