@@ -92,16 +92,7 @@
         "ResourceGroupName": {
             "type": "string"
         },
-        "AzureUserName": {
-            "type": "string"
-        },
-        "AzurePassword": {
-            "type": "securestring"
-        },
         "SubscriptionId": {
-            "type": "string"
-        },
-        "provisioningHybridworkersUrl": {
             "type": "string"
         },
         "omsWorkspaceName": {
@@ -113,7 +104,7 @@
         "domainJoinUserName": "[concat(parameters('domainName'), '\\', parameters('adminUsername'))]"
     },
     "resources": [
-        {
+          {
               "comments": "Join domain - JsonADDomainExtension",
               "apiVersion": "2015-06-15",
               "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -143,7 +134,6 @@
                   "protectedSettings": {
                       "Password": "[parameters('adminPassword')]"
                   }
-
               }
           },
           {
@@ -164,7 +154,7 @@
             "properties": {
                 "publisher": "Microsoft.Powershell",
                 "type": "DSC",
-                "typeHandlerVersion": "2.19",
+                "typeHandlerVersion": "2.20",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "ModulesUrl": "[parameters('webModulesURL')]",
@@ -178,11 +168,6 @@
                         "RemediationScheduleDay": "[parameters('antimalwareInfo').remediationScheduleDay]",
                         "ScanScheduleDay": "[parameters('antimalwareInfo').scanScheduleDay]",
                         "DisableRealtimeMonitoring": "[parameters('antimalwareInfo').disableRealtimeMonitoring]"
-                    }
-                },
-                "protectedSettings": {
-                    "items": {
-                        "AzurePassword": "[parameters('AzurePassword')]"
                     }
                 }
             }
@@ -216,6 +201,5 @@
         }
     ],
     "outputs": {
-
     }
 }

@@ -1,6 +1,6 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
   "parameters": {
     "adBDCVMName": {
       "type": "string"
@@ -38,12 +38,6 @@
     "AutomationAccountName": {
       "type": "string"
     },
-    "AzureUserName": {
-      "type": "string"
-    },
-    "AzurePassword": {
-      "type": "securestring"
-    },
     "SubscriptionId": {
       "type": "string"
     },
@@ -63,8 +57,8 @@
       "properties": {
         "publisher": "Microsoft.Powershell",
         "type": "DSC",
-        "typeHandlerVersion": "2.19",
-        "autoUpgradeMinorVersion": false,
+        "typeHandlerVersion": "2.20",
+        "autoUpgradeMinorVersion": true,
         "settings": {
           "modulesURL": "[parameters('bdcModulesURL')]",
           "configurationFunction": "[parameters('bdcConfigureConfigurationFunction')]",
@@ -78,8 +72,7 @@
         },
         "protectedSettings": {
          "items": {
-            "adminPassword": "[parameters('adminPassword')]",
-            "AzurePassword": "[parameters('AzurePassword')]"
+            "adminPassword": "[parameters('adminPassword')]"
           }
         }
       }

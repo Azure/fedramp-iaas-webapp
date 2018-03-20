@@ -254,7 +254,7 @@
           "firewallMode": "[parameters('wafMode')]",
           "ruleSetType": "[parameters('wafRuleSetType')]",
           "ruleSetVersion": "[parameters('wafRuleSetVersion')]",
-          "disabledRuleGroups": [ ]
+          "disabledRuleGroups": []
         }
       }
     }

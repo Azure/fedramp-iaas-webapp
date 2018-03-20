@@ -17,19 +17,10 @@
         "AutomationAccountName": {
             "type": "string"
         },
-        "AzureUserName": {
-            "type": "string"
-        },
-        "AzurePassword": {
-            "type": "securestring"
-        },
         "SubscriptionId": {
             "type": "string"
         },
         "EnvironmentName": {
-            "type": "string"
-        },
-        "customScriptBaselineUrl": {
             "type": "string"
         },
         "accountManagementPrincipalsUrl": {
@@ -38,26 +29,13 @@
         "MachinesToSetPasswordPolicy": {
             "type": "string"
         },
-        "SQLPrimaryName": {
-            "type": "string"
-        },
-        "SQLSecondaryName": {
-            "type": "string"
-        },
         "domainName": {
-            "type": "string"
-        },
-        "AlwaysOnAvailabilityGroupName": {
-            "type": "string"
-        },
-        "secondarySqlCustomCMDUrl": {
             "type": "string"
         }
     },
     "variables": {
         "scriptFolder": ".",
-        "scriptFileName": "customScriptBaseline.ps1",
-        "scriptParameters": "[concat('-MachineName \"', parameters('vmName'), '\" -ResourceGroupName \"', parameters('ResourceGroupName'), '\" -AutomationAccountName \"', parameters('AutomationAccountName'), '\" -WorkspaceName \"', parameters('workspaceName'), '\" -AzureUserName \"', parameters('AzureUserName'), '\" -AzurePassword \"', parameters('AzurePassword'),'\" -SubscriptionId \"', parameters('SubscriptionId'), '\" -EnvironmentName \"', parameters('EnvironmentName'), '\" -MachinesToSetPasswordPolicy \"', parameters('MachinesToSetPasswordPolicy'), '\" -SQLPrimaryName \"', parameters('SQLPrimaryName'), '\"  -SQLSecondaryName \"', parameters('SQLSecondaryName'), '\" -domainName \"', parameters('domainName'), '\"  -AlwaysOnAvailabilityGroupName \"', parameters('AlwaysOnAvailabilityGroupName'), '\"' )]"
+        "scriptParameters": "[concat('-MachineName \"', parameters('vmName'), '\" -ResourceGroupName \"', parameters('ResourceGroupName'), '\" -AutomationAccountName \"', parameters('AutomationAccountName'), '\" -WorkspaceName \"', parameters('workspaceName'),'\" -SubscriptionId \"', parameters('SubscriptionId'), '\" -EnvironmentName \"', parameters('EnvironmentName'), '\" -MachinesToSetPasswordPolicy \"', parameters('MachinesToSetPasswordPolicy'), '\" -domainName \"', parameters('domainName'))]"
     },
     "resources": [
       {
@@ -76,35 +54,6 @@
                 },
                 "protectedSettings": {
                     "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2015-03-20').primarySharedKey]"
-                }
-            }
-        },
-        {
-            "apiVersion": "2015-06-15",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('vmName'), '/customScriptBaseline')]",
-            "dependsOn": [
-              "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'),'EnterpriseCloudMonitoring')]"
-            ],
-            "location": "[parameters('location')]",
-            "tags": {
-                "displayName": "customScriptBaseline",
-                "Project": "Blueprint"
-            },
-            "properties": {
-                "publisher": "Microsoft.Compute",
-                "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.8",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "fileUris": [
-                        "[parameters('customScriptBaselineUrl')]",
-                        "[parameters('secondarySqlCustomCMDUrl')]",
-                        "[parameters('accountManagementPrincipalsUrl')]"
-                    ]
-                },
-                "protectedSettings": {
-                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'))]"
                 }
             }
         }

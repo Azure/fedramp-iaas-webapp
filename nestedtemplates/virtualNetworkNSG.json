@@ -17,9 +17,6 @@
     "dcNSGName": {
       "type": "string"
     },
-    "sqlNSGName": {
-      "type": "string"
-    },
     "webNSGName": {
       "type": "string"
     },
@@ -45,7 +42,6 @@
       "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
-
           {
             "name": "HTTPS",
             "properties": {
@@ -75,7 +71,6 @@
       "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
-
           {
             "name": "RDP",
             "properties": {
@@ -105,7 +100,6 @@
       "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
-
           {
             "name": "SMB-tcp",
             "properties": {
@@ -450,36 +444,6 @@
       "dependsOn": []
     },
     {
-      "comments": "SQL NSG",
-      "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "[parameters('sqlNSGName')]",
-      "apiVersion": "2016-03-30",
-      "tags": {
-        "Project": "Blueprint"
-      },
-      "location": "[parameters('location')]",
-      "properties": {
-        "securityRules": [
-
-          {
-            "name": "SQL",
-            "properties": {
-              "protocol": "TCP",
-              "sourcePortRange": "*",
-              "destinationPortRange": "1433",
-              "sourceAddressPrefix": "[parameters('virtualNetworkAddressRange')]",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 100,
-              "direction": "Inbound"
-            }
-          }
-        ]
-      },
-      "resources": [],
-      "dependsOn": []
-    },
-    {
       "comments": "WEB NSG",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[parameters('webNSGName')]",
@@ -515,7 +479,7 @@
               "priority": 105,
               "direction": "Inbound"
             }
-          },
+          }
         ]
       },
       "resources": [],
