@@ -43,8 +43,6 @@ This solution deploys an Application Gateway and requires an SSL certificate. Th
 
 The pre-deployment PowerShell script will verify that the necessary Azure PowerShell modules are installed. Azure PowerShell modules provide cmdlets for managing Azure resources. After all the setup requirements are verified, the script will ask you to sign into Azure and will then prompt for parameters and credentials to use when the solution is deployed. The script will prompt for the following parameters, in this order:
 
-* **Azure username**: Your Azure username (e.g., someuser@contoso.onmicrosoft.com)
-* **Azure password**: Password for the Azure account above
 * **Admin username**: Administrator username you want to use for the administrator accounts on deployed virtual machines
 * **adminPassword**: Administrator password you want to use for the administrator accounts on deployed virtual machines (must meet the complexity requirements; see below)
 * **sqlServerServiceAccountPassword**: SQL service account password you want to use (must meet the complexity requirements; see below)
@@ -77,8 +75,6 @@ After clicking the Deploy to Azure Gov button, the Azure portal will open and pr
 * **Location**: Select 'USGovVirginia' ***Note: This solution must be deployed in the USGovVirginia region due to service availability.***
 
 **Settings**
-* **Azure username**: Your Azure username (e.g., someuser@contoso.onmicrosoft.com)
-* **Azure password**: Password for the Azure account above
 * **Key Vault Name**: Name of the Key Vault created during pre-deployment
 * **Key Vault Resource Group Name**: Name of the resource group created during pre-deployment
 
@@ -88,7 +84,7 @@ All other settings contain default values that may be optionally adjusted by the
 
 1. Click the button below.
 
-	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2Fmaster%2Fazuredeploy.json)
+	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2Fdev%2Fazuredeploy.json)
 2. Enter the settings above.
 3. Review the terms and conditions and click **I agree to the terms and conditions stated above**.
 4. Click **Purchase**.

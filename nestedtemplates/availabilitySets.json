@@ -10,9 +10,6 @@
     },
     "adAvailabilitySetName": {
         "type": "string"
-    },
-    "sqlAvailabilitySetName": {
-        "type": "string"
     }
   },
   "resources": [
@@ -24,19 +21,6 @@
             "Project": "Blueprint"
         },
         "location": "[parameters('location')]"
-    },
-    {
-        "type": "Microsoft.Compute/availabilitySets",
-        "name": "[parameters('sqlAvailabilitySetName')]",
-        "apiVersion": "2015-06-15",
-        "tags": {
-            "Project": "Blueprint"
-        },
-        "location": "[parameters('location')]",
-        "properties": {
-            "platformFaultDomainCount": "3",
-            "platformUpdateDomainCount": "3"
-        }
     },
     {
         "type": "Microsoft.Compute/availabilitySets",

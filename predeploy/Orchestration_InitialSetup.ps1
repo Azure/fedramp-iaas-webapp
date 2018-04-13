@@ -264,9 +264,7 @@ function orchestration {
 		[string]$adminUsername,
 		[Parameter(Mandatory=$true)]
 		[SecureString]$adminPassword,
-		[Parameter(Mandatory=$true)]
-		[SecureString]$sqlServerServiceAccountPassword,
-        [string]$domain = $domainused
+                [string]$domain = $domainused
 	)
 
 	$errorActionPreference = 'stop'
@@ -371,10 +369,6 @@ function orchestration {
 		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'adminPassword' -Destination 'Software'
 		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'adminPassword' -SecretValue $adminPassword
 
-		    Write-Host "Set Azure Key Vault Access Policy. Set SqlServerServiceAccountPassword in Key Vault: $keyVaultName" -ForegroundColor Yellow;
-		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'sqlServerServiceAccountPassword' -Destination 'Software'
-		    $secret = Set-AzureKeyVaultSecret -VaultName $keyVaultName -Name 'sqlServerServiceAccountPassword' -SecretValue $sqlServerServiceAccountPassword
-
 		    Write-Host "Set Azure Key Vault Access Policy. Set sslCert in Key Vault: $keyVaultName" -ForegroundColor Yellow;
 		    $key = Add-AzureKeyVaultKey -VaultName $keyVaultName -Name 'sslCert' -Destination 'Software'
 		    $sslCertSecureString = ConvertTo-SecureString "$certificate" -AsPlainText -Force
@@ -427,12 +421,12 @@ try {
 	Write-Host "You will now be asked to create credentials for the administrator and sql service accounts. `n" -ForegroundColor Yellow
 	Write-Host "`n CREATE CREDENTIALS `n" -foregroundcolor green
     $adminUsername = checkAdminUserName
-	$passwordNames = @("adminPassword","sqlServerServiceAccountPassword")
+	$passwordNames = @("adminPassword")
 	$passwords = New-Object -TypeName PSObject
 	for ($i=0;$i -lt $passwordNames.Length;$i++) {
 	   checkPasswords -name $passwordNames[$i]
 	}
-	orchestration -adminUsername $adminUsername -adminPassword $passwords.adminPassword -sqlServerServiceAccountPassword $passwords.sqlServerServiceAccountPassword
+	orchestration -adminUsername $adminUsername -adminPassword $passwords.adminPassword
     Write-Host "`n ORCHESTRATION COMPLETE `n" -foregroundcolor green
     Write-Host "Initial Pre-Deployment and Orchestration operations for this blueprint template are complete. Please proceed with finishing the deployment through the portal link in the Quickstart section at https://aka.ms/fedrampblueprint." -foregroundcolor Yellow
 }
