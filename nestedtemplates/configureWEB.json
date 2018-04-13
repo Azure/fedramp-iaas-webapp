@@ -17,7 +17,7 @@
         "WebStorageAccountName": {
             "type": "string"
         },
-        "webStorageAccountType": {
+        "StorageAccountType": {
             "type": "string"
         },
         "location": {
@@ -95,9 +95,6 @@
         "SubscriptionId": {
             "type": "string"
         },
-        "provisioningHybridworkersUrl": {
-            "type": "string"
-        },
         "omsWorkspaceName": {
             "type": "string"
         }
@@ -107,7 +104,7 @@
         "domainJoinUserName": "[concat(parameters('domainName'), '\\', parameters('adminUsername'))]"
     },
     "resources": [
-        {
+          {
               "comments": "Join domain - JsonADDomainExtension",
               "apiVersion": "2015-06-15",
               "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -137,7 +134,6 @@
                   "protectedSettings": {
                       "Password": "[parameters('adminPassword')]"
                   }
-
               }
           },
           {

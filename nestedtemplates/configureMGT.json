@@ -64,16 +64,19 @@
     },
     "keyVaultName": {
         "type": "string"
-    },
-    "provisioningHybridworkersUrl": {
-        "type": "string"
     }
   },
   "variables": {
     "vmNames": {
         "VMs": [
             {
-                "Name": "[parameters('mgtVMName')]"
+                "Name": "AZ-MGT-VM"
+            },
+            {
+                "Name": "AZ-SQL-VM0"
+            },
+            {
+                "Name": "AZ-SQL-VM1"
             }
         ]
     }

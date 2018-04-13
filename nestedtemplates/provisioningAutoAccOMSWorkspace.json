@@ -40,10 +40,6 @@
                     "marketplaceName": "AgentHealthAssessment"
                 },
                 {
-                    "name": "[concat('SQLAssessment', '(', parameters('omsWorkspaceName'), ')')]",
-                    "marketplaceName": "SQLAssessment"
-                },
-                {
                     "name": "[concat('ChangeTracking', '(', parameters('omsWorkspaceName'), ')')]",
                     "marketplaceName": "ChangeTracking"
                 },
@@ -177,8 +173,6 @@
                         "value": "[concat('\"',variables('assets').aaVariables.HybridWorkerGroupName.value,'\"')]"
                     }
                 }
-
-
             ]
         },
         {
@@ -368,7 +362,7 @@
                     "tags": {},
                     "properties": {
                         "ETag": "*",
-                        "query": "Type=Event EventID=40 OR EventID=36� Source=\"DISK\" EventLog=\"System\" TimeGenerated>NOW-24HOURS | Measure Count() By Compute",
+                        "query": "Type=Event EventID=40 OR EventID=36 Source=\"DISK\" EventLog=\"System\" TimeGenerated>NOW-24HOURS | Measure Count() By Compute",
                         "displayName": "NTFS Quouta treshold limit reached",
                         "category": "NTFS"
                     }
@@ -595,7 +589,7 @@
                         "objectName": "System",
                         "instanceName": "*",
                         "intervalSeconds": 10,
-                        "counterName": "Processor Queue Lenght"
+                        "counterName": "Processor Queue Length"
                     }
                 },
                 {

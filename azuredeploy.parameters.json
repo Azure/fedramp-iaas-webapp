@@ -11,17 +11,11 @@
         "keyVaultResourceGroupName": {
             "value": ""
         },
-        "configureSQLAO": {
-            "value": "yes"
-        },
         "environmentPrefix": {
             "value": ""
         },
         "numberOfWebInstances": {
             "value": 2
-        },
-        "useExistingKek": {
-            "value": "kek"
         },
         "encryptionEnabled": {
             "value": true
@@ -29,41 +23,29 @@
         "adVMSize": {
             "value": "Standard_D1_v2"
         },
-        "sqlVMSize": {
-            "value": "Standard_D2_v2"
-        },
         "webVMSize": {
             "value": "Standard_D2_v2"
         },
         "mgtVMSize": {
             "value": "Standard_D1_v2"
         },
-        "witnessVMSize": {
-            "value": "Standard_D1_v2"
+        "sqlVMSize": {
+            "value": "Standard_D2_v2"
         },
-        "sqlStorageAccountType": {
-            "value": "Standard_GRS"
+        "sqlServerVersion": {
+            "value": "SQL2017-WS2016"
         },
-        "dcStorageAccountType": {
-            "value": "Standard_GRS"
-        },
-        "webStorageAccountType": {
-            "value": "Standard_GRS"
-        },
-        "mgtStorageAccountType": {
+        "StorageAccountType": {
             "value": "Standard_GRS"
         },
         "templatesBaseUrl": {
-            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/nestedtemplates"
+            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQL2017/nestedtemplates"
         },
         "dscBaseUrl": {
-            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/DSC"
+            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQL2017/DSC"
         },
         "scriptsBaseUrl": {
-            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/custom-scripts"
-        },
-        "sqlServerVersion": {
-            "value": "SQL2016-WS2012R2"
+            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQL2017/custom-scripts"
         },
         "gatewaySkuName": {
             "value": "WAF_Medium"
