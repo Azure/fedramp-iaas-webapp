@@ -39,13 +39,13 @@
             "value": "Standard_GRS"
         },
         "templatesBaseUrl": {
-            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQL2017/nestedtemplates"
+            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/nestedtemplates"
         },
         "dscBaseUrl": {
-            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQL2017/DSC"
+            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/DSC"
         },
         "scriptsBaseUrl": {
-            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQL2017/custom-scripts"
+            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/custom-scripts"
         },
         "gatewaySkuName": {
             "value": "WAF_Medium"
