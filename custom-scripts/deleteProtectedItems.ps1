@@ -1,13 +1,14 @@
-## This Deletes all protected item Containers and Recovery Points for an array of Recovery Services Vaults.
-## If you do not want to delete all protected items in the vaults then the script will need to be adjust to filter only the specified items
+## This deletes all protected item containers and recovery points for an array of Recovery Services Vaults.
 
 Import-Module AzureRm
 Add-AzureRmAccount -EnvironmentName AzureUSGovernment
 
-
+## Enter Azure Subscription ID
 Select-AzureRmSubscription -SubscriptionId "<enter your azure subscription here>"
 
-$rcvNames = @("<enter the name of the recovery services vault you want to delete")
+## AZ-RCV-01 is the default name of the Recovery Services Vault deployed. 
+## To remove protected items from a different Recovery Services Vault or additional vaults, edit/add Recovery Service Vault names in the $rcvNames variable below.
+$rcvNames = @("AZ-RCV-01")
 
 for($i=0;$i -lt $rcvNames.Length;$i++){
     $vaults = Get-AzureRmRecoveryServicesVault | ?{$_.Name -eq $rcvNames[$i]}

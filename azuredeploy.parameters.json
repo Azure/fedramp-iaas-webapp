@@ -11,17 +11,8 @@
         "keyVaultResourceGroupName": {
             "value": ""
         },
-        "configureSQLAO": {
-            "value": "yes"
-        },
-        "environmentPrefix": {
-            "value": ""
-        },
         "numberOfWebInstances": {
             "value": 2
-        },
-        "useExistingKek": {
-            "value": "kek"
         },
         "encryptionEnabled": {
             "value": true
@@ -29,28 +20,19 @@
         "adVMSize": {
             "value": "Standard_D1_v2"
         },
-        "sqlVMSize": {
-            "value": "Standard_D2_v2"
-        },
         "webVMSize": {
             "value": "Standard_D2_v2"
         },
         "mgtVMSize": {
             "value": "Standard_D1_v2"
         },
-        "witnessVMSize": {
-            "value": "Standard_D1_v2"
+        "sqlVMSize": {
+            "value": "Standard_D2_v2"
         },
-        "sqlStorageAccountType": {
-            "value": "Standard_GRS"
+        "sqlServerVersion": {
+            "value": "SQL2017-WS2016"
         },
-        "dcStorageAccountType": {
-            "value": "Standard_GRS"
-        },
-        "webStorageAccountType": {
-            "value": "Standard_GRS"
-        },
-        "mgtStorageAccountType": {
+        "StorageAccountType": {
             "value": "Standard_GRS"
         },
         "templatesBaseUrl": {
@@ -61,9 +43,6 @@
         },
         "scriptsBaseUrl": {
             "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/custom-scripts"
-        },
-        "sqlServerVersion": {
-            "value": "SQL2016-WS2012R2"
         },
         "gatewaySkuName": {
             "value": "WAF_Medium"

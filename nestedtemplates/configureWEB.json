@@ -17,7 +17,7 @@
         "WebStorageAccountName": {
             "type": "string"
         },
-        "webStorageAccountType": {
+        "StorageAccountType": {
             "type": "string"
         },
         "location": {
@@ -68,9 +68,6 @@
         "webNSGid": {
             "type": "string"
         },
-        "backupInfo": {
-            "type": "object"
-        },
         "keyVaultName": {
             "type": "string"
         },
@@ -92,16 +89,7 @@
         "ResourceGroupName": {
             "type": "string"
         },
-        "AzureUserName": {
-            "type": "string"
-        },
-        "AzurePassword": {
-            "type": "securestring"
-        },
         "SubscriptionId": {
-            "type": "string"
-        },
-        "provisioningHybridworkersUrl": {
             "type": "string"
         },
         "omsWorkspaceName": {
@@ -113,7 +101,7 @@
         "domainJoinUserName": "[concat(parameters('domainName'), '\\', parameters('adminUsername'))]"
     },
     "resources": [
-        {
+          {
               "comments": "Join domain - JsonADDomainExtension",
               "apiVersion": "2015-06-15",
               "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -143,7 +131,6 @@
                   "protectedSettings": {
                       "Password": "[parameters('adminPassword')]"
                   }
-
               }
           },
           {
@@ -164,7 +151,7 @@
             "properties": {
                 "publisher": "Microsoft.Powershell",
                 "type": "DSC",
-                "typeHandlerVersion": "2.19",
+                "typeHandlerVersion": "2.20",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "ModulesUrl": "[parameters('webModulesURL')]",
@@ -179,43 +166,10 @@
                         "ScanScheduleDay": "[parameters('antimalwareInfo').scanScheduleDay]",
                         "DisableRealtimeMonitoring": "[parameters('antimalwareInfo').disableRealtimeMonitoring]"
                     }
-                },
-                "protectedSettings": {
-                    "items": {
-                        "AzurePassword": "[parameters('AzurePassword')]"
-                    }
-                }
-            }
-        },
-        {
-            "name": "[concat('Backup-WEB-',copyIndex())]",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2015-01-01",
-            "copy": {
-                "name": "backupWebLoop",
-                "count": "[parameters('numberOfWebInstances')]"
-            },
-            "dependsOn": [
-                "vmLoopBaseline"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[parameters('backupInfo').backupTemplateUrl]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "backupInfo": {
-                        "value": "[parameters('backupInfo')]"
-                    },
-                    "vmName": {
-                        "value": "[concat(parameters('WebVMName'), copyindex())]"
-                    }
                 }
             }
         }
     ],
     "outputs": {
-
     }
 }

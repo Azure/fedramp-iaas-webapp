@@ -38,9 +38,6 @@
     "mgtConfigurationFunction": {
         "type": "string"
     },
-    "azurePassword": {
-        "type": "securestring"
-    },
     "vmEncryptionSettings": {
         "type": "object"
     },
@@ -59,22 +56,10 @@
     "ResourceGroupName": {
         "type": "string"
     },
-    "AzureUserName": {
-        "type": "string"
-    },
-    "AzurePassword": {
-        "type": "securestring"
-    },
     "SubscriptionId": {
         "type": "string"
     },
-    "backupInfo": {
-        "type": "object"
-    },
     "keyVaultName": {
-        "type": "string"
-    },
-    "provisioningHybridworkersUrl": {
         "type": "string"
     }
   },
@@ -82,7 +67,13 @@
     "vmNames": {
         "VMs": [
             {
-                "Name": "[parameters('mgtVMName')]"
+                "Name": "AZ-MGT-VM"
+            },
+            {
+                "Name": "AZ-SQL-VM0"
+            },
+            {
+                "Name": "AZ-SQL-VM1"
             }
         ]
     }
@@ -131,8 +122,8 @@
         "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "2.19",
-            "autoUpgradeMinorVersion": false,
+            "typeHandlerVersion": "2.20",
+            "autoUpgradeMinorVersion": true,
             "settings": {
                 "modulesUrl": "[parameters('mgtModulesURL')]",
                 "configurationFunction": "[parameters('mgtConfigurationFunction')]",
@@ -144,38 +135,6 @@
                     "RemediationScheduleDay": "[parameters('antimalwareInfo').remediationScheduleDay]",
                     "ScanScheduleDay": "[parameters('antimalwareInfo').scanScheduleDay]",
                     "DisableRealtimeMonitoring": "[parameters('antimalwareInfo').disableRealtimeMonitoring]"
-                }
-            },
-            "protectedSettings": {
-                "items": {
-                    "AzurePassword": "[parameters('azurePassword')]"
-                }
-            }
-        }
-    },
-    {
-        "name": "[concat('BackupVM-',variables('vmNames').VMs[copyIndex()].Name)]",
-        "type": "Microsoft.Resources/deployments",
-        "apiVersion": "2015-01-01",
-        "copy": {
-            "name": "backupMGTLoop",
-            "count": "[length(variables('vmNames').VMs)]"
-        },
-        "dependsOn": [
-              "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('mgtVMName'), 'MGTBaselineDSC')]"
-        ],
-        "properties": {
-            "mode": "Incremental",
-            "templateLink": {
-                "uri": "[parameters('backupInfo').backupTemplateUrl]",
-                "contentVersion": "1.0.0.0"
-            },
-            "parameters": {
-                "backupInfo": {
-                    "value": "[parameters('backupInfo')]"
-                },
-                "vmName": {
-                    "value": "[variables('vmNames').VMs[copyIndex()].Name]"
                 }
             }
         }
