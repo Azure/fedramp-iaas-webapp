@@ -111,7 +111,7 @@ Deploying this solution will create resources within the selected Azure subscrip
 #### Extending the solution with advanced configuration
 
 For users with working knowledge of using Azure Resource Manager (ARM) templates, the deployment can be customized by editing  azuredeploy.json or any of the templates located in the nested templates folder. Some items users may want to edit include, but are not limited to:
-- Network Security Group rules (nestedtemplates/virtualNetworkNSG.json)
+- Network security group rules (nestedtemplates/virtualNetworkNSG.json)
 - OMS alert rules and configuration (nestedtemplates/provisioningAutoAccOMSWorkspace)
 - Application Gateway routing rules (nestedtemplates/provisioningApplicationGateway.json)
 - Adding a DB to the SQL Server 2017 AlwaysOn Availability Group (externaltemplates/AddDBtoAG.json)
