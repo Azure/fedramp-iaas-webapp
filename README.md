@@ -7,7 +7,7 @@ Azure Security and Compliance Blueprint - FedRAMP Web Applications Automation](h
 
 This Azure Blueprint solution is comprised of JSON configuration files and PowerShell scripts that are handled by Azure Resource Manager's API service to deploy resources within Azure. ***Note: This solution deploys to Azure Government.***
 
-#### Quickstart
+### Quickstart
 1. Clone or download this repository to run from a local workstation.
 
 2. Run the pre-deployment PowerShell script: **/predeploy/Orchestration_InitialSetup.ps1** [Read more about pre-deployment.](#pre-deployment)
