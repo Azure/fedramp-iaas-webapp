@@ -1,9 +1,9 @@
-## Solution Overview
+## Solution overview
 
 For more information about this solution, see [
 Azure Security and Compliance Blueprint - FedRAMP Web Applications Automation](https://aka.ms/fedrampblueprint).
 
-## Deploy the Solution
+## Deploy the solution
 
 This Azure Blueprint solution is comprised of JSON configuration files and PowerShell scripts that are handled by Azure Resource Manager's API service to deploy resources within Azure. ***Note: This solution deploys to Azure Government.***
 
@@ -18,15 +18,15 @@ This Azure Blueprint solution is comprised of JSON configuration files and Power
 	
 4. When the deployment completes, there is a post-deployment script in the repository for registering and initiating initial backup. This step can be completed before or after configuring the VM environment for the application to be deployed into the environment.
 
-### PRE-DEPLOYMENT
+### Pre-deployment
 
 During pre-deployment, confirm that an Azure Government subscription and local workstation are prepared to deploy the solution. The final pre-deployment step is running a PowerShell orchestration script that verifies the setup requirements, gathers parameters and credentials, and creates resources in Azure to prepare for deployment.
 
-#### Azure Subscription Requirements
+#### Azure subscription requirements
 
 This Azure Blueprint solution is designed to deploy to Azure Government. The solution does not currently support Azure commercial regions. For users with multi-tenant environments, the account used to deploy must be a member of the Azure Active Directory instance that is associated with the subscription where this blueprint solution will be deployed.
 
-#### Local Workstation Requirements
+#### Local workstation requirements
 
 PowerShell is utilized to initiate pre-deployment tasks. PowerShell version 5.0 or greater must be installed on the local workstation deploying this blueprint. In PowerShell, use the following command to verify the installed PowerShell version:
 
@@ -38,10 +38,10 @@ The local workstation's PowerShell execution policy will need to be set to `Remo
 
 To clone this repository using the command line, a [Git client](https://git-scm.com/downloads) must be available on the local workstation. Alternatively, the repository can be downloaded directly from GitHub.
 
-#### SSL Certificate
+#### SSL certificate
 This solution deploys an Application Gateway which requires an SSL certificate. The pre-deployment script will generate a self-signed SSL certificate after prompting for a domain (e.g., `contoso.local`). Note that self-signed certificates are not recommended for use in production environments.
 
-#### Pre-deployment Script
+#### Pre-deployment script
 
 The pre-deployment PowerShell script will verify that the necessary Azure PowerShell modules are installed. Azure PowerShell modules provide cmdlets for managing Azure resources. After all the setup requirements are verified, the script will ask users to sign into Azure and will then prompt for parameters and credentials to use when the solution is deployed. The script will prompt for the following parameters, in this order:
 
@@ -52,7 +52,7 @@ The pre-deployment PowerShell script will verify that the necessary Azure PowerS
 * **Resource Group Name**: The resource group name for use with this deployment; must be a string of 1-90 alphanumeric characters (such as 0-9, a-z, A-Z), periods, underscores, hyphens, and parenthesis and it cannot end in a period (e.g., `blueprint-rg`). 
 	* **Key Vault Name**: The Key Vault name will be automatically generated from the **Resource Group Name** parameter, as the deployment cannot use an existing Key Vault resource for this blueprint (e.g., `blueprint-rg-KV`). 
 
-#### Pre-deployment Instructions
+#### Pre-deployment instructions
 
 1. Clone or download this GitHub repository to the local workstation.
 `git clone https://github.com/Azure/fedramp-iaas-webapp.git`
@@ -62,7 +62,7 @@ The pre-deployment PowerShell script will verify that the necessary Azure PowerS
 
 Note the resource group name, Key Vault name, and domain name used as these will be required during the deployment phase.
 
-### DEPLOYMENT
+### Deployment
 
 During this phase, an Azure Resource Manager (ARM) template will deploy Azure resources to the selected subscription and perform configuration activities.
 
@@ -80,7 +80,7 @@ After clicking the **Deploy to Azure Gov** button, the Azure portal will open an
 
 All other settings contain default values that may be optionally adjusted by users.
 
-#### Deployment Instructions
+#### Deployment instructions
 
 1. Click the button below.
 
@@ -89,16 +89,16 @@ All other settings contain default values that may be optionally adjusted by use
 3. Review the terms and conditions and click **I agree to the terms and conditions stated above**.
 4. Click **Purchase**.
 
-#### Monitoring Deployment Status
+#### Monitoring deployment status
 This solution uses multiple nested templates to deploy and configure the resources shown in the architecture diagram. The full deployment will take approximately 120 minutes. The deployment can be monitored from the Azure Portal. When complete, there will be 34 items deployed to the resource group. If deployment errors are encountered, check the [troubleshooting](#troubleshooting) section below.
 
-### POST-DEPLOYMENT
+### Post-deployment
 
-#### Accessing Deployed Resources
+#### Accessing deployed resources
 
 Deployed VMs are accessible through the MGT VM that is created from the deployment. From this VM, any deployed VM from this blueprint solution will be remotely accessible. The default name of the MGT VM is **AZ-MGT-VM**.
 
-#### Initial Backup
+#### Initial backup
 
 After successful deployment of this blueprint, users can opt to run the **PostDeployment.ps1** script found in the **/postdeploy** directory for initializing encrypted VM backups into the Azure Recovery Services Vault deployed with the blueprint solution. 
 
@@ -108,7 +108,7 @@ Initial backup can be run immediately after the deployment finishes successfully
 
 Deploying this solution will create resources within the selected Azure subscription. Users will be responsible for the costs associated with these resources, so it is important to review applicable pricing and legal terms associated with all the resources and offerings deployed as part of this solution. For cost estimates, the [Azure Pricing Calculator](https://azure.microsoft.com/en-us/pricing/calculator/) can be used.
 
-#### Extending the Solution with Advanced Configuration
+#### Extending the solution with advanced configuration
 
 For users with working knowledge of using Azure Resource Manager (ARM) templates, the deployment can be customized by editing  azuredeploy.json or any of the templates located in the nested templates folder. Some items users may want to edit include, but are not limited to:
 - Network Security Group rules (nestedtemplates/virtualNetworkNSG.json)
@@ -132,7 +132,7 @@ There is a known bug when initializing backups for this solution. If Azure repor
 
 Be very mindful of edits made to the JSON templates, as that can affect the integrity of the blueprint deployment. Editing the templates is recommended only for users familiar with utilizing Azure Resource Manager APIs for Azure deployments.  
 
-#### How to Delete Deployed Resources
+#### How to delete deployed resources
 
 To help with deleting protected resources, use the **custom-scripts/deleteProtectedItems.ps1** script. This PowerShell script will remove any deletion locks on the resources inside the deployed Recovery Services Vault. Note that the script needs to be edited to include the selected subscription ID. The default Recovery Service Vault name of 'AZ-RCV-01' is already set in the script. 
 
