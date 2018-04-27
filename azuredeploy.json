@@ -12,13 +12,13 @@
         "keyVaultName": {
             "type": "string",
             "metadata": {
-                "description": "Name of the key vault created by the pre-deployment script."
+                "description": "Name of the Key Vault created by the pre-deployment script."
             }
         },
         "keyVaultResourceGroupName": {
             "type": "string",
             "metadata": {
-                "description": "Resource group associated to the key vault created during pre-deployment."
+                "description": "Resource group associated to the Key Vault created during pre-deployment."
             }
         },
         "encryptionEnabled": {
