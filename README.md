@@ -124,7 +124,7 @@ Additional documentation regarding template deployment is available at the follo
 
 #### Troubleshooting
 
-If the deployment should fail, first attempt to re-deploy the solution. Open the Resource groups blade in the Azure portal, select the appropriate resource group, click on Deployments, click on Microsoft.Template deployment, then click the redeploy button. If further issues are encountered, to avoid incurring costs and orphaned resources, it is advised to delete the resource group and all resources associated with the failed deployment. See the section below for instructions to delete all resources deployed by the solution.
+If the deployment should fail, first attempt to re-deploy the solution. Open the Resource groups blade in the Azure portal, select the appropriate resource group, click on Deployments, click on Microsoft.Template deployment, then click the redeploy button. If further issues are encountered, to avoid incurring costs and orphaned resources, it is advised to delete the resource group and all resources associated with the failed deployment. See the section below for instructions on deleting all resources deployed by the solution.
 
 For reporting bugs, users may submit a GitHub issue pertaining to the errors experienced.
 
