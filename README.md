@@ -130,7 +130,7 @@ For reporting bugs, users may submit a GitHub issue pertaining to the errors exp
 
 There is a known bug when initializing backups for this solution. If Azure reports a missing 'Microsoft Visual C++ Redistributable' for any VM, attempt to initiate backup through the deployed Azure Recovery Services Vault from the Azure portal.   
 
-Be very mindful of edits made to the JSON templates, as that can affect the integrity of the blueprint deployment. Editing the templates is recommended only for users familiar with utilizing Azure Resource Manager APIs for Azure deployments.  
+Be very mindful of edits made to the JSON templates, as that can affect the integrity of the blueprint deployment. Editing the templates is recommended only for users familiar with Azure Resource Manager deployments.  
 
 #### How to delete deployed resources
 
