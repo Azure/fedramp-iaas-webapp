@@ -48,7 +48,7 @@ The pre-deployment PowerShell script will verify that the necessary Azure PowerS
 * **Admin Username**: Administrator username for use as the administrator account on deployed virtual machines.
 * **Admin Password**: Administrator password for use with the administrator account on deployed virtual machines. Passwords must be at least 14 characters and contain one each of the following: lower case character, upper case character, number, and special character.
 * **Domain Name**: Domain name for the self-signed SSL certificate. Domain names utilized for this blueprint must adhere to RFC 1123 and NetBIOS (e.g., `contoso.local`).
-* **Azure Government Subscription ID**: Azure Government subscription ID details can be found in the Azure Government Portal. Navigate to https://portal.azure.us and sign in. Expand the service menu on the left side of the portal, select "more services," and begin typing "subscription" in the filter box. Click **Subscriptions** to open the subscriptions blade. Note the subscription ID, which has the GUID format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.
+* **Azure Government Subscription ID**: Azure Government subscription ID details can be found in the Azure Government portal. Navigate to https://portal.azure.us and sign in. Expand the service menu on the left side of the portal, select "more services," and begin typing "subscription" in the filter box. Click **Subscriptions** to open the subscriptions blade. Note the subscription ID, which has the GUID format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.
 * **Resource Group Name**: The resource group name for use with this deployment; must be a string of 1-90 alphanumeric characters (such as 0-9, a-z, A-Z), periods, underscores, hyphens, and parenthesis and it cannot end in a period (e.g., `blueprint-rg`). 
 	* **Key Vault Name**: The Key Vault name will be automatically generated from the **Resource Group Name** parameter, as the deployment cannot use an existing Key Vault resource for this blueprint (e.g., `blueprint-rg-KV`). 
 
@@ -90,7 +90,7 @@ All other settings contain default values that may be optionally adjusted by use
 4. Click **Purchase**.
 
 #### Monitoring deployment status
-This solution uses multiple nested templates to deploy and configure the resources shown in the architecture diagram. The full deployment will take approximately 120 minutes. The deployment can be monitored from the Azure Portal. When complete, there will be 34 items deployed to the resource group. If deployment errors are encountered, check the [troubleshooting](#troubleshooting) section below.
+This solution uses multiple nested templates to deploy and configure the resources shown in the architecture diagram. The full deployment will take approximately 120 minutes. The deployment can be monitored from the Azure portal. When complete, there will be 34 items deployed to the resource group. If deployment errors are encountered, check the [troubleshooting](#troubleshooting) section below.
 
 ### Post-deployment
 
