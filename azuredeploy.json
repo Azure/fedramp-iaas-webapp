@@ -202,21 +202,21 @@
             "metadata": {
                 "description": "Nested templates base URL."
             },
-            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/nestedtemplates"
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/nestedtemplates"
         },
         "dscBaseUrl": {
             "type": "string",
             "metadata": {
                 "description": "DSC Scripts base URL."
             },
-            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/DSC"
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/DSC"
         },
         "scriptsBaseUrl": {
             "type": "string",
             "metadata": {
                 "description": "Custom Scripts base URL."
             },
-            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/custom-scripts"
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/custom-scripts"
         },
         "gatewaySkuName": {
             "type": "string",
@@ -584,20 +584,6 @@
                     "backupInfo": {
                         "value": "[variables('backupInfo')]"
                     }
-                }
-            }
-        },
-        {
-        "apiVersion": "2017-05-10",
-        "name": "pid-1dd2b3cb-a191-44e3-82c0-9aec7457f754",
-        "comments": "GUID for tracking deployments intended for production use.",
-        "type": "Microsoft.Resources/deployments",
-        "properties": {
-            "mode": "Incremental",
-            "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                        "contentVersion": "1.0.0.0",
-                        "resources": []
                 }
             }
         },
@@ -1775,7 +1761,7 @@
             "properties": {
               "mode": "incremental",
               "templateLink": {
-                 "uri":"https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/master/externaltemplates/ConfigureSQL.json",
+                 "uri":"https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/externaltemplates/ConfigureSQL.json",
                  "contentVersion":"1.0.0.0"
               },
               "parameters": {
