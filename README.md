@@ -138,7 +138,7 @@ To help with deleting protected resources, use the **custom-scripts/deleteProtec
 
 ## Disclaimer
 
-- This document is for informational purposes only. Microsoft makes no warranties expressed, implied, or statutory, as to the information in this document. This document is provided "as-is." Information and views expressed in this document, including URL and other internet website references, may change without notice. Customers reading this document bear the risk of using it.  
+- This document is for informational purposes only. MICROSOFT MAKES NO WARRANTIES, EXPRESS, IMPLIED, OR STATUTORY, AS TO THE INFORMATION IN THIS DOCUMENT. This document is provided "as-is." Information and views expressed in this document, including URL and other internet website references, may change without notice. Customers reading this document bear the risk of using it.  
 - This document does not provide customers with any legal rights to any intellectual property in any Microsoft products or solutions.  
 - Customers may copy and use this document for internal reference purposes.  
 - Certain recommendations in this document may result in increased data, network, or compute resource usage in Azure, and may increase a customer's Azure license and/or subscription costs.  
