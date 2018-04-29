@@ -40,7 +40,6 @@
             "apiVersion": "2015-10-31",
             "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Automation/automationAccounts/',parameters('omsAutomationAccountName'), '/jobSchedules/', parameters('scheduleJobGuid'))]",
             "dependsOn": [
-
                 "[concat('Microsoft.Automation/automationAccounts/', parameters('omsAutomationAccountName'), '/schedules/', parameters('scheduleName'))]"
             ],
             "properties": {
@@ -62,6 +61,5 @@
         }
     ],
     "outputs": {
-
     }
 }
