@@ -68,9 +68,6 @@
         "webNSGid": {
             "type": "string"
         },
-        "backupInfo": {
-            "type": "object"
-        },
         "keyVaultName": {
             "type": "string"
         },
@@ -168,33 +165,6 @@
                         "RemediationScheduleDay": "[parameters('antimalwareInfo').remediationScheduleDay]",
                         "ScanScheduleDay": "[parameters('antimalwareInfo').scanScheduleDay]",
                         "DisableRealtimeMonitoring": "[parameters('antimalwareInfo').disableRealtimeMonitoring]"
-                    }
-                }
-            }
-        },
-        {
-            "name": "[concat('Backup-WEB-',copyIndex())]",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2015-01-01",
-            "copy": {
-                "name": "backupWebLoop",
-                "count": "[parameters('numberOfWebInstances')]"
-            },
-            "dependsOn": [
-                "vmLoopBaseline"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[parameters('backupInfo').backupTemplateUrl]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "backupInfo": {
-                        "value": "[parameters('backupInfo')]"
-                    },
-                    "vmName": {
-                        "value": "[concat(parameters('WebVMName'), copyindex())]"
                     }
                 }
             }

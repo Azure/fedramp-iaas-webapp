@@ -92,9 +92,6 @@
       "updateNicTemplateURL": {
         "type": "string"
       },
-      "backupInfo": {
-        "type": "object"
-      },
       "keyVaultName": {
         "type": "string"
       },
@@ -514,33 +511,6 @@
                             "[parameters('adPDCNICIPAddress')]",
                             "[parameters('adBDCNICIPAddress')]"
                         ]
-                    }
-                }
-            }
-        },
-        {
-            "name": "[concat('BackupVM-',variables('vmNames').VMs[copyIndex()].Name)]",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2015-01-01",
-            "copy": {
-                "name": "backupADLoop",
-                "count": "[length(variables('vmNames').VMs)]"
-            },
-            "dependsOn": [
-                "UpdatingDNSwithBackupADVM"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[parameters('backupInfo').backupTemplateUrl]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "backupInfo": {
-                        "value": "[parameters('backupInfo')]"
-                    },
-                    "vmName": {
-                        "value": "[variables('vmNames').VMs[copyIndex()].Name]"
                     }
                 }
             }

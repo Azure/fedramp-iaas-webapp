@@ -6,31 +6,27 @@
             "type": "string",
             "defaultValue": "AzureUSGovernment",
             "metadata": {
-                "description": "Assign the environment for Azure (Azure Commercial or Gov)"
+                "description": "The name of the Azure envrionment for use with the deployment (Azure Commercial or Azure Government)."
             }
         },
         "keyVaultName": {
             "type": "string",
             "metadata": {
-                "description": "Name of key vault used to store encrypted values for deployment. This key vault is created during predeployment steps."
+                "description": "Name of the Key Vault created by the pre-deployment script."
             }
         },
         "keyVaultResourceGroupName": {
             "type": "string",
             "metadata": {
-                "description": "Name of the resource group that holds the key vault above"
+                "description": "Resource group associated to the Key Vault created during pre-deployment."
             }
-        },
-        "environmentPrefix": {
-            "type": "string",
-            "metadata": {
-                "description": "Prefix for environement (production or staging). You can change the allowed values based on your preference."
-            },
-            "defaultValue": ""
         },
         "encryptionEnabled": {
             "type": "bool",
-            "defaultValue": true
+            "defaultValue": true,
+            "metadata": {
+                "description": "Boolean toggle for setting VM encryption as a part of the deployment."
+            }
         },
         "adVMSize": {
             "type": "string",
@@ -79,7 +75,7 @@
                 "Standard_GS5"
             ],
             "metadata": {
-                "description": "The size of the AD VMs Created"
+                "description": "The size of the VMs created for the Active Directory tier."
             },
             "defaultValue": "Standard_D1_v2"
         },
@@ -113,7 +109,7 @@
                 "Standard_GS5"
             ],
             "metadata": {
-                "description": "The size of the Web VMs Created"
+                "description": "The size of the VMs created for the Web tier."
             },
             "defaultValue": "Standard_D2_v2"
         },
@@ -147,7 +143,7 @@
                 "Standard_GS5"
             ],
             "metadata": {
-                "description": "The size of the MGT VM Created"
+                "description": "The size of the VM created for use as a management bastion host."
             },
             "defaultValue": "Standard_D1_v2"
         },
@@ -175,7 +171,10 @@
               "Standard_DS14_v2",
               "Standard_DS15_v2"
             ],
-            "defaultValue": "Standard_D2_v2"
+            "defaultValue": "Standard_D2_v2",
+            "metadata": {
+                "description": "The size of the VMs created for the SQL tier."
+            }
         },
         "sqlServerVersion": {
             "type": "string",
@@ -183,7 +182,7 @@
                 "SQL2017-WS2016"
             ],
             "metadata": {
-                "description": "The Sql Server Version"
+                "description": "The image used for the SQL VMs. SQL Server and OS versions are set for SQL Server 2017 on Windows Server 2016 nodes."
             },
             "defaultValue": "SQL2017-WS2016"
         },
@@ -194,28 +193,28 @@
                 "Standard_RAGRS"
             ],
             "metadata": {
-                "description": "The type of the Storage Account created"
+                "description": "The type of Geo-Redundant storage account used for the VMs in the deployment."
             },
             "defaultValue": "Standard_GRS"
         },
         "templatesBaseUrl": {
             "type": "string",
             "metadata": {
-                "description": "Linked Templates base url"
+                "description": "Nested templates base URL."
             },
             "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/nestedtemplates"
         },
         "dscBaseUrl": {
             "type": "string",
             "metadata": {
-                "description": "DSC Scripts base url"
+                "description": "DSC Scripts base URL."
             },
             "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/DSC"
         },
         "scriptsBaseUrl": {
             "type": "string",
             "metadata": {
-                "description": "DSC Scripts base url"
+                "description": "Custom Scripts base URL."
             },
             "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/custom-scripts"
         },
@@ -226,7 +225,10 @@
                 "Standard_Small",
                 "WAF_Medium",
                 "WAF_Large"
-            ]
+            ],
+            "metadata": {
+                "description": "The type of gateway to be deployed with the blueprint."
+            }
         }
     },
     "variables": {
@@ -340,36 +342,36 @@
         "virtualNetworkNameWithSuffix": "[concat('autohav2VNET', uniqueString(resourceGroup().id))]",
         "resourceNames": {
             "gatewaySkuName": "WAF_Medium",
-            "omsWorkspace": "[substring(concat(uniqueString(resourceGroup().id), 'ws', parameters('environmentPrefix')), 5)]",
-            "automationAccount": "[substring(concat(uniqueString(resourceGroup().id), 'aa', parameters('environmentPrefix')), 5)]",
+            "omsWorkspace": "[substring(concat(uniqueString(resourceGroup().id), 'ws'), 5)]",
+            "automationAccount": "[substring(concat(uniqueString(resourceGroup().id), 'aa'), 5)]",
             "recoveryServicesVault": "AZ-RCV-01",
             "automationSchedule": "VM-Patching-Schedule",
             "virtualNetworkNameWithSuffix": "[concat('autohav2VNET', uniqueString(resourceGroup().id))]",
             "nsgs": {
-                "mgt": "[concat('MGTNSG', parameters('environmentPrefix'))]",
-                "dc": "[concat('DCNSG', parameters('environmentPrefix'))]",
-                "web": "[concat('WEBNSG', parameters('environmentPrefix'))]",
-                "sql": "[concat('SQLNSG', parameters('environmentPrefix'))]",
-                "lb": "[concat('LBNSG', parameters('environmentPrefix'))]"
+                "mgt": "MGTNSG",
+                "dc": "DCNSG",
+                "web": "WEBNSG",
+                "sql": "SQLNSG",
+                "lb": "LBNSG"
             },
             "storageAccounts": {
-                "dc": "[concat(uniqueString(resourceGroup().id), 'dc', parameters('environmentPrefix'))]",
-                "web": "[concat(uniqueString(resourceGroup().id), 'web', parameters('environmentPrefix'))]",
-                "mgt": "[concat(uniqueString(resourceGroup().id), 'mgt', parameters('environmentPrefix'))]"
+                "dc": "[concat(uniqueString(resourceGroup().id), 'dc')]",
+                "web": "[concat(uniqueString(resourceGroup().id), 'web')]",
+                "mgt": "[concat(uniqueString(resourceGroup().id), 'mgt')]"
             },
             "vms": {
-                "adpdc": "[concat('AZ-PDC-VM', parameters('environmentPrefix'))]",
-                "adbdc": "[concat('AZ-BDC-VM', parameters('environmentPrefix'))]",
-                "web": "[concat('AZ-WEB-VM', parameters('environmentPrefix'))]",
-                "mgt": "[concat('AZ-MGT-VM', parameters('environmentPrefix'))]",
-                "sql0" : "[concat('AZ-SQL-VM0', parameters('environmentPrefix'))]",
-                "sql1" : "[concat('AZ-SQL-VM1', parameters('environmentPrefix'))]"
+                "adpdc": "AZ-PDC-VM",
+                "adbdc": "AZ-BDC-VM",
+                "web": "AZ-WEB-VM",
+                "mgt": "AZ-MGT-VM",
+                "sql0" : "AZ-SQL-VM0",
+                "sql1" : "AZ-SQL-VM1"
             },
             "nics": {
-                "adpdc": "[concat('adPDC-nic', parameters('environmentPrefix'))]",
-                "adbdc": "[concat('adBDC-nic', parameters('environmentPrefix'))]",
-                "web": "[concat('WEB-nic', parameters('environmentPrefix'))]",
-                "mgt": "[concat('MGT-nic', parameters('environmentPrefix'))]"
+                "adpdc": "adPDC-nic",
+                "adbdc": "adBDC-nic",
+                "web": "WEB-nic",
+                "mgt": "MGT-nic"
             },
             "loadBalancers": {
                 "rdpLBFEName": "rdpLBFE",
@@ -377,8 +379,8 @@
                 "rdpLBName": "rdpLoadBalancer"
             },
             "availabilitySets": {
-                "ad": "[concat('adAvailabilitySet', parameters('environmentPrefix'))]",
-                "web": "[concat('webAvailabilitySet', parameters('environmentPrefix'))]"
+                "ad": "[concat('adAvailabilitySet')]",
+                "web": "[concat('webAvailabilitySet')]"
             },
             "publicIPs": {
                 "mgt": "mgtpublicip"
@@ -400,7 +402,6 @@
             "configureMGTUrl": "[concat(parameters('templatesBaseUrl'),'/configureMGT.json')]",
             "configureWEBUrl": "[concat(parameters('templatesBaseUrl'),'/configureWEB.json')]",
             "provisioningRCV": "[concat(parameters('templatesBaseUrl'),'/recoveryServicesVault.json')]",
-            "backupVMProtectedItem": "[concat(parameters('templatesBaseUrl'),'/backupProtectedItems.json')]",
             "backupPolicy": "[concat(parameters('templatesBaseUrl'),'/recoveryServicesBackupPolicy.json')]",
             "configuringBackupADVMURL": "[concat(parameters('templatesBaseUrl'),'/configuringBackupADVM.json')]",
             "provisioningOMSMonitoringUrl": "[concat(parameters('templatesBaseUrl'), '/provisioningOMSMonitoring.json') ]",
@@ -416,8 +417,7 @@
         },
         "backupInfo": {
             "rcVaultName": "[variables('resourceNames').recoveryServicesVault]",
-            "backupPolicy": "CustomPolicy",
-            "backupTemplateUrl": "[variables('artifacts').backupVMProtectedItem]",
+            "backupPolicy": "FedRAMPBackup",
             "backupPolicyTemplateUrl": "[variables('artifacts').backupPolicy]",
             "backupScheduleRunTimes": ["2017-05-09T23:00:00"],
             "backupDailyRetentionDurationCount": 30,
@@ -483,6 +483,31 @@
                     "Name": "[variables('resourceNames').vms.adbdc]"
                 }
             ]
+        },
+        "vmNames": {
+            "VMs": [
+                {
+                    "Name": "AZ-PDC-VM"
+                },
+                {
+                    "Name": "AZ-BDC-VM"
+                },
+                {
+                    "Name": "AZ-WEB-VM0"
+                },
+                {
+                    "Name": "AZ-WEB-VM1"
+                },
+                {
+                    "Name": "AZ-MGT-VM"
+                },
+                {
+                    "Name": "AZ-SQL-VM0"
+                },
+                {
+                    "Name": "AZ-SQL-VM1"
+                }
+            ]
         }
     },
     "resources": [
@@ -491,6 +516,8 @@
             "comments": "Creates an Azure Automation Account and OMS Workspace",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
+            "dependsOn": [
+            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -562,7 +589,7 @@
         },
         {
             "name": "ProvisionVirtualNetworkNSG",
-            "comments": "Creates Network Secuity Groups and Virtual Network",
+            "comments": "Creates Network Secuity Groups and a Virtual Network",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -612,8 +639,9 @@
             "name": "ProvisionStorageAccounts",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
-            "comments": "Creates storage accounts for Active Directory, MGT, WEB, and Diagnostics.",
+            "comments": "Creates storage accounts for the assets in the Active Directory, MGT, and WEB tiers.",
             "dependsOn": [
+		        "Microsoft.Resources/deployments/ProvisionAutomationAccountAndOMSWorkspace"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -647,7 +675,7 @@
             "name": "ProvisionAvailabilitySets",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
-            "comments": "Creates Availability Sets for AD and WEB VMs",
+            "comments": "Creates Availability Sets for the Active Directory and Web tiers.",
             "dependsOn": [
             ],
             "properties": {
@@ -672,7 +700,7 @@
         {
             "name": "ProvisionAndConfigureAD",
             "type": "Microsoft.Resources/deployments",
-            "comments": "Creates and configures Active Directory VMs, Network Interfaces, and domain",
+            "comments": "Creates and configures Active Directory VMs, Network Interfaces, and the domain in the Active Directory tier.",
             "apiVersion": "2015-01-01",
             "dependsOn": [
                 "Microsoft.Resources/deployments/ProvisionAvailabilitySets",
@@ -685,7 +713,7 @@
                     "uri": "[variables('artifacts').provisionAndConfigureADUrl]",
                     "contentVersion": "1.0.0.0"
                 },
-              "parameters": {
+            "parameters": {
                 "adPDCVMName": {
                   "value": "[variables('resourceNames').vms.adpdc]"
                 },
@@ -791,9 +819,6 @@
                 "updateNicTemplateURL": {
                   "value": "[variables('artifacts').nicTemplateURL]"
                 },
-                "backupInfo": {
-                  "value": "[variables('backupInfo')]"
-                },
                 "keyVaultName": {
                   "value": "[parameters('keyVaultName')]"
                 },
@@ -823,7 +848,7 @@
         },
         {
             "name": "[concat('ConfigureOMSMonitoringAD-', variables('vmNamesArrayAD').VMs[copyIndex()].Name)]",
-            "comments": "Creates OMS Monitoring Extension for AD and MGT",
+            "comments": "Creates OMS Monitoring Extension for Active Directory tier VMs.",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -880,7 +905,7 @@
         },
         {
             "name": "ProvisionNICs",
-            "comments": "Creates Network Interfaces for MGT and WEB VMs",
+            "comments": "Creates Network Interfaces for all VMs in the AD, WEB, and MGT tiers.",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -958,7 +983,7 @@
         },
         {
             "name": "ProvisionApplicationGateway",
-            "comments": "Creates Application Gateway with WAF settings enabled",
+            "comments": "Creates Application Gateway with WAF settings enabled.",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -1094,9 +1119,6 @@
                       "secretName": "adminUsername"
                     }
                   },
-                  "environmentPrefix": {
-                      "value": "[parameters('environmentPrefix')]"
-                  },
                   "adminPassword": {
                       "reference": {
                           "keyVault": {
@@ -1165,11 +1187,10 @@
             "name": "ConfigureMGT",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
-            "comments": "Configures MGT VM with custom settings",
+            "comments": "Configures MGT VM with custom settings.",
             "dependsOn": [
                 "Microsoft.Resources/deployments/ProvisionVirtualMachines",
-                "monitorVMLoopAD",
-                "ConfigureSQL"
+                "monitorVMLoopAD"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1237,16 +1258,13 @@
                   },
                   "SubscriptionId": {
                       "value": "[subscription().subscriptionId]"
-                  },
-                  "backupInfo": {
-                      "value": "[variables('backupInfo')]"
                   }
                 }
             }
         },
         {
             "name": "ConfigureWEB",
-            "comments": "Configures WEB VM with custom settings",
+            "comments": "Configures WEB VMs with custom settings.",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -1338,9 +1356,6 @@
                     "webSubnetAddressRange": {
                         "value": "[variables('subnets').web.properties.addressPrefix]"
                     },
-                    "backupInfo": {
-                        "value": "[variables('backupInfo')]"
-                    },
                     "keyVaultName": {
                         "value": "[parameters('keyVaultName')]"
                     },
@@ -1373,7 +1388,7 @@
         },
         {
             "name": "[concat('ConfigureOMSMonitoringSQLMGT-', variables('vmNamesArraySQLMGT').VMs[copyIndex()].Name)]",
-            "comments": "Creates OMS Monitoring Extension for AD and MGT",
+            "comments": "Creates OMS Monitoring Extension for the Active Directory and MGT tiers.",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -1432,7 +1447,7 @@
         },
         {
             "name": "[concat('ConfigureOMSMonitoringWEB-', variables('resourceNames').vms.web, copyindex())]",
-            "comments": "Creates OMS Monitoring Extension for WEB",
+            "comments": "Creates the OMS Monitoring Extension for the WEB tier.",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -1490,12 +1505,13 @@
         },
         {
             "name": "ConfigureAutomationSchedules",
-            "comments": "Configures patching automation schedules",
+            "comments": "Configures patching automation schedules.",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
                 "monitorVMLoopSQLAD",
-                "monitorVMLoopWEB"
+                "monitorVMLoopWEB",
+                "ConfigureSQL"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1525,14 +1541,15 @@
             }
         },
         {
-            "name": "[concat('ConfigurationVMEncryption-', variables('resourceNames').vms.web, copyindex())]",
+            "name": "[concat('ConfigureVMEncryption-', variables('resourceNames').vms.web, copyindex())]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                  "ConfigureAutomationSchedules"
+                  "ConfigureAutomationSchedules",
+		  "ConfigureWEB"
             ],
             "copy": {
-                "name": "encryptionSQLMGTLoop",
+                "name": "encryptionWEBLoop",
                 "count": "[variables('numberOfWebInstances')]"
             },
             "properties": {
@@ -1594,15 +1611,15 @@
             }
         },
         {
-            "name": "[concat('ConfigurationVMEncryption-', variables('vmNamesArrayAD').VMs[copyIndex()].Name)]",
+            "name": "[concat('ConfigureVMEncryption-', variables('vmNamesArrayAD').VMs[copyIndex()].Name)]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
                 "ConfigureAutomationSchedules",
-		        "[concat('ConfigurationVMEncryption-', variables('resourceNames').vms.web, copyindex())]"
+		"[concat('ConfigureVMEncryption-', variables('resourceNames').vms.web, copyindex())]"
             ],
             "copy": {
-                "name": "encryptionSQLMGTLoop",
+                "name": "encryptionADLoop",
                 "count": "[length(variables('vmNamesArrayAD').VMs)]"
             },
             "properties": {
@@ -1664,12 +1681,12 @@
             }
         },
         {
-            "name": "[concat('ConfigurationVMEncryption-', variables('vmNamesArraySQLMGT').VMs[copyIndex()].Name)]",
+            "name": "[concat('ConfigureVMEncryption-', variables('vmNamesArraySQLMGT').VMs[copyIndex()].Name)]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
                 "ConfigureAutomationSchedules",
-                "ConfigureSQL"
+		"ConfigureSQL"
             ],
             "copy": {
                 "name": "encryptionSQLMGTLoop",
@@ -1736,14 +1753,15 @@
         {
             "apiVersion": "2017-05-10",
             "name": "ConfigureSQL",
+            "comments": "External template for deploying a SQL 2017 AlwaysOn solution with Azure Cloud Witness for quorum/cluster vote.",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-		        "ConfigureWEB"
+		"ConfigureWEB"    
             ],
             "properties": {
               "mode": "incremental",
               "templateLink": {
-                 "uri":"https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/SQL2017/externaltemplates/ConfigureSQL.json",
+                 "uri":"https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/dev/externaltemplates/ConfigureSQL.json",
                  "contentVersion":"1.0.0.0"
               },
               "parameters": {
@@ -1800,6 +1818,6 @@
                     }
                }
             }
-        }     
+        }
     ]
 }

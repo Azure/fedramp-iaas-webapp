@@ -11,9 +11,6 @@
         "keyVaultResourceGroupName": {
             "value": ""
         },
-        "environmentPrefix": {
-            "value": ""
-        },
         "numberOfWebInstances": {
             "value": 2
         },
