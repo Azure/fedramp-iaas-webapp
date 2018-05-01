@@ -90,7 +90,7 @@ All other settings contain default values that may be optionally adjusted by use
 4. Click **Purchase**.
 
 #### Monitoring deployment status
-This solution uses multiple nested templates to deploy and configure the resources shown in the architecture diagram. The full deployment will take approximately 120 minutes. The deployment can be monitored from the Azure portal. When complete, there will be 34 items deployed to the resource group. If deployment errors are encountered, check the [troubleshooting](#troubleshooting) section below.
+This solution uses multiple nested templates to deploy and configure the resources shown in the architecture diagram. The full deployment will take approximately 120 minutes. The deployment can be monitored from the Azure portal. When complete, there will be 35 individual deployments to the resource group with a total of 49 deployed resources. If deployment errors are encountered, check the [troubleshooting](#troubleshooting) section below.
 
 ### Post-deployment
 
@@ -134,7 +134,9 @@ Be very mindful of edits made to the JSON templates, as that can affect the inte
 
 #### How to delete deployed resources
 
-To help with deleting protected resources, use the **custom-scripts/deleteProtectedItems.ps1** script. This PowerShell script will remove any deletion locks on the resources inside the deployed Recovery Services Vault. Note that the script needs to be edited to include the selected subscription ID. The default Recovery Service Vault name of 'AZ-RCV-01' is already set in the script. 
+To help with deleting protected resources, use the **custom-scripts/deleteProtectedItems.ps1** script if the **postdeploy/PostDeployment.ps1** script has been executed for creating the initial recovery point. This PowerShell script will remove any deletion locks on the resources inside the deployed Recovery Services Vault. Note that the script needs to be edited to include the selected subscription ID. The default Recovery Service Vault name of 'AZ-RCV-01' is already set in the script. 
+
+If only the deployment has been run, with no backup operations executed through the post-deployment script, only the resource group deployed needs to be deleted for removing deployed resources.  
 
 ## Disclaimer
 
