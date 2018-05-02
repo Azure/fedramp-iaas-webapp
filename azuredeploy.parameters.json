@@ -11,14 +11,8 @@
         "keyVaultResourceGroupName": {
             "value": ""
         },
-        "environmentPrefix": {
-            "value": ""
-        },
         "numberOfWebInstances": {
             "value": 2
-        },
-        "useExistingKek": {
-            "value": "kek"
         },
         "encryptionEnabled": {
             "value": true
@@ -32,23 +26,23 @@
         "mgtVMSize": {
             "value": "Standard_D1_v2"
         },
-        "dcStorageAccountType": {
-            "value": "Standard_GRS"
+        "sqlVMSize": {
+            "value": "Standard_D2_v2"
         },
-        "webStorageAccountType": {
-            "value": "Standard_GRS"
+        "sqlServerVersion": {
+            "value": "SQL2017-WS2016"
         },
-        "mgtStorageAccountType": {
+        "StorageAccountType": {
             "value": "Standard_GRS"
         },
         "templatesBaseUrl": {
-            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/nosql/nestedtemplates"
+            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/NoSQL/nestedtemplates"
         },
         "dscBaseUrl": {
-            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/nosql/DSC"
+            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/NoSQL/DSC"
         },
         "scriptsBaseUrl": {
-            "value": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/nosql/custom-scripts"
+            "value": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/NoSQL/custom-scripts"
         },
         "gatewaySkuName": {
             "value": "WAF_Medium"
