@@ -128,6 +128,8 @@ If the deployment should fail, first attempt to re-deploy the solution. Open the
 
 For reporting bugs, users may submit a GitHub issue pertaining to the errors experienced.
 
+If the any of the deployed VMs hang at login, presenting **please wait for the user profile service**, restart affected VMs through the Azure portal. This will effectively restart the user profile service, if the service is timing out. 
+
 There is a known bug when initializing backups for this solution. If Azure reports a missing 'Microsoft Visual C++ Redistributable' for any VM, attempt to initiate backup through the deployed Azure Recovery Services Vault from the Azure portal.   
 
 Be very mindful of edits made to the JSON templates, as that can affect the integrity of the blueprint deployment. Editing the templates is recommended only for users familiar with Azure Resource Manager deployments.  
