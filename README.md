@@ -90,7 +90,7 @@ All other settings contain default values that may be optionally adjusted by use
 4. Click **Purchase**.
 
 #### Monitoring deployment status
-This solution uses multiple nested templates to deploy and configure the resources shown in the architecture diagram. The full deployment will take approximately 120 minutes. The deployment can be monitored from the Azure portal. When complete, there will be 35 individual deployments to the resource group with a total of 49 deployed resources. If deployment errors are encountered, check the [troubleshooting](#troubleshooting) section below.
+This solution uses multiple nested templates to deploy and configure the resources shown in the architecture diagram. The full deployment will take approximately 120 minutes. The deployment can be monitored from the Azure portal. When complete, there will be 34 individual deployments to the resource group with a total of 49 deployed resources. If deployment errors are encountered, check the [troubleshooting](#troubleshooting) section below.
 
 ### Post-deployment
 
