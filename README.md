@@ -7,6 +7,8 @@ Azure Security and Compliance Blueprint - FedRAMP Web Applications Automation](h
 
 This Azure Blueprint solution is comprised of JSON configuration files and PowerShell scripts that are handled by Azure Resource Manager's API service to deploy resources within Azure. ***Note: This solution deploys to Azure Government.***
 
+This will deploy the environment without a SQL database tier. Users can modify and use these templates for deploying an environment in Azure to link to their existing database resources. 
+
 ### Quickstart
 1. Clone or download this repository to run from a local workstation.
 
@@ -90,7 +92,7 @@ All other settings contain default values that may be optionally adjusted by use
 4. Click **Purchase**.
 
 #### Monitoring deployment status
-This solution uses multiple nested templates to deploy and configure the resources shown in the architecture diagram. The full deployment will take approximately 120 minutes. The deployment can be monitored from the Azure portal. When complete, there will be 35 individual deployments to the resource group with a total of 49 deployed resources. If deployment errors are encountered, check the [troubleshooting](#troubleshooting) section below.
+This solution uses multiple nested templates to deploy and configure the resources shown in the architecture diagram. The full deployment will take approximately 120 minutes. The deployment can be monitored from the Azure portal. When complete, there will be 27 individual deployments to the resource group with a total of 36 deployed resources. If deployment errors are encountered, check the [troubleshooting](#troubleshooting) section below.
 
 ### Post-deployment
 
@@ -127,6 +129,10 @@ Additional documentation regarding template deployment is available at the follo
 If the deployment should fail, first attempt to re-deploy the solution. Open the Resource groups blade in the Azure portal, select the appropriate resource group, click on Deployments, click on Microsoft.Template deployment, then click the redeploy button. If further issues are encountered, to avoid incurring costs and orphaned resources, it is advised to delete the resource group and all resources associated with the failed deployment. See the section below for instructions on deleting all resources deployed by the solution.
 
 For reporting bugs, users may submit a GitHub issue pertaining to the errors experienced.
+
+If the any of the deployed VMs hang at login, presenting **please wait for the user profile service**, restart affected VMs through the Azure portal. This will effectively restart the user profile service, if the service is timing out. 
+
+As there is no SQL tier deployed with this solution, there will be no VM assets deployed specific to a database tier for this deployment. Users will be responsible for incorporating their existing SQL resources with this solution, or deploying a different database solution for use with this environment. 
 
 There is a known bug when initializing backups for this solution. If Azure reports a missing 'Microsoft Visual C++ Redistributable' for any VM, attempt to initiate backup through the deployed Azure Recovery Services Vault from the Azure portal.   
 
