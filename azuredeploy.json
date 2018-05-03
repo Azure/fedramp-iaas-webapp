@@ -163,21 +163,21 @@
             "metadata": {
                 "description": "Nested templates base URL."
             },
-            "defaultValue": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/NoSQL/nestedtemplates"
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/nosql/nestedtemplates"
         },
         "dscBaseUrl": {
             "type": "string",
             "metadata": {
                 "description": "DSC Scripts base URL."
             },
-            "defaultValue": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/NoSQL/DSC"
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/nosql/DSC"
         },
         "scriptsBaseUrl": {
             "type": "string",
             "metadata": {
                 "description": "Custom Scripts base URL."
             },
-            "defaultValue": "https://raw.githubusercontent.com/mik-e-kim/fedramp-iaas-webapp/NoSQL/custom-scripts"
+            "defaultValue": "https://raw.githubusercontent.com/Azure/fedramp-iaas-webapp/nosql/custom-scripts"
         },
         "gatewaySkuName": {
             "type": "string",
