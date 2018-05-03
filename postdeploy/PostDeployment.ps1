@@ -61,27 +61,22 @@ function loginToAzure {
 ########################################################################################################################
 try {
     Write-Host "`n GENERATE VM BACKUP ITEMS `n" -foregroundcolor green
-    Write-Host "Generating Backup Items for the deployment" -ForegroundColor Yellow
+    Write-Host "Generating Backup Items for the deployment." -ForegroundColor Yellow
+
     # Resource Group and Key Vault Names
     $KeyVault = Read-Host "The name of the Key Vault used in the deployment"
-    $ResourceGroup = Read-Host "The name of the Resource Group deployed"
+    $ResourceGroup = Read-Host "Provide the name of the Resource Group deployed"
+    $VMList = @("AZ-PDC-VM", "AZ-BDC-VM", "AZ-WEB-VM0", "AZ-WEB-VM1", "AZ-MGT-VM")
 
     # Set appropriate Recovery Services Vault context
     Get-AzureRmRecoveryServicesVault -Name "AZ-RCV-01" | Set-AzureRmRecoveryServicesVaultContext
 
     # Registering AzureVM protected items for backup
     Set-AzureRmKeyVaultAccessPolicy -VaultName $KeyVault -ResourceGroupName $ResourceGroup -PermissionsToKeys backup,get,list -PermissionsToSecrets get,list -ServicePrincipalName ff281ffe-705c-4f53-9f37-a40e6f2c68f3
-
     $policy = Get-AzureRmRecoveryServicesBackupProtectionPolicy -Name "FedRAMPBackup"
-
-    Enable-AzureRmRecoveryServicesBackupProtection -Policy $policy -Name "AZ-PDC-VM" -ResourceGroupName $ResourceGroup
-    Enable-AzureRmRecoveryServicesBackupProtection -Policy $policy -Name "AZ-BDC-VM" -ResourceGroupName $ResourceGroup
-    Enable-AzureRmRecoveryServicesBackupProtection -Policy $policy -Name "AZ-WEB-VM0" -ResourceGroupName $ResourceGroup
-    Enable-AzureRmRecoveryServicesBackupProtection -Policy $policy -Name "AZ-WEB-VM1" -ResourceGroupName $ResourceGroup
-    Enable-AzureRmRecoveryServicesBackupProtection -Policy $policy -Name "AZ-SQL-VM0" -ResourceGroupName $ResourceGroup
-    Enable-AzureRmRecoveryServicesBackupProtection -Policy $policy -Name "AZ-SQL-VM1" -ResourceGroupName $ResourceGroup
-    Enable-AzureRmRecoveryServicesBackupProtection -Policy $policy -Name "AZ-MGT-VM" -ResourceGroupName $ResourceGroup
-
+    foreach ($VM in $VMList) {
+        Enable-AzureRmRecoveryServicesBackupProtection -Policy $policy -Name $VM -ResourceGroupName $ResourceGroup
+    }
     Write-Host "Generation of VM Backup Items completed successfully." -ForegroundColor green
 }
 
