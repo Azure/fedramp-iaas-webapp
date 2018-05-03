@@ -116,7 +116,6 @@ For users with working knowledge of using Azure Resource Manager (ARM) templates
 - Network security group rules (nestedtemplates/virtualNetworkNSG.json)
 - OMS alert rules and configuration (nestedtemplates/provisioningAutoAccOMSWorkspace)
 - Application Gateway routing rules (nestedtemplates/provisioningApplicationGateway.json)
-- Adding a DB to the SQL Server 2017 AlwaysOn Availability Group (externaltemplates/AddDBtoAG.json)
 
 Additional documentation regarding template deployment is available at the following links:
 
