@@ -47,9 +47,6 @@
     "adminUsername": {
         "type": "securestring"
     },
-    "environmentPrefix": {
-        "type": "string"
-    },
     "adminPassword": {
         "type": "securestring"
     },

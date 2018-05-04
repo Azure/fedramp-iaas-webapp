@@ -59,9 +59,6 @@
     "SubscriptionId": {
         "type": "string"
     },
-    "backupInfo": {
-        "type": "object"
-    },
     "keyVaultName": {
         "type": "string"
     }
@@ -70,7 +67,13 @@
     "vmNames": {
         "VMs": [
             {
-                "Name": "[parameters('mgtVMName')]"
+                "Name": "AZ-MGT-VM"
+            },
+            {
+                "Name": "AZ-SQL-VM0"
+            },
+            {
+                "Name": "AZ-SQL-VM1"
             }
         ]
     }
@@ -132,33 +135,6 @@
                     "RemediationScheduleDay": "[parameters('antimalwareInfo').remediationScheduleDay]",
                     "ScanScheduleDay": "[parameters('antimalwareInfo').scanScheduleDay]",
                     "DisableRealtimeMonitoring": "[parameters('antimalwareInfo').disableRealtimeMonitoring]"
-                }
-            }
-        }
-    },
-    {
-        "name": "[concat('BackupVM-',variables('vmNames').VMs[copyIndex()].Name)]",
-        "type": "Microsoft.Resources/deployments",
-        "apiVersion": "2015-01-01",
-        "copy": {
-            "name": "backupMGTLoop",
-            "count": "[length(variables('vmNames').VMs)]"
-        },
-        "dependsOn": [
-              "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('mgtVMName'), 'MGTBaselineDSC')]"
-        ],
-        "properties": {
-            "mode": "Incremental",
-            "templateLink": {
-                "uri": "[parameters('backupInfo').backupTemplateUrl]",
-                "contentVersion": "1.0.0.0"
-            },
-            "parameters": {
-                "backupInfo": {
-                    "value": "[parameters('backupInfo')]"
-                },
-                "vmName": {
-                    "value": "[variables('vmNames').VMs[copyIndex()].Name]"
                 }
             }
         }
