@@ -11,14 +11,8 @@
         "keyVaultResourceGroupName": {
             "value": ""
         },
-        "environmentPrefix": {
-            "value": ""
-        },
         "numberOfWebInstances": {
             "value": 2
-        },
-        "useExistingKek": {
-            "value": "kek"
         },
         "encryptionEnabled": {
             "value": true
@@ -32,13 +26,13 @@
         "mgtVMSize": {
             "value": "Standard_D1_v2"
         },
-        "dcStorageAccountType": {
-            "value": "Standard_GRS"
+        "sqlVMSize": {
+            "value": "Standard_D2_v2"
         },
-        "webStorageAccountType": {
-            "value": "Standard_GRS"
+        "sqlServerVersion": {
+            "value": "SQL2017-WS2016"
         },
-        "mgtStorageAccountType": {
+        "StorageAccountType": {
             "value": "Standard_GRS"
         },
         "templatesBaseUrl": {

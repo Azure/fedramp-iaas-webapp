@@ -8,22 +8,16 @@
     "webStorageAccountName": {
       "type": "string"
     },
-    "webStorageAccountType": {
+    "StorageAccountType": {
       "type": "string"
     },
     "dcStorageAccountName": {
-        "type": "string"
-    },
-    "dcStorageAccountType": {
         "type": "string"
     },
     "omsWorkspaceName": {
       "type": "string"
     },
     "mgtStorageAccountName": {
-        "type": "string"
-    },
-    "mgtStorageAccountType": {
         "type": "string"
     }
   },
@@ -41,7 +35,7 @@
         },
         "location": "[parameters('location')]",
         "sku": {
-            "name": "[parameters('webStorageAccountType')]"
+            "name": "[parameters('StorageAccountType')]"
         },
         "kind": "Storage",
         "properties": {
@@ -80,7 +74,7 @@
         },
         "location": "[parameters('location')]",
         "sku": {
-            "name": "[parameters('dcStorageAccountType')]"
+            "name": "[parameters('StorageAccountType')]"
         },
         "kind": "Storage",
         "properties": {
@@ -121,7 +115,7 @@
         },
         "location": "[parameters('location')]",
         "sku": {
-            "name": "[parameters('mgtStorageAccountType')]"
+            "name": "[parameters('StorageAccountType')]"
         },
         "kind": "Storage",
         "properties": {
@@ -160,7 +154,7 @@
         },
         "location": "[parameters('location')]",
         "sku": {
-            "name": "Standard_GRS"
+            "name": "[parameters('StorageAccountType')]"
         },
         "kind": "Storage",
         "properties": {
