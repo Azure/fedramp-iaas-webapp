@@ -1,7 +1,6 @@
 ## Solution overview
 
-For more information about this solution, see [
-Azure Security and Compliance Blueprint - FedRAMP Web Application Automation](https://docs.microsoft.com/azure/security/blueprints/fedramp-iaaswa-overview).
+For more information about this solution, see [Azure Security and Compliance Blueprint - FedRAMP Web Application Automation](https://docs.microsoft.com/azure/security/blueprints/fedramp-iaaswa-overview).
 
 ## Deploy the solution
 
