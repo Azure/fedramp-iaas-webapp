@@ -1,7 +1,6 @@
 ## Solution overview
 
-For more information about this solution, see [
-Azure Security and Compliance Blueprint - FedRAMP Web Applications Automation](https://aka.ms/fedrampblueprint).
+For more information about this solution, see [Azure Security and Compliance Blueprint - FedRAMP Web Application Automation](https://docs.microsoft.com/azure/security/blueprints/fedramp-iaaswa-overview).
 
 ## Deploy the solution
 
@@ -106,7 +105,7 @@ Initial backup can be run immediately after the deployment finishes successfully
 
 #### Cost
 
-Deploying this solution will create resources within the selected Azure subscription. Users will be responsible for the costs associated with these resources, so it is important to review applicable pricing and legal terms associated with all the resources and offerings deployed as part of this solution. For cost estimates, the [Azure Pricing Calculator](https://azure.microsoft.com/en-us/pricing/calculator/) can be used.
+Deploying this solution will create resources within the selected Azure subscription. Users will be responsible for the costs associated with these resources, so it is important to review applicable pricing and legal terms associated with all the resources and offerings deployed as part of this solution. For cost estimates, the [Azure Pricing Calculator](https://azure.microsoft.com/pricing/calculator/) can be used.
 
 #### Extending the solution with advanced configuration
 
