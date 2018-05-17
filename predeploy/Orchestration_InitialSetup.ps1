@@ -1,5 +1,4 @@
 #requires -RunAsAdministrator
-#requires -Modules AzureRM
 
 ################################################################################################################
 ### Verify Environment ###
@@ -7,12 +6,14 @@
 
 # Verify AzureRM Module is installed
 if (Get-Module -ListAvailable -Name AzureRM) {
-    Write-Host "AzureRM Module exists... Importing into session." -ForegroundColor Yellow
-    Import-Module AzureRM
+	# Removing and uninstalling previous versions of the AzureRM module
+	Write-Host "Removing and uninstalling older AzureRM modules..." -ForegroundColor Yellow
+	Remove-Module -Name AzureRM -force 
+	Uninstall-Module -Name AzureRM -AllVersions -Force
     } 
     else {
         Write-Host "AzureRM Module will be installed from the PowerShell Gallery..." -ForegroundColor Yellow
-        Install-Module -Name AzureRM -Force
+        Install-Module -Name AzureRM -requiredversion 5.1.1 -Force
     }
 
 <#
