@@ -4,10 +4,9 @@
 ### Verify Environment ###
 ################################################################################################################
 $AzRMMod = Get-Module -ListAvailable -Name AzureRM
-$RemoveIf = Uninstall-Module -Name AzureRM -WhatIf 
 # Remove previous AzureRM modules
-$Remove = if ($AzRMMod) {
-    if ($RemoveIf -eq $true) {
+if ($AzRMMod) {
+    if ($RemoveIf) {
         Remove-Module -Name AzureRM -Force -erroraction silentlycontinue
         Uninstall-Module -Name AzureRM -Force 
     }
