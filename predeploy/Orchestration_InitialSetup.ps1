@@ -3,32 +3,42 @@
 ################################################################################################################
 ### Verify Environment ###
 ################################################################################################################
-$AzRMMod = Get-Module -ListAvailable -Name AzureRM
-# Remove previous AzureRM modules
-if ($AzRMMod) {
-    if ($RemoveIf) {
+# PowerShell Setup Prompt
+Write-host "Setup the PowerShell environment for connecting to Azure? (Default is Yes)" -ForegroundColor Yellow 
+    $Readhost = Read-Host "( Y / N )" 
+    Switch ($ReadHost) 
+        { 
+            Y {Write-host "Yes, setting up the PowerShell environment for connecting to Azure before running the deployment." -foregroundcolor green; $EnvironSetup=$true} 
+            N {Write-Host "No, do not setup the PowerShell environment for connecting to Azure before running the deployment." -foregroundcolor yellow; $EnvironSetup=$false} 
+            Default {Write-Host "Default, setting up the PowerShell environment for connecting to Azure before running the deployment." -foregroundcolor green; $EnvironSetup=$true} 
+        } 
+
+# PowerShell environment setup 
+if ($EnvironSetup) {
+    # Remove previous AzureRM modules
+    if (Get-Module -ListAvailable -Name AzureRM) {
         Remove-Module -Name AzureRM -Force -erroraction silentlycontinue
         Uninstall-Module -Name AzureRM -Force 
     }
+
+    # Install AzureRM 5.7.0 PowerShell Module
+    try {
+	    Write-Host "AzureRM Module will be installed from the PowerShell Gallery..." -ForegroundColor Yellow
+	    Install-Module -Name AzureRM -requiredversion 5.7.0 -Force
+	    Import-Module -Name AzureRM -requiredversion 5.7.0 -erroraction silentlycontinue
+    }
+
+    catch {
+        Write-Host "AzureRM 5.7.0 PowerShell Module could not be installed from the PowerShell Gallery..." -ForegroundColor Magenta
+        Write-Host "If the PowerShell session experiences challenges with loading the necessary modules, please remove any Azure-associated modules from the following directory and attempt again from a new PowerShell session." -ForegroundColor Yellow
+        Write-Host "PowerShell Modules Directory:" -ForegroundColor Yellow
+        Write-Host "`n C:\Program Files\WindowsPowerShell\Modules`n" -ForegroundColor Green
+        Write-Host "Press any key to exit..." -ForegroundColor Yellow
+	    $x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+	    Exit
+    }
 }
 
-# Verify AzureRM Module is installed
-if ($AzRMMod.version -match "5.7.0") {
-	try {
-		Write-Host "Attempting to import the AzureRM 5.7.0 PowerShell Module..." -ForegroundColor Yellow
-		Import-Module -Name AzureRM -requiredversion 5.7.0 -erroraction silentlycontinue
-	}
-	catch {
-		Write-Host "The AzureRM 5.7.0 PowerShell Module could not be located. Installing from the PowerShell Gallery..." -ForegroundColor Yellow
-		Install-Module -Name AzureRM -requiredversion 5.7.0 -Force
-		Import-Module -Name AzureRM -requiredversion 5.7.0 -erroraction silentlycontinue
-	}
-}
-else {
-	Write-Host "AzureRM Module will be installed from the PowerShell Gallery..." -ForegroundColor Yellow
-	Install-Module -Name AzureRM -requiredversion 5.7.0 -Force
-	Import-Module -Name AzureRM -requiredversion 5.7.0 -erroraction silentlycontinue
-}
 <#
 
 .Description
