@@ -1,4 +1,4 @@
-﻿#requires -RunAsAdministrator
+#requires -RunAsAdministrator
 #requires -Modules AzureRM
 
 ################################################################################################################
@@ -9,11 +9,12 @@
 if (Get-Module -ListAvailable -Name AzureRM) {
     Write-Host "AzureRM Module exists... Importing into session." -ForegroundColor Yellow
     Import-Module AzureRM
-    } 
-    else {
-        Write-Host "AzureRM Module will be installed from the PowerShell Gallery..." -ForegroundColor Yellow
-        Install-Module -Name AzureRM -Force
-    }
+} 
+else {
+    Write-Host "AzureRM Module will be installed from the PowerShell Gallery..." -ForegroundColor Yellow
+    Install-Module -Name AzureRM -Force
+    Import-Module -Name AzureRM
+}
 
 <#
 
@@ -41,13 +42,13 @@ function loginToAzure {
 	if($?) {
 		Write-Host "Login Successful!" -ForegroundColor Green
 	} 
-    else {
+        else {
 		if($lginCount -lt 3) {
 			$lginCount = $lginCount + 1
 			Write-Host "Invalid Credentials! Please try logging in again." -ForegroundColor Magenta
 			loginToAzure -lginCount $lginCount
 		} 
-        else {
+                else {
 			Write-Host "Credentials input are incorrect, invalid, or exceed the maximum number of retries. Verify the Azure Government account information used is correct." -ForegroundColor Magenta
 			Write-Host "Press any key to exit..." -ForegroundColor Yellow
 			$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
@@ -60,6 +61,7 @@ function loginToAzure {
 # Generate Backup Items 
 ########################################################################################################################
 try {
+    loginToAzure -lginCount 1
     Write-Host "`n GENERATE VM BACKUP ITEMS `n" -foregroundcolor green
     Write-Host "Generating Backup Items for the deployment." -ForegroundColor Yellow
 
@@ -69,13 +71,42 @@ try {
     $VMList = @("AZ-PDC-VM", "AZ-BDC-VM", "AZ-WEB-VM0", "AZ-WEB-VM1", "AZ-MGT-VM")
 
     # Set appropriate Recovery Services Vault context
-    Get-AzureRmRecoveryServicesVault -Name "AZ-RCV-01" | Set-AzureRmRecoveryServicesVaultContext
+    Get-AzureRmRecoveryServicesVault -Name "AZ-RCV-01" -ResourceGroupName $ResourceGroup | Set-AzureRmRecoveryServicesVaultContext
+
+    # Initialize Recovery Services Vault for new AzureRM registration - Check for and remove old backup containers
+    Get-AzureRmRecoveryServicesVault -ResourceGroupName $ResourceGroup | Set-AzureRmRecoveryServicesVaultContext
+    $rcs = Get-AzureRmRecoveryServicesBackupContainer -ContainerType AzureVM -ResourceGroupName $ResourceGroup -BackupManagementType AzureVM -Status Registered
+    if ($rcs) {
+        Write-Host "`nAzureRM backup containers found... Initializing vault..." -ForegroundColor Yellow
+        foreach ($c in $rcs) {
+            $bi = Get-AzureRmRecoveryServicesBackupItem -Container $c -WorkloadType AzureVM
+            try {
+                Disable-AzureRmRecoveryServicesBackupProtection -Item $bi -RemoveRecoveryPoints -Force
+            }
+            catch {
+                Write-Host $PSItem.Exception.Message
+                Write-Host "An error has occurred while attemping to initialize AzureRM vault" -ForegroundColor Magenta
+                $x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+                Exit
+            }
+               
+        } 
+    }
 
     # Registering AzureVM protected items for backup
     Set-AzureRmKeyVaultAccessPolicy -VaultName $KeyVault -ResourceGroupName $ResourceGroup -PermissionsToKeys backup,get,list -PermissionsToSecrets get,list -ServicePrincipalName ff281ffe-705c-4f53-9f37-a40e6f2c68f3
     $policy = Get-AzureRmRecoveryServicesBackupProtectionPolicy -Name "FedRAMPBackup"
+    
     foreach ($VM in $VMList) {
-        Enable-AzureRmRecoveryServicesBackupProtection -Policy $policy -Name $VM -ResourceGroupName $ResourceGroup
+    	try {
+            Enable-AzureRmRecoveryServicesBackupProtection -Policy $policy -Name $VM -ResourceGroupName $ResourceGroup
+	}
+	catch {
+            Write-Host $PSItem.Exception.Message
+            Write-Host "An error has occurred while attemping to connect $VM" -ForegroundColor Magenta
+            $x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+            Exit
+        }
     }
     Write-Host "Generation of VM Backup Items completed successfully." -ForegroundColor green
 }
