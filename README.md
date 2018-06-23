@@ -14,7 +14,7 @@ This Azure Blueprint solution is comprised of JSON configuration files and Power
 
 3. Click the button below, sign into the Azure portal, enter the required ARM template parameters, and click **Purchase**. [Read more about deployment.](#deployment)
 
-	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjayangra%2Ffedramp-iaas-webapp%2Fmaster%2Fazuredeploy.json)
+	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2Fmaster%2Fazuredeploy.json)
 	
 4. When the deployment completes, there is a post-deployment script in the repository for registering and initiating initial backup. This step can be completed before or after configuring the VM environment for the application to be deployed into the environment.
 
@@ -55,7 +55,7 @@ The pre-deployment PowerShell script will verify that the necessary Azure PowerS
 #### Pre-deployment instructions
 
 1. Clone or download this GitHub repository to the local workstation.
-`git clone https://github.com/jayangra/fedramp-iaas-webapp.git`
+`git clone https://github.com/Azure/fedramp-iaas-webapp.git`
 2. Start PowerShell with administrative privileges.
 3. Run **Orchestration_InitialSetup.ps1**, found in the predeploy directory.
 4. When prompted, enter the parameters described above.
@@ -84,7 +84,7 @@ All other settings contain default values that may be optionally adjusted by use
 
 1. Click the button below.
 
-	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjayangra%2Ffedramp-iaas-webapp%2Fmaster%2Fazuredeploy.json)
+	[![Deploy to Azure](http://azuredeploy.net/AzureGov.png)](https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Ffedramp-iaas-webapp%2Fmaster%2Fazuredeploy.json)
 2. Enter the settings described above.
 3. Review the terms and conditions and click **I agree to the terms and conditions stated above**.
 4. Click **Purchase**.
