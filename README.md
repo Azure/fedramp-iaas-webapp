@@ -55,7 +55,7 @@ The pre-deployment PowerShell script will verify that the necessary Azure PowerS
 #### Pre-deployment instructions
 
 1. Clone or download this GitHub repository to the local workstation.
-- `git clone https://github.com/Azure/fedramp-iaas-webapp.git`
+	- `git clone https://github.com/Azure/fedramp-iaas-webapp.git`
 2. Start PowerShell with administrative privileges.
 3. Run **Orchestration_InitialSetup.ps1**, found in the predeploy directory.
 4. When prompted, enter the parameters described above.
