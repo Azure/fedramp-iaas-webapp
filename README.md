@@ -54,7 +54,7 @@ The pre-deployment PowerShell script will verify that the necessary Azure PowerS
 #### Pre-deployment instructions
 
 1. Clone or download this GitHub repository to the local workstation.
-`git clone https://github.com/Azure/fedramp-iaas-webapp.git`
+	- `git clone https://github.com/Azure/fedramp-iaas-webapp.git`
 2. Start PowerShell with administrative privileges.
 3. Run **Orchestration_InitialSetup.ps1**, found in the predeploy directory.
 4. When prompted, enter the parameters described above.
@@ -122,16 +122,19 @@ Additional documentation regarding template deployment is available at the follo
 - [ARM Templating and Nesting Resources](https://docs.microsoft.com/azure/azure-resource-manager/resource-group-linked-templates)
 
 #### Troubleshooting
+- #### Failed deployment
+	- If the deployment should fail, first attempt to re-deploy the solution.
+		- Open the Resource groups blade in the Azure portal, select the appropriate resource group, click on Deployments, click on `Microsoft.Template` deployment, then click the redeploy button.
+ 	- If further issues are encountered, to avoid incurring costs and orphaned resources, it is advised to delete the resource group and all resources associated with the failed deployment. See the section below for instructions on deleting all resources deployed by the solution.
+- #### Login delay
+	If any of the deployed VMs hang at login, presenting **please wait for the user profile service**, restart affected VMs through the Azure portal. This will effectively restart the user profile service, if the service is timing out.
 
-If the deployment should fail, first attempt to re-deploy the solution. Open the Resource groups blade in the Azure portal, select the appropriate resource group, click on Deployments, click on Microsoft.Template deployment, then click the redeploy button. If further issues are encountered, to avoid incurring costs and orphaned resources, it is advised to delete the resource group and all resources associated with the failed deployment. See the section below for instructions on deleting all resources deployed by the solution.
+- #### Known issues
+	- There is a known bug when initializing backups for this solution. If Azure reports a missing `Microsoft Visual C++ Redistributable` for any VM, attempt to initiate backup through the deployed Azure Recovery Services Vault from the Azure portal.   
+	- For reporting bugs, users may submit a GitHub issue pertaining to the errors experienced.
 
-For reporting bugs, users may submit a GitHub issue pertaining to the errors experienced.
-
-If the any of the deployed VMs hang at login, presenting **please wait for the user profile service**, restart affected VMs through the Azure portal. This will effectively restart the user profile service, if the service is timing out. 
-
-There is a known bug when initializing backups for this solution. If Azure reports a missing 'Microsoft Visual C++ Redistributable' for any VM, attempt to initiate backup through the deployed Azure Recovery Services Vault from the Azure portal.   
-
-Be very mindful of edits made to the JSON templates, as that can affect the integrity of the blueprint deployment. Editing the templates is recommended only for users familiar with Azure Resource Manager deployments.  
+- #### Template customization
+	Be very mindful of edits made to the JSON templates, as that can affect the integrity of the blueprint deployment. Editing the templates is recommended only for users familiar with Azure Resource Manager deployments.  
 
 #### How to delete deployed resources
 
