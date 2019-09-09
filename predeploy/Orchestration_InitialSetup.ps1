@@ -308,6 +308,11 @@ function orchestration {
 
 			Write-Host "Creating new AAD application ($aadAppName)" -ForegroundColor Yellow;
 			$ADApp = New-AzureRmADApplication -DisplayName $aadAppName -HomePage $defaultHomePage -IdentifierUris $identifierUri  -StartDate $now -EndDate $oneYearFromNow -Password $aadClientSecret;
+			
+		# sleep function, waits for 30 seconds to give Azure time to create the app to avoid error message:
+		#    "The appId 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' of the service principal does not reference a valid application object."
+		Start-Sleep -s 30
+			
 			$servicePrincipal = New-AzureRmADServicePrincipal -ApplicationId $ADApp.ApplicationId;
 			$SvcPrincipals = (Get-AzureRmADServicePrincipal -SearchString $aadAppName);
 			if(-not $SvcPrincipals)
